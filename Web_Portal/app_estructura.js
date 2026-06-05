@@ -418,3 +418,182 @@ function parseEstructuraSessions(row) {
     return sessions;
 }
 
+// Función auxiliar para escapar caracteres HTML
+function estEsc(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+// Renderiza la vista en bloques agrupando por grupo
+function renderEstructuraBlocks(filteredRows) {
+    const container = document.getElementById("est-blocks-grid-container");
+    if (!container) return;
+    
+    if (!filteredRows || filteredRows.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                <i class="fa-regular fa-folder-open" style="font-size: 28px; margin-bottom: 10px;"></i><br>
+                No hay datos que coincidan con los filtros aplicados para la vista en bloques.
+            </div>
+        `;
+        return;
+    }
+    
+    // Agrupar sesiones por grupo
+    const groupsMap = {};
+    const groupsWithoutSchedule = [];
+    
+    filteredRows.forEach(row => {
+        const sessions = parseEstructuraSessions(row);
+        if (sessions.length > 0) {
+            if (!groupsMap[row.grupo]) {
+                groupsMap[row.grupo] = [];
+            }
+            groupsMap[row.grupo] = groupsMap[row.grupo].concat(sessions);
+        } else {
+            // Registrar grupos con materias pero sin horas distribuidas
+            if (!groupsWithoutSchedule.includes(row.grupo) && row.grupo) {
+                groupsWithoutSchedule.push(row.grupo);
+            }
+        }
+    });
+    
+    const sortedGroups = Object.keys(groupsMap).sort();
+    let html = '';
+    
+    // Renderizar grilla semanal para cada grupo que tenga sesiones
+    sortedGroups.forEach(gName => {
+        html += `<div class="est-group-block-wrapper" style="margin-bottom: 35px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+                    <h3 style="color: #fff; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 16px;">
+                        <i class="fa-solid fa-graduation-cap" style="color: var(--accent-purple);"></i>
+                        Horario de Grupo: <span style="color: var(--accent-cyan); font-weight: 700;">${estEsc(gName)}</span>
+                    </h3>
+                    ${buildWeeklyGridHTML(groupsMap[gName])}
+                </div>`;
+    });
+    
+    // Mostrar avisos para grupos activos sin distribución semanal
+    const missingSchedules = groupsWithoutSchedule.filter(g => !groupsMap[g]).sort();
+    if (missingSchedules.length > 0) {
+        html += `<div style="margin-top: 20px; padding: 15px; border-radius: 8px; border: 1px dashed rgba(234, 179, 8, 0.3); background: rgba(234, 179, 8, 0.05); color: var(--accent-gold);">
+                    <i class="fa-solid fa-triangle-exclamation"></i> <strong>Grupos sin distribución semanal asignada:</strong> ${missingSchedules.map(estEsc).join(', ')}.
+                    <div style="font-size: 12px; margin-top: 5px; color: var(--text-muted);">Estos grupos tienen materias registradas pero no tienen cargadas horas en los días de la semana en la Estructura Educativa.</div>
+                </div>`;
+    }
+    
+    container.innerHTML = html;
+}
+
+// Genera el HTML de la grilla semanal (tabla con rowspans) para un grupo
+function buildWeeklyGridHTML(sessions) {
+    if (!sessions || sessions.length === 0) return '';
+    
+    const dayOrder = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES'];
+    const dayLabels = { LUNES: 'Lunes', MARTES: 'Martes', MIERCOLES: 'Miércoles', JUEVES: 'Jueves', VIERNES: 'Viernes' };
+    
+    // Obtener horas únicas de inicio ordenadas
+    const times = Array.from(new Set(
+        sessions.map(s => s.hora_inicio).filter(Boolean)
+    )).sort((a, b) => a.localeCompare(b));
+    
+    if (!times.length) {
+        return '<p style="color: var(--text-muted); font-style: italic;">Sin horarios definidos.</p>';
+    }
+    
+    // Lookup de sesiones: dia -> hora_inicio -> sesión
+    const lookup = {};
+    sessions.forEach(s => {
+        if (!lookup[s.dia]) lookup[s.dia] = {};
+        if (!lookup[s.dia][s.hora_inicio]) lookup[s.dia][s.hora_inicio] = s;
+    });
+    
+    const occ = {}; // Rastreador de ocupación por rowspan
+    
+    let html = `
+        <div class="sched-scroll">
+            <table class="sched-table">
+                <thead>
+                    <tr>
+                        <th class="sched-th-time">Hora</th>
+                        ${dayOrder.map(d => `<th class="sched-th-day">${dayLabels[d]}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+    
+    times.forEach((time, timeIdx) => {
+        html += `<tr>`;
+        html += `<td class="sched-td-time">${estEsc(time)}</td>`;
+        
+        dayOrder.forEach(day => {
+            const occKey = `${day}_${timeIdx}`;
+            if (occ[occKey]) return; // Celda ocupada por un rowspan de una fila anterior
+            
+            const s = lookup[day] && lookup[day][time];
+            if (s) {
+                // Calcular rowspan
+                let span = 1;
+                for (let k = timeIdx + 1; k < times.length; k++) {
+                    if (times[k] < s.hora_fin) {
+                        span++;
+                    } else {
+                        break;
+                    }
+                }
+                
+                // Marcar espacios ocupados en las siguientes filas
+                for (let j = 1; j < span; j++) {
+                    occ[`${day}_${timeIdx + j}`] = true;
+                }
+                
+                const c = estColor(s.materia);
+                const hrsNum = parseFloat(s.horas_bloque) || 0;
+                const hrsStr = (hrsNum % 1 === 0 ? String(Math.round(hrsNum)) : String(hrsNum)) + 'h';
+                
+                const isVacante = !s.docente || s.docente.toUpperCase() === 'SIN ASIGNAR' || s.docente.toUpperCase() === 'VACANTE' || s.docente.toUpperCase() === 'N/A';
+                
+                let docenteHTML = '';
+                if (isVacante) {
+                    docenteHTML = `<span class="badge-red" style="padding: 3px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; font-size: 10px;">
+                                     <i class="fa-solid fa-triangle-exclamation"></i> VACANTE
+                                   </span>`;
+                } else {
+                    docenteHTML = estEsc(s.docente);
+                }
+                
+                const tooltip = `${estEsc(s.materia)} · ${estEsc(s.docente || 'VACANTE')} · ${estEsc(s.hora_inicio)}–${estEsc(s.hora_fin)} (${hrsStr})`;
+                
+                html += `
+                    <td rowspan="${span}" class="sched-td-session" title="${tooltip}"
+                        style="background: ${c.bg}; border-left: 4px solid ${c.border}; border-top: 1px solid rgba(255,255,255,0.05);">
+                        <div class="sched-label" style="color: ${c.text}; font-weight: 600;">${estEsc(s.materia)}</div>
+                        <div class="sched-sub">${docenteHTML}</div>
+                        <div class="sched-time-tag">
+                            <i class="fa-regular fa-clock"></i> ${estEsc(s.hora_inicio)}–${estEsc(s.hora_fin)}
+                            <span class="sched-hrs-badge">${hrsStr}</span>
+                        </div>
+                    </td>
+                `;
+            } else {
+                html += `<td class="sched-td-empty"></td>`;
+            }
+        });
+        
+        html += `</tr>`;
+    });
+    
+    html += `
+                </tbody>
+            </table>
+        </div>
+    `;
+    
+    return html;
+}
+
+
