@@ -437,8 +437,8 @@ function estEsc(str) {
         .replace(/'/g, '&#039;');
 }
 
-// Renderiza la vista en bloques agrupando por grupo
-function renderEstructuraBlocks(filteredRows) {
+// Renderiza la vista en bloques agrupando por grupo o por docente
+function renderEstructuraBlocks(filteredRows, viewType) {
     const container = document.getElementById("est-blocks-grid-container");
     if (!container) return;
     
@@ -452,57 +452,81 @@ function renderEstructuraBlocks(filteredRows) {
         return;
     }
     
-    // Agrupar sesiones por grupo
     const groupsMap = {};
     const groupsWithoutSchedule = [];
+    const isDocenteView = (viewType === 'blocks-docente');
     
     filteredRows.forEach(row => {
         const sessions = parseEstructuraSessions(row);
+        
+        // Determinar la clave de agrupación
+        let key = row.grupo;
+        if (isDocenteView) {
+            const docName = (row.docente || '').trim();
+            const esVacante = !docName || docName.toUpperCase() === 'SIN ASIGNAR' || docName.toUpperCase() === 'VACANTE' || docName.toUpperCase() === 'N/A';
+            key = esVacante ? "Plaza Vacante / Sin Asignar" : docName;
+        }
+        
         if (sessions.length > 0) {
-            if (!groupsMap[row.grupo]) {
-                groupsMap[row.grupo] = [];
+            if (!groupsMap[key]) {
+                groupsMap[key] = [];
             }
-            groupsMap[row.grupo] = groupsMap[row.grupo].concat(sessions);
+            groupsMap[key] = groupsMap[key].concat(sessions);
         } else {
-            // Registrar grupos con materias pero sin horas distribuidas
-            if (!groupsWithoutSchedule.includes(row.grupo) && row.grupo) {
-                groupsWithoutSchedule.push(row.grupo);
+            // Solo rastrear grupos sin distribución semanal en vista de grupo
+            if (row.grupo && !isDocenteView) {
+                if (!groupsWithoutSchedule.includes(row.grupo)) {
+                    groupsWithoutSchedule.push(row.grupo);
+                }
             }
         }
     });
     
-    const sortedGroups = Object.keys(groupsMap).sort();
+    // Ordenar las claves alfabéticamente, enviando vacantes al final en vista docente
+    const sortedKeys = Object.keys(groupsMap).sort((a, b) => {
+        if (a === "Plaza Vacante / Sin Asignar") return 1;
+        if (b === "Plaza Vacante / Sin Asignar") return -1;
+        return a.localeCompare(b);
+    });
+    
     let html = '';
     
-    // Renderizar grilla semanal para cada grupo que tenga sesiones
-    sortedGroups.forEach(gName => {
+    // Renderizar grilla semanal para cada clave (grupo o docente) que tenga sesiones
+    sortedKeys.forEach(key => {
+        const icon = isDocenteView ? 'fa-user-clock' : 'fa-graduation-cap';
+        const titleLabel = isDocenteView ? 'Horario de Docente' : 'Horario de Grupo';
+        const titleColor = isDocenteView ? 'var(--accent-gold)' : 'var(--accent-purple)';
+        
         html += `<div class="est-group-block-wrapper" style="margin-bottom: 35px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
                     <h3 style="color: #fff; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 16px;">
-                        <i class="fa-solid fa-graduation-cap" style="color: var(--accent-purple);"></i>
-                        Horario de Grupo: <span style="color: var(--accent-cyan); font-weight: 700;">${estEsc(gName)}</span>
+                        <i class="fa-solid ${icon}" style="color: ${titleColor};"></i>
+                        ${titleLabel}: <span style="color: var(--accent-cyan); font-weight: 700;">${estEsc(key)}</span>
                     </h3>
-                    ${buildWeeklyGridHTML(groupsMap[gName])}
+                    ${buildWeeklyGridHTML(groupsMap[key], viewType)}
                 </div>`;
     });
     
-    // Mostrar avisos para grupos activos sin distribución semanal
-    const missingSchedules = groupsWithoutSchedule.filter(g => !groupsMap[g]).sort();
-    if (missingSchedules.length > 0) {
-        html += `<div style="margin-top: 20px; padding: 15px; border-radius: 8px; border: 1px dashed rgba(234, 179, 8, 0.3); background: rgba(234, 179, 8, 0.05); color: var(--accent-gold);">
-                    <i class="fa-solid fa-triangle-exclamation"></i> <strong>Grupos sin distribución semanal asignada:</strong> ${missingSchedules.map(estEsc).join(', ')}.
-                    <div style="font-size: 12px; margin-top: 5px; color: var(--text-muted);">Estos grupos tienen materias registradas pero no tienen cargadas horas en los días de la semana en la Estructura Educativa.</div>
-                </div>`;
+    // Mostrar avisos para grupos activos sin distribución semanal (solo en vista de grupo)
+    if (!isDocenteView) {
+        const missingSchedules = groupsWithoutSchedule.filter(g => !groupsMap[g]).sort();
+        if (missingSchedules.length > 0) {
+            html += `<div style="margin-top: 20px; padding: 15px; border-radius: 8px; border: 1px dashed rgba(234, 179, 8, 0.3); background: rgba(234, 179, 8, 0.05); color: var(--accent-gold);">
+                        <i class="fa-solid fa-triangle-exclamation"></i> <strong>Grupos sin distribución semanal asignada:</strong> ${missingSchedules.map(estEsc).join(', ')}.
+                        <div style="font-size: 12px; margin-top: 5px; color: var(--text-muted);">Estos grupos tienen materias registradas pero no tienen cargadas horas en los días de la semana en la Estructura Educativa.</div>
+                    </div>`;
+        }
     }
     
     container.innerHTML = html;
 }
 
-// Genera el HTML de la grilla semanal (tabla con rowspans) para un grupo
-function buildWeeklyGridHTML(sessions) {
+// Genera el HTML de la grilla semanal (tabla con rowspans) para un grupo o docente
+function buildWeeklyGridHTML(sessions, viewType) {
     if (!sessions || sessions.length === 0) return '';
     
     const dayOrder = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES'];
     const dayLabels = { LUNES: 'Lunes', MARTES: 'Martes', MIERCOLES: 'Miércoles', JUEVES: 'Jueves', VIERNES: 'Viernes' };
+    const isDocenteView = (viewType === 'blocks-docente');
     
     // Obtener horas únicas de inicio ordenadas
     const times = Array.from(new Set(
@@ -563,15 +587,22 @@ function buildWeeklyGridHTML(sessions) {
                 const hrsNum = parseFloat(s.horas_bloque) || 0;
                 const hrsStr = (hrsNum % 1 === 0 ? String(Math.round(hrsNum)) : String(hrsNum)) + 'h';
                 
-                const isVacante = !s.docente || s.docente.toUpperCase() === 'SIN ASIGNAR' || s.docente.toUpperCase() === 'VACANTE' || s.docente.toUpperCase() === 'N/A';
+                let cellLabel = '';
+                let cellSubLabel = '';
                 
-                let docenteHTML = '';
-                if (isVacante) {
-                    docenteHTML = `<span class="badge-red" style="padding: 3px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; font-size: 10px;">
-                                     <i class="fa-solid fa-triangle-exclamation"></i> VACANTE
-                                   </span>`;
+                if (isDocenteView) {
+                    cellLabel = s.grupo;
+                    cellSubLabel = s.materia;
                 } else {
-                    docenteHTML = estEsc(s.docente);
+                    cellLabel = s.materia;
+                    const isVacante = !s.docente || s.docente.toUpperCase() === 'SIN ASIGNAR' || s.docente.toUpperCase() === 'VACANTE' || s.docente.toUpperCase() === 'N/A';
+                    if (isVacante) {
+                        cellSubLabel = `<span class="badge-red" style="padding: 3px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; font-size: 10px;">
+                                         <i class="fa-solid fa-triangle-exclamation"></i> VACANTE
+                                       </span>`;
+                    } else {
+                        cellSubLabel = estEsc(s.docente);
+                    }
                 }
                 
                 const tooltip = `${estEsc(s.materia)} · ${estEsc(s.docente || 'VACANTE')} · ${estEsc(s.hora_inicio)}–${estEsc(s.hora_fin)} (${hrsStr})`;
@@ -579,8 +610,8 @@ function buildWeeklyGridHTML(sessions) {
                 html += `
                     <td rowspan="${span}" class="sched-td-session" title="${tooltip}"
                         style="background: ${c.bg}; border-left: 4px solid ${c.border}; border-top: 1px solid rgba(255,255,255,0.05);">
-                        <div class="sched-label" style="color: ${c.text}; font-weight: 600;">${estEsc(s.materia)}</div>
-                        <div class="sched-sub">${docenteHTML}</div>
+                        <div class="sched-label" style="color: ${c.text}; font-weight: 600;">${estEsc(cellLabel)}</div>
+                        <div class="sched-sub">${cellSubLabel}</div>
                         <div class="sched-time-tag">
                             <i class="fa-regular fa-clock"></i> ${estEsc(s.hora_inicio)}–${estEsc(s.hora_fin)}
                             <span class="sched-hrs-badge">${hrsStr}</span>
