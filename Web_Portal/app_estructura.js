@@ -437,7 +437,7 @@ function estEsc(str) {
         .replace(/'/g, '&#039;');
 }
 
-// Renderiza la vista en bloques agrupando por grupo o por docente usando tarjetas (cards)
+// Renderiza la vista en bloques agrupando por grupo o por docente usando tarjetas compactas (sidecars)
 function renderEstructuraBlocks(filteredRows, viewType) {
     const container = document.getElementById("est-blocks-grid-container");
     if (!container) return;
@@ -479,20 +479,20 @@ function renderEstructuraBlocks(filteredRows, viewType) {
     
     let html = '';
     
-    // Renderizar grilla de tarjetas para cada clave (grupo o docente)
+    // Renderizar grilla de tarjetas compactas para cada clave (grupo o docente)
     sortedKeys.forEach(key => {
         const icon = isDocenteView ? 'fa-user-clock' : 'fa-graduation-cap';
         const titleLabel = isDocenteView ? 'Asignaciones de Docente' : 'Materias del Grupo';
         const titleColor = isDocenteView ? 'var(--accent-gold)' : 'var(--accent-purple)';
         
         html += `
-            <div class="est-group-block-wrapper" style="margin-bottom: 35px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
-                <h3 style="color: #fff; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 16px;">
-                    <i class="fa-solid ${icon}" style="color: ${titleColor};"></i>
+            <div class="est-group-block-wrapper" style="margin-bottom: 25px; background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border-color); border-radius: 10px; padding: 15px;">
+                <h3 style="color: #fff; margin-top: 0; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-size: 14.5px;">
+                    <i class="fa-solid ${icon}" style="color: ${titleColor}; font-size: 14px;"></i>
                     ${titleLabel}: <span style="color: var(--accent-cyan); font-weight: 700;">${estEsc(key)}</span>
                 </h3>
-                <div class="hor-mat-grid">
-                    ${groupsMap[key].map(row => buildCardHTML(row, isDocenteView)).join('')}
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px;">
+                    ${groupsMap[key].map(row => buildCompactCardHTML(row, isDocenteView)).join('')}
                 </div>
             </div>
         `;
@@ -501,10 +501,10 @@ function renderEstructuraBlocks(filteredRows, viewType) {
     container.innerHTML = html;
 }
 
-// Genera el HTML de una tarjeta individual (card) para la estructura educativa
-function buildCardHTML(row, isDocenteView) {
+// Genera el HTML de una tarjeta individual compacta (card chip) para la estructura educativa
+function buildCompactCardHTML(row, isDocenteView) {
     const hrs = parseFloat(row.tot_horas || row.horas || 0);
-    const hrsStr = `${hrs} hrs / semana`;
+    const hrsStr = `${hrs}h`;
     
     let cardLabel = '';
     let cardDesc = '';
@@ -520,31 +520,32 @@ function buildCardHTML(row, isDocenteView) {
         const esVacante = !docName || docName.toUpperCase() === 'SIN ASIGNAR' || docName.toUpperCase() === 'VACANTE' || docName.toUpperCase() === 'N/A';
         
         if (esVacante) {
-            cardDesc = `<span class="badge-red" style="padding: 3px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; font-size: 10px;">
-                           <i class="fa-solid fa-triangle-exclamation"></i> VACANTE / SIN ASIGNAR
+            cardDesc = `<span class="badge-red" style="padding: 1px 4px; border-radius: 3px; display: inline-flex; align-items: center; gap: 3px; font-weight: 600; font-size: 9px; vertical-align: middle;">
+                           <i class="fa-solid fa-triangle-exclamation"></i> VACANTE
                          </span>`;
         } else {
-            cardDesc = `<i class="fa-regular fa-user" style="font-size: 11px; margin-right: 4px; color: var(--text-muted);"></i> ${docName}`;
+            cardDesc = `<i class="fa-regular fa-user" style="font-size: 10px; margin-right: 3px; color: var(--text-muted);"></i> ${docName}`;
         }
         colorKey = row.uac; // Color basado en la materia
     }
     
     const c = estColor(colorKey);
-    const campo = row.campo_disciplinar || 'Sin área disciplinar';
+    const campo = row.campo_disciplinar || 'Sin área';
     
     return `
-        <div class="hor-mat-card" style="border-left: 4px solid ${c.border}; background: ${c.bg};">
-            <div class="hor-mat-name" style="color: ${c.text}; font-weight: 700; font-size: 13.5px; margin-bottom: 6px; line-height: 1.35;">
+        <div class="est-compact-card-chip" style="padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-color); border-left: 4px solid ${c.border}; background: ${c.bg}; transition: var(--transition-fast); display: flex; flex-direction: column; justify-content: space-between; gap: 4px;"
+             title="${estEsc(row.uac)} · ${estEsc(row.docente || 'VACANTE')} · ${hrsStr}"
+             onmouseover="this.style.transform='translateY(-1px)'; this.style.borderColor='rgba(255, 255, 255, 0.15)'"
+             onmouseout="this.style.transform='none'; this.style.borderColor='var(--border-color)'">
+            <div style="font-weight: 600; font-size: 12.5px; line-height: 1.25; color: ${c.text}; word-break: break-word;">
                 ${estEsc(cardLabel)}
             </div>
-            <div class="hor-mat-docente" style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">
+            <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 ${cardDesc}
             </div>
-            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">
-                ${estEsc(campo)}
-            </div>
-            <div class="hor-mat-hrs" style="font-size: 11px; color: var(--accent-gold); font-family: var(--font-mono); font-weight: 500;">
-                <i class="fa-regular fa-clock"></i> ${hrsStr}
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--text-muted); margin-top: 2px;">
+                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px;" title="${estEsc(campo)}">${estEsc(campo)}</span>
+                <span style="font-family: var(--font-mono); color: var(--accent-gold); font-weight: 600; flex-shrink: 0;"><i class="fa-regular fa-clock" style="font-size: 9px;"></i> ${hrsStr}</span>
             </div>
         </div>
     `;
