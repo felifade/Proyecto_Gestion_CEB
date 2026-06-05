@@ -1533,7 +1533,7 @@ const globalesFallbackData = {
     {
       "fecha": "18/06/26",
       "materia": "TALLER DE CULTURA DIGITAL",
-      "horario": "14:00- 16:00",
+      "horario": "10:00 - 12:00",
       "grupo": "M401",
       "semestre": "4",
       "turno": "Matutino",
@@ -1543,7 +1543,7 @@ const globalesFallbackData = {
     {
       "fecha": "18/06/26",
       "materia": "TALLER DE CULTURA DIGITAL",
-      "horario": "14:00- 16:00",
+      "horario": "10:00 - 12:00",
       "grupo": "M402",
       "semestre": "4",
       "turno": "Matutino",
@@ -1553,7 +1553,7 @@ const globalesFallbackData = {
     {
       "fecha": "18/06/26",
       "materia": "TALLER DE CULTURA DIGITAL",
-      "horario": "14:00- 16:00",
+      "horario": "10:00 - 12:00",
       "grupo": "M403",
       "semestre": "4",
       "turno": "Matutino",
@@ -1563,7 +1563,7 @@ const globalesFallbackData = {
     {
       "fecha": "18/06/26",
       "materia": "TALLER DE CULTURA DIGITAL",
-      "horario": "14:00- 16:00",
+      "horario": "10:00 - 12:00",
       "grupo": "M404",
       "semestre": "4",
       "turno": "Matutino",
@@ -1573,7 +1573,7 @@ const globalesFallbackData = {
     {
       "fecha": "18/06/26",
       "materia": "TALLER DE CULTURA DIGITAL",
-      "horario": "14:00- 16:00",
+      "horario": "10:00 - 12:00",
       "grupo": "M405",
       "semestre": "4",
       "turno": "Matutino",
@@ -1583,7 +1583,7 @@ const globalesFallbackData = {
     {
       "fecha": "18/06/26",
       "materia": "TALLER DE CULTURA DIGITAL",
-      "horario": "14:00- 16:00",
+      "horario": "10:00 - 12:00",
       "grupo": "M406",
       "semestre": "4",
       "turno": "Matutino",
@@ -1593,7 +1593,7 @@ const globalesFallbackData = {
     {
       "fecha": "19/06/26",
       "materia": "ESPACIO Y SOCIEDAD",
-      "horario": "14:00- 16:00",
+      "horario": "10:00 - 12:00",
       "grupo": "M401",
       "semestre": "4",
       "turno": "Matutino",
@@ -1603,7 +1603,7 @@ const globalesFallbackData = {
     {
       "fecha": "19/06/26",
       "materia": "ESPACIO Y SOCIEDAD",
-      "horario": "14:00- 16:00",
+      "horario": "10:00 - 12:00",
       "grupo": "M402",
       "semestre": "4",
       "turno": "Matutino",
@@ -1613,7 +1613,7 @@ const globalesFallbackData = {
     {
       "fecha": "19/06/26",
       "materia": "ESPACIO Y SOCIEDAD",
-      "horario": "14:00- 16:00",
+      "horario": "10:00 - 12:00",
       "grupo": "M403",
       "semestre": "4",
       "turno": "Matutino",
@@ -1623,7 +1623,7 @@ const globalesFallbackData = {
     {
       "fecha": "19/06/26",
       "materia": "ESPACIO Y SOCIEDAD",
-      "horario": "14:00- 16:00",
+      "horario": "10:00 - 12:00",
       "grupo": "M404",
       "semestre": "4",
       "turno": "Matutino",
@@ -1633,7 +1633,7 @@ const globalesFallbackData = {
     {
       "fecha": "19/06/26",
       "materia": "ESPACIO Y SOCIEDAD",
-      "horario": "14:00- 16:00",
+      "horario": "10:00 - 12:00",
       "grupo": "M405",
       "semestre": "4",
       "turno": "Matutino",
@@ -1643,7 +1643,7 @@ const globalesFallbackData = {
     {
       "fecha": "19/06/26",
       "materia": "ESPACIO Y SOCIEDAD",
-      "horario": "14:00- 16:00",
+      "horario": "10:00 - 12:00",
       "grupo": "M406",
       "semestre": "4",
       "turno": "Matutino",
@@ -2995,7 +2995,7 @@ const globalesFallbackData = {
     {
       "type": "cruce_docente_materias_diferentes",
       "severity": "HIGH",
-      "message": "El docente CARRANZA QUIROZ CLAUDIA está programado para aplicar exámenes de materias diferentes al mismo tiempo (12/06/26 08:00 - 10: 00): TEMAS SELECTOS DE MATEMÁTICAS I, TALLER DE PENSAMIENTO VARIACIONAL II en los grupos M405, M406, M601, M602, M603, M604, M605, M606"
+      "message": "El docente CARRANZA QUIROZ CLAUDIA está programado para aplicar exámenes de materias diferentes al mismo tiempo (12/06/26 08:00 - 10: 00): TALLER DE PENSAMIENTO VARIACIONAL II, TEMAS SELECTOS DE MATEMÁTICAS I en los grupos M405, M406, M601, M602, M603, M604, M605, M606"
     },
     {
       "type": "discrepancia_plantilla",
