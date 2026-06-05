@@ -2689,6 +2689,306 @@ const globalesFallbackData = {
       "turno": "Matutino",
       "docente_titular": "NARANJOS GOMEZ EDUARDO YAIR",
       "docente_apoyo": ""
+    },
+    {
+      "fecha": "12/06/26",
+      "materia": "TALLER DE PENSAMIENTO VARIACIONAL II",
+      "horario": "14:00- 16:00",
+      "grupo": "V607",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "GOMEZ CASTILLO EDGAR",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "12/06/26",
+      "materia": "TALLER DE PENSAMIENTO VARIACIONAL II",
+      "horario": "14:00- 16:00",
+      "grupo": "V608",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "CARRANZA QUIROZ CLAUDIA",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "12/06/26",
+      "materia": "TALLER DE PENSAMIENTO VARIACIONAL II",
+      "horario": "14:00- 16:00",
+      "grupo": "V609",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "CARRANZA QUIROZ CLAUDIA",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "12/06/26",
+      "materia": "CONCIENCIA HISTÓRICA III. LA REALIDAD ACTUAL EN PERSPECTIVA HISTÓRICA",
+      "horario": "16:00- 18:00",
+      "grupo": "V607",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "HERNANDEZ HERNANDEZ LUIS IGNACIO",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "12/06/26",
+      "materia": "CONCIENCIA HISTÓRICA III. LA REALIDAD ACTUAL EN PERSPECTIVA HISTÓRICA",
+      "horario": "16:00- 18:00",
+      "grupo": "V608",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "HERNANDEZ HERNANDEZ LUIS IGNACIO",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "12/06/26",
+      "materia": "CONCIENCIA HISTÓRICA III. LA REALIDAD ACTUAL EN PERSPECTIVA HISTÓRICA",
+      "horario": "16:00- 18:00",
+      "grupo": "V609",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "HERNANDEZ HERNANDEZ LUIS IGNACIO",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "15/06/26",
+      "materia": "TEMAS SELECTOS DE MATEMÁTICAS II",
+      "horario": "14:00- 16:00",
+      "grupo": "V607",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "GOMEZ CASTILLO EDGAR",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "15/06/26",
+      "materia": "TEMAS SELECTOS DE MATEMÁTICAS II",
+      "horario": "14:00- 16:00",
+      "grupo": "V608",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "GOMEZ CASTILLO EDGAR",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "15/06/26",
+      "materia": "TEMAS SELECTOS DE MATEMÁTICAS II",
+      "horario": "14:00- 16:00",
+      "grupo": "V609",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "GOMEZ CASTILLO EDGAR",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "15/06/26",
+      "materia": "ECONOMÍA II. POLÍTICA ACÓNOMICA Y POLÍTICA PÚBLICA MEXICANA",
+      "horario": "16:00- 18:00",
+      "grupo": "V607",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "MARTINEZ FLORES DANIEL",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "15/06/26",
+      "materia": "ECONOMÍA II. POLÍTICA ACÓNOMICA Y POLÍTICA PÚBLICA MEXICANA",
+      "horario": "16:00- 18:00",
+      "grupo": "V608",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "MARTINEZ FLORES DANIEL",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "15/06/26",
+      "materia": "ECONOMÍA II. POLÍTICA ACÓNOMICA Y POLÍTICA PÚBLICA MEXICANA",
+      "horario": "16:00- 18:00",
+      "grupo": "V609",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "MARTINEZ FLORES DANIEL",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "16/06/26",
+      "materia": "DISEÑO DIGITAL",
+      "horario": "14:00- 16:00",
+      "grupo": "V607",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "RUBIO GARCIA MARIA ELENA",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "16/06/26",
+      "materia": "INTERVENCIÓN EDUCATIVA EN EL NIVEL MEDIO SUPERIOR",
+      "horario": "14:00- 16:00",
+      "grupo": "V608",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "HERNANDEZ PICAZO LUIS FRANCISCO",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "16/06/26",
+      "materia": "CUIDADO DEL PACIENTE GERIÁTRICO",
+      "horario": "14:00- 16:00",
+      "grupo": "V609",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "HERNANDEZ ORTIZ JOSE ALEJANDRO",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "16/06/26",
+      "materia": "PÁGINAS WEB",
+      "horario": "16:00- 18:00",
+      "grupo": "V607",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "RUBIO GARCIA MARIA ELENA",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "16/06/26",
+      "materia": "INTERVENCIÓN EDUCATIVA EN SECUNDARIA",
+      "horario": "16:00- 18:00",
+      "grupo": "V608",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "JUAREZ FLORES AURORA",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "16/06/26",
+      "materia": "TÉCNICAS CLÍNICAS II",
+      "horario": "16:00- 18:00",
+      "grupo": "V609",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "BECERRA HERNANDEZ FABIOLA ALERJANDRA",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "17/06/26",
+      "materia": "PSICOLOGÍA II",
+      "horario": "14:00- 16:00",
+      "grupo": "V607",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "ENRIQUEZ AGUILAR LETICIA",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "17/06/26",
+      "materia": "PSICOLOGÍA II",
+      "horario": "14:00- 16:00",
+      "grupo": "V608",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "ENRIQUEZ AGUILAR LETICIA",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "17/06/26",
+      "materia": "PSICOLOGÍA II",
+      "horario": "14:00- 16:00",
+      "grupo": "V609",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "ENRIQUEZ AGUILAR LETICIA",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "17/06/26",
+      "materia": "SALUD INTEGRAL II",
+      "horario": "16:00- 18:00",
+      "grupo": "V607",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "BECERRA HERNANDEZ FABIOLA ALEJANDRA",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "17/06/26",
+      "materia": "SALUD INTEGRAL II",
+      "horario": "16:00- 18:00",
+      "grupo": "V608",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "BECERRA HERNANDEZ FABIOLA ALEJANDRA",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "17/06/26",
+      "materia": "SALUD INTEGRAL II",
+      "horario": "16:00- 18:00",
+      "grupo": "V609",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "BECERRA HERNANDEZ FABIOLA ALEJANDRA",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "18/06/26",
+      "materia": "ORGANISMOS: ESTRUCTURAS Y PROCESOS. HERENCIA Y EVOLUCIÓN BIOLÓGICA",
+      "horario": "14:00- 16:00",
+      "grupo": "V607",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "LUGO CABRERA GUSTAVO LEON",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "18/06/26",
+      "materia": "ORGANISMOS: ESTRUCTURAS Y PROCESOS. HERENCIA Y EVOLUCIÓN BIOLÓGICA",
+      "horario": "14:00- 16:00",
+      "grupo": "V608",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "LUGO CABRERA GUSTAVO LEON",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "18/06/26",
+      "materia": "ORGANISMOS: ESTRUCTURAS Y PROCESOS. HERENCIA Y EVOLUCIÓN BIOLÓGICA",
+      "horario": "14:00- 16:00",
+      "grupo": "V609",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "LUGO CABRERA GUSTAVO LEON",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "18/06/26",
+      "materia": "ACTIVIDADES FÍSICAS Y DEPORTIVAS;",
+      "horario": "16:00- 18:00",
+      "grupo": "V607",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "HERNANDEZ ORTIZ JOSE ALEJANDRO",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "18/06/26",
+      "materia": "ACTIVIDADES FÍSICAS Y DEPORTIVAS;",
+      "horario": "16:00- 18:00",
+      "grupo": "V608",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "HERNANDEZ ORTIZ JOSE ALEJANDRO",
+      "docente_apoyo": ""
+    },
+    {
+      "fecha": "18/06/26",
+      "materia": "ACTIVIDADES FÍSICAS Y DEPORTIVAS;",
+      "horario": "16:00- 18:00",
+      "grupo": "V609",
+      "semestre": "6",
+      "turno": "Vespertino",
+      "docente_titular": "HERNANDEZ ORTIZ JOSE ALEJANDRO",
+      "docente_apoyo": ""
     }
   ],
   "warnings": [
@@ -2830,7 +3130,7 @@ const globalesFallbackData = {
     {
       "type": "cruce_docente_materias_diferentes",
       "severity": "HIGH",
-      "message": "El docente CARRANZA QUIROZ CLAUDIA está programado para aplicar exámenes de materias diferentes al mismo tiempo (12/06/26 08:00 - 10: 00): TALLER DE PENSAMIENTO VARIACIONAL II, TEMAS SELECTOS DE MATEMÁTICAS I en los grupos M405, M406, M601, M602, M603, M604, M605, M606"
+      "message": "El docente CARRANZA QUIROZ CLAUDIA está programado para aplicar exámenes de materias diferentes al mismo tiempo (12/06/26 08:00 - 10: 00): TEMAS SELECTOS DE MATEMÁTICAS I, TALLER DE PENSAMIENTO VARIACIONAL II en los grupos M405, M406, M601, M602, M603, M604, M605, M606"
     },
     {
       "type": "cruce_docente_grupos_multiples",
@@ -3036,6 +3336,46 @@ const globalesFallbackData = {
       "type": "cruce_docente_grupos_multiples",
       "severity": "MEDIUM",
       "message": "El docente NARANJOS GOMEZ EDUARDO YAIR aplica el examen de 'ACTIVIDADES FÍSICAS Y DEPORTIVAS;' a múltiples grupos al mismo tiempo (18/06/26 10:00 - 12: 00): M601, M602, M603, M604, M605, M606. Verificar si requiere apoyo adicional."
+    },
+    {
+      "type": "cruce_docente_grupos_multiples",
+      "severity": "MEDIUM",
+      "message": "El docente CARRANZA QUIROZ CLAUDIA aplica el examen de 'TALLER DE PENSAMIENTO VARIACIONAL II' a múltiples grupos al mismo tiempo (12/06/26 14:00- 16:00): V608, V609. Verificar si requiere apoyo adicional."
+    },
+    {
+      "type": "cruce_docente_grupos_multiples",
+      "severity": "MEDIUM",
+      "message": "El docente HERNANDEZ HERNANDEZ LUIS IGNACIO aplica el examen de 'CONCIENCIA HISTÓRICA III. LA REALIDAD ACTUAL EN PERSPECTIVA HISTÓRICA' a múltiples grupos al mismo tiempo (12/06/26 16:00- 18:00): V607, V608, V609. Verificar si requiere apoyo adicional."
+    },
+    {
+      "type": "cruce_docente_grupos_multiples",
+      "severity": "MEDIUM",
+      "message": "El docente GOMEZ CASTILLO EDGAR aplica el examen de 'TEMAS SELECTOS DE MATEMÁTICAS II' a múltiples grupos al mismo tiempo (15/06/26 14:00- 16:00): V607, V608, V609. Verificar si requiere apoyo adicional."
+    },
+    {
+      "type": "cruce_docente_grupos_multiples",
+      "severity": "MEDIUM",
+      "message": "El docente MARTINEZ FLORES DANIEL aplica el examen de 'ECONOMÍA II. POLÍTICA ACÓNOMICA Y POLÍTICA PÚBLICA MEXICANA' a múltiples grupos al mismo tiempo (15/06/26 16:00- 18:00): V607, V608, V609. Verificar si requiere apoyo adicional."
+    },
+    {
+      "type": "cruce_docente_grupos_multiples",
+      "severity": "MEDIUM",
+      "message": "El docente ENRIQUEZ AGUILAR LETICIA aplica el examen de 'PSICOLOGÍA II' a múltiples grupos al mismo tiempo (17/06/26 14:00- 16:00): V607, V608, V609. Verificar si requiere apoyo adicional."
+    },
+    {
+      "type": "cruce_docente_grupos_multiples",
+      "severity": "MEDIUM",
+      "message": "El docente BECERRA HERNANDEZ FABIOLA ALEJANDRA aplica el examen de 'SALUD INTEGRAL II' a múltiples grupos al mismo tiempo (17/06/26 16:00- 18:00): V607, V608, V609. Verificar si requiere apoyo adicional."
+    },
+    {
+      "type": "cruce_docente_grupos_multiples",
+      "severity": "MEDIUM",
+      "message": "El docente LUGO CABRERA GUSTAVO LEON aplica el examen de 'ORGANISMOS: ESTRUCTURAS Y PROCESOS. HERENCIA Y EVOLUCIÓN BIOLÓGICA' a múltiples grupos al mismo tiempo (18/06/26 14:00- 16:00): V607, V608, V609. Verificar si requiere apoyo adicional."
+    },
+    {
+      "type": "cruce_docente_grupos_multiples",
+      "severity": "MEDIUM",
+      "message": "El docente HERNANDEZ ORTIZ JOSE ALEJANDRO aplica el examen de 'ACTIVIDADES FÍSICAS Y DEPORTIVAS;' a múltiples grupos al mismo tiempo (18/06/26 16:00- 18:00): V607, V608, V609. Verificar si requiere apoyo adicional."
     },
     {
       "type": "discrepancia_plantilla",
