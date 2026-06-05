@@ -1785,22 +1785,66 @@ function renderExamsDirectory() {
         }
     }
     
-    // 2. Render Table
+    // 2. Render Table (Grouped by Date, Time, Subject, Teacher)
     if (filteredExams.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No se encontraron exámenes para los filtros seleccionados.</td></tr>`;
         return;
     }
     
-    filteredExams.forEach(item => {
+    // Group exams
+    const groupedExams = [];
+    const groupedMap = {};
+    
+    filteredExams.forEach(exam => {
+        const key = `${exam.fecha}|${exam.horario}|${exam.materia}|${exam.docente_titular}`;
+        if (!groupedMap[key]) {
+            groupedMap[key] = {
+                fecha: exam.fecha,
+                horario: exam.horario,
+                materia: exam.materia,
+                docente_titular: exam.docente_titular,
+                grupos: [],
+                apoyos: new Set()
+            };
+            groupedExams.push(groupedMap[key]);
+        }
+        if (!groupedMap[key].grupos.includes(exam.grupo)) {
+            groupedMap[key].grupos.push(exam.grupo);
+        }
+        if (exam.docente_apoyo) {
+            groupedMap[key].apoyos.add(exam.docente_apoyo);
+        }
+    });
+    
+    // Sort grouped exams by date, then time
+    groupedExams.sort((a, b) => {
+        const parseDate = (dStr) => {
+            const parts = dStr.split('/');
+            return parts.length === 3 ? `20${parts[2]}${parts[1]}${parts[0]}` : dStr;
+        };
+        const dateCompare = parseDate(a.fecha).localeCompare(parseDate(b.fecha));
+        if (dateCompare !== 0) return dateCompare;
+        return a.horario.localeCompare(b.horario);
+    });
+
+    groupedExams.forEach(item => {
         const tr = document.createElement("tr");
         
-        const shiftBadgeClass = item.grupo.startsWith("M") ? "badge-matutino" : "badge-vespertino";
-        const supportText = item.docente_apoyo ? `<code>${item.docente_apoyo}</code>` : `<span style="color: var(--text-muted); font-style: italic;">Sin apoyo</span>`;
+        // Render group tags
+        const groupTagsHtml = item.grupos.sort().map(g => {
+            const color = g.startsWith("M") ? "var(--accent-gold)" : "var(--accent-purple)";
+            const bg = g.startsWith("M") ? "hsla(38, 92%, 50%, 0.15)" : "hsla(262, 83%, 58%, 0.15)";
+            return `<span class="group-tag" style="background-color: ${bg}; color: ${color}; margin-right: 4px; padding: 2px 6px; font-size: 10px; font-weight: 600; border-radius: 4px;">${g}</span>`;
+        }).join('');
+        
+        const supportText = item.apoyos.size > 0 ? 
+            Array.from(item.apoyos).map(a => `<code>${a}</code>`).join(', ') : 
+            `<span style="color: var(--text-muted); font-style: italic;">Sin apoyo</span>`;
         
         tr.innerHTML = `
             <td><code>${item.fecha}</code></td>
             <td><strong>${item.horario}</strong></td>
-            <td><span class="group-tag" style="font-size: 11px;">${item.grupo}</span></td>
+            <td><div style="display: flex; flex-wrap: wrap; gap: 4px;">${groupTagsHtml}</div></td>
             <td>
                 <span style="color: var(--text-primary); font-weight: 600;">${item.materia}</span>
             </td>
