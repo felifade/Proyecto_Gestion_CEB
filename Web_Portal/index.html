@@ -224,7 +224,15 @@
                         <p>Gestión estratégica, Recursos Humanos y Normativa Federal de Oposición.</p>
                     </div>
 
-                    <div class="tab-content-layout">
+                    <!-- Dirección Tabs / Navigation for Sub-areas -->
+                    <div class="sub-tabs">
+                        <button class="sub-tab-btn active" onclick="switchSubAreaDireccion('recursos-humanos')">Recursos Humanos y Normativa</button>
+                        <button class="sub-tab-btn" onclick="switchSubAreaDireccion('estructura-educativa')">Estructura Educativa</button>
+                    </div>
+
+                    <!-- Sub-area 1: Recursos Humanos y Normativa -->
+                    <div class="sub-area-content active" id="sub-dir-recursos-humanos">
+                        <div class="tab-content-layout">
                         <!-- Left Panel: Recursos Humanos -->
                         <div class="content-left">
                             <div class="premium-card">
@@ -333,6 +341,120 @@
                                     </div>
                                 </div>
 
+                            </div>
+                        </div>
+                    </div> <!-- End of sub-dir-recursos-humanos -->
+
+                    <!-- Sub-area 2: Estructura Educativa (GEN) -->
+                    <div class="sub-area-content" id="sub-dir-estructura-educativa">
+                        <div class="premium-card mb-20">
+                            <div class="card-header border-cyan">
+                                <h3><i class="fa-solid fa-folder-tree"></i> Consulta de Estructura Educativa (GEN_ESTRUCTURA)</h3>
+                                <div class="header-actions">
+                                    <button class="action-button-link btn-cyan btn-small" id="btn-refresh-est" onclick="refreshEstructuraData()">
+                                        <i class="fa-solid fa-rotate"></i> Actualizar Datos
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-15">Consulta en tiempo real la estructura oficial de materias, docentes y asignaciones horarias del semestre. Utiliza los filtros para refinar la consulta.</p>
+                                
+                                <!-- Filters -->
+                                <div class="directory-filters" style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+                                    <div class="filter-item" style="flex: 1 1 200px;">
+                                        <label><i class="fa-solid fa-magnifying-glass"></i> Buscar Docente o Materia</label>
+                                        <input type="text" id="est-search" placeholder="Escribe docente, UAC o campo..." oninput="filterEstructura()">
+                                    </div>
+                                    <div class="filter-item" style="flex: 1 1 120px;">
+                                        <label><i class="fa-solid fa-calendar-days"></i> Ciclo</label>
+                                        <select id="filter-est-ciclo" onchange="filterEstructura()">
+                                            <option value="all">Todos</option>
+                                            <option value="2025-2026">2025-2026</option>
+                                            <option value="2026-2027" selected>2026-2027</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-item" style="flex: 1 1 80px;">
+                                        <label><i class="fa-solid fa-clock"></i> Periodo</label>
+                                        <select id="filter-est-periodo" onchange="filterEstructura()">
+                                            <option value="all">Todos</option>
+                                            <option value="A" selected>A</option>
+                                            <option value="B">B</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-item" style="flex: 1 1 100px;">
+                                        <label><i class="fa-solid fa-layer-group"></i> Semestre</label>
+                                        <select id="filter-est-semestre" onchange="filterEstructura()">
+                                            <option value="all">Todos</option>
+                                            <option value="1">1° Semestre</option>
+                                            <option value="2">2° Semestre</option>
+                                            <option value="3">3° Semestre</option>
+                                            <option value="4">4° Semestre</option>
+                                            <option value="5">5° Semestre</option>
+                                            <option value="6">6° Semestre</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-item" style="flex: 1 1 100px;">
+                                        <label><i class="fa-solid fa-users"></i> Grupo</label>
+                                        <select id="filter-est-grupo" onchange="filterEstructura()">
+                                            <option value="all">Todos</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-item" style="flex: 1 1 100px;">
+                                        <label><i class="fa-solid fa-circle-exclamation"></i> Cobertura</label>
+                                        <select id="filter-est-cobertura" onchange="filterEstructura()">
+                                            <option value="all">Todos</option>
+                                            <option value="asignados">Docentes Asignados</option>
+                                            <option value="vacantes">Plazas Vacantes</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Statistics Row -->
+                                <div class="dashboard-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px;">
+                                    <div class="stat-card">
+                                        <div class="stat-card-title">Materias Filtradas</div>
+                                        <div class="stat-card-value" id="est-stat-materias">0</div>
+                                        <div class="stat-card-subtitle">Total en la consulta</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-card-title">Carga Horaria Total</div>
+                                        <div class="stat-card-value" id="est-stat-horas">0h</div>
+                                        <div class="stat-card-subtitle">Horas semanales sumadas</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-card-title">Docentes Activos</div>
+                                        <div class="stat-card-value" id="est-stat-docentes">0</div>
+                                        <div class="stat-card-subtitle">Titulares asignados</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-card-title">Plazas Vacantes</div>
+                                        <div class="stat-card-value text-red" id="est-stat-vacantes">0</div>
+                                        <div class="stat-card-subtitle" style="color: var(--danger-color) !important;">Materias sin docente</div>
+                                    </div>
+                                </div>
+
+                                <!-- Table Container -->
+                                <div class="directory-table-container">
+                                    <table class="premium-table" id="est-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 85px;">Sem/Gpo</th>
+                                                <th>Materia (UAC) / Campo Disciplinar</th>
+                                                <th>Docente Asignado</th>
+                                                <th style="width: 80px; text-align: center;">Hrs/Sem</th>
+                                                <th style="width: 280px;">Distribución Horaria</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="est-table-body">
+                                            <tr>
+                                                <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                                                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i><br>
+                                                    Cargando estructura educativa...
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -940,6 +1062,7 @@
     <script src="api_horarios.js"></script>
     <script src="print_horarios.js"></script>
     <script src="app_horarios.js"></script>
+    <script src="app_estructura.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
