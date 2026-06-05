@@ -9,6 +9,36 @@ const CACHE_TIME_EST = 15 * 60 * 1000; // 15 minutos
 
 // Variables globales para la vista
 window.EstructuraData = [];
+window.EstructuraActiveView = 'list';
+
+// Función para alternar la vista (Lista vs Bloques)
+function switchEstView(view) {
+    window.EstructuraActiveView = view;
+    
+    const btnList = document.getElementById("btn-est-view-list");
+    const btnBlocks = document.getElementById("btn-est-view-blocks");
+    const viewList = document.getElementById("est-list-view");
+    const viewBlocks = document.getElementById("est-blocks-view");
+    
+    if (btnList && btnBlocks && viewList && viewBlocks) {
+        if (view === 'list') {
+            btnList.classList.add("active");
+            btnBlocks.classList.remove("active");
+            viewList.style.display = "block";
+            viewList.classList.add("active");
+            viewBlocks.style.display = "none";
+            viewBlocks.classList.remove("active");
+        } else {
+            btnList.classList.remove("active");
+            btnBlocks.classList.add("active");
+            viewList.style.display = "none";
+            viewList.classList.remove("active");
+            viewBlocks.style.display = "block";
+            viewBlocks.classList.add("active");
+        }
+    }
+    filterEstructura();
+}
 
 // Inicialización de la vista
 document.addEventListener("DOMContentLoaded", () => {
@@ -255,6 +285,13 @@ function filterEstructura() {
     if (statHoras) statHoras.textContent = `${totalHoras}h`;
     if (statDocentes) statDocentes.textContent = docentesUnicos.size;
     if (statVacantes) statVacantes.textContent = vacantesCount;
+
+    // Si la vista activa es bloques, redirigir
+    if (window.EstructuraActiveView === 'blocks') {
+        tableBody.innerHTML = '';
+        renderEstructuraBlocks(filtered);
+        return;
+    }
 
     // Si no hay datos filtrados
     if (filtered.length === 0) {
