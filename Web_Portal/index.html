@@ -434,27 +434,49 @@
                                     </div>
                                 </div>
 
-                                <!-- Table Container -->
-                                <div class="directory-table-container">
-                                    <table class="premium-table" id="est-table">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 85px;">Sem/Gpo</th>
-                                                <th>Materia (UAC) / Campo Disciplinar</th>
-                                                <th>Docente Asignado</th>
-                                                <th style="width: 80px; text-align: center;">Hrs/Sem</th>
-                                                <th style="width: 280px;">Distribución Horaria</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="est-table-body">
-                                            <tr>
-                                                <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                                                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i><br>
-                                                    Cargando estructura educativa...
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <!-- View Toggle and Header -->
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                                    <h3 style="margin: 0; color: #fff; font-size: 16px;"><i class="fa-solid fa-list-check"></i> Detalle de Asignaciones</h3>
+                                    <div class="view-toggle-container" style="margin-top: 0; display: flex; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 2px;">
+                                        <button class="view-toggle-btn active" id="btn-est-view-list" onclick="switchEstView('list')">
+                                            <i class="fa-solid fa-list-ul"></i> Vista de Lista
+                                        </button>
+                                        <button class="view-toggle-btn" id="btn-est-view-blocks" onclick="switchEstView('blocks')">
+                                            <i class="fa-solid fa-calendar-week"></i> Vista en Bloques
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- View 1: List View -->
+                                <div class="est-view-container active" id="est-list-view">
+                                    <div class="directory-table-container">
+                                        <table class="premium-table" id="est-table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 85px;">Sem/Gpo</th>
+                                                    <th>Materia (UAC) / Campo Disciplinar</th>
+                                                    <th>Docente Asignado</th>
+                                                    <th style="width: 80px; text-align: center;">Hrs/Sem</th>
+                                                    <th style="width: 280px;">Distribución Horaria</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="est-table-body">
+                                                <tr>
+                                                    <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                                                        <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i><br>
+                                                        Cargando estructura educativa...
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- View 2: Block View -->
+                                <div class="est-view-container" id="est-blocks-view" style="display: none;">
+                                    <div id="est-blocks-grid-container">
+                                        <!-- Populated dynamically by JS -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
