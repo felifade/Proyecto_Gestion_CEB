@@ -588,24 +588,46 @@
                                             <!-- Dynamically populated -->
                                         </div>
                                         
-                                        <!-- Exams Table -->
-                                        <table class="premium-table" id="exams-directory-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Horario</th>
-                                                    <th>Grupo</th>
-                                                    <th>Materia (UAC)</th>
-                                                    <th>Docente Titular</th>
-                                                    <th>Docente Apoyo</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="exams-directory-body">
-                                                <tr>
-                                                    <td colspan="6" style="text-align: center; color: var(--text-muted);">Cargando exámenes...</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                        <!-- Sub-view Toggle for Exams -->
+                                        <div class="exams-view-toggle" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                                            <h4 style="margin: 0; color: #fff; font-size: 13.5px; font-weight: 700;"><i class="fa-solid fa-list-check"></i> Formato de Visualización</h4>
+                                            <div class="view-toggle-container">
+                                                <button class="view-toggle-btn active" id="btn-view-exams-table" onclick="switchExamsSubView('table')">
+                                                    <i class="fa-solid fa-table"></i> Vista Tabla
+                                                </button>
+                                                <button class="view-toggle-btn" id="btn-view-exams-timeline" onclick="switchExamsSubView('timeline')">
+                                                    <i class="fa-solid fa-calendar-days"></i> Vista Tarjetas por Día
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- View 1: Exams Table -->
+                                        <div id="exams-table-subview" style="display: block;">
+                                            <table class="premium-table" id="exams-directory-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Fecha</th>
+                                                        <th>Horario</th>
+                                                        <th>Grupo</th>
+                                                        <th>Materia (UAC)</th>
+                                                        <th>Docente Titular</th>
+                                                        <th>Docente Apoyo</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="exams-directory-body">
+                                                    <tr>
+                                                        <td colspan="6" style="text-align: center; color: var(--text-muted);">Cargando exámenes...</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <!-- View 2: Exams Daily Timeline Cards -->
+                                        <div id="exams-timeline-subview" style="display: none;">
+                                            <div class="exams-timeline-grid" id="exams-timeline-container">
+                                                <!-- Dynamic daily cards -->
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

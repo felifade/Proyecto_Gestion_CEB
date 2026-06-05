@@ -741,6 +741,23 @@ changeActiveCycle = function(newCycle) {
 // ADDED ACTIVE DIRECTORY VIEW TOGGLE & SEMESTER FILTER POPULATION
 // ==========================================================================
 let activeDirectoryView = 'table';
+let activeExamsSubView = 'table';
+
+function switchExamsSubView(subView) {
+    activeExamsSubView = subView;
+    const btnTable = document.getElementById("btn-view-exams-table");
+    const btnTimeline = document.getElementById("btn-view-exams-timeline");
+    const tableView = document.getElementById("exams-table-subview");
+    const timelineView = document.getElementById("exams-timeline-subview");
+    
+    if (btnTable) btnTable.classList.toggle("active", subView === 'table');
+    if (btnTimeline) btnTimeline.classList.toggle("active", subView === 'timeline');
+    
+    if (tableView) tableView.style.display = subView === 'table' ? 'block' : 'none';
+    if (timelineView) timelineView.style.display = subView === 'timeline' ? 'block' : 'none';
+    
+    renderExamsDirectory();
+}
 
 function switchDirectoryView(viewMode) {
     activeDirectoryView = viewMode;
@@ -1785,72 +1802,237 @@ function renderExamsDirectory() {
         }
     }
     
-    // 2. Render Table (Grouped by Date, Time, Subject, Teacher)
-    if (filteredExams.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No se encontraron exámenes para los filtros seleccionados.</td></tr>`;
-        return;
-    }
+    // 2. Render content based on active sub-view
+    const tableView = document.getElementById("exams-table-subview");
+    const timelineView = document.getElementById("exams-timeline-subview");
     
-    // Group exams
-    const groupedExams = [];
-    const groupedMap = {};
-    
-    filteredExams.forEach(exam => {
-        const key = `${exam.fecha}|${exam.horario}|${exam.materia}|${exam.docente_titular}`;
-        if (!groupedMap[key]) {
-            groupedMap[key] = {
-                fecha: exam.fecha,
-                horario: exam.horario,
-                materia: exam.materia,
-                docente_titular: exam.docente_titular,
-                grupos: [],
-                apoyos: new Set()
+    if (activeExamsSubView === 'table') {
+        if (tableView) tableView.style.display = "block";
+        if (timelineView) timelineView.style.display = "none";
+        
+        if (filteredExams.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No se encontraron exámenes para los filtros seleccionados.</td></tr>`;
+            return;
+        }
+        
+        // Group exams
+        const groupedExams = [];
+        const groupedMap = {};
+        
+        filteredExams.forEach(exam => {
+            const key = `${exam.fecha}|${exam.horario}|${exam.materia}|${exam.docente_titular}`;
+            if (!groupedMap[key]) {
+                groupedMap[key] = {
+                    fecha: exam.fecha,
+                    horario: exam.horario,
+                    materia: exam.materia,
+                    docente_titular: exam.docente_titular,
+                    grupos: [],
+                    apoyos: new Set()
+                };
+                groupedExams.push(groupedMap[key]);
+            }
+            if (!groupedMap[key].grupos.includes(exam.grupo)) {
+                groupedMap[key].grupos.push(exam.grupo);
+            }
+            if (exam.docente_apoyo) {
+                groupedMap[key].apoyos.add(exam.docente_apoyo);
+            }
+        });
+        
+        // Sort grouped exams by date, then time
+        groupedExams.sort((a, b) => {
+            const parseDate = (dStr) => {
+                const parts = dStr.split('/');
+                return parts.length === 3 ? `20${parts[2]}${parts[1]}${parts[0]}` : dStr;
             };
-            groupedExams.push(groupedMap[key]);
-        }
-        if (!groupedMap[key].grupos.includes(exam.grupo)) {
-            groupedMap[key].grupos.push(exam.grupo);
-        }
-        if (exam.docente_apoyo) {
-            groupedMap[key].apoyos.add(exam.docente_apoyo);
-        }
-    });
-    
-    // Sort grouped exams by date, then time
-    groupedExams.sort((a, b) => {
-        const parseDate = (dStr) => {
-            const parts = dStr.split('/');
-            return parts.length === 3 ? `20${parts[2]}${parts[1]}${parts[0]}` : dStr;
-        };
-        const dateCompare = parseDate(a.fecha).localeCompare(parseDate(b.fecha));
-        if (dateCompare !== 0) return dateCompare;
-        return a.horario.localeCompare(b.horario);
-    });
+            const dateCompare = parseDate(a.fecha).localeCompare(parseDate(b.fecha));
+            if (dateCompare !== 0) return dateCompare;
+            return a.horario.localeCompare(b.horario);
+        });
 
-    groupedExams.forEach(item => {
-        const tr = document.createElement("tr");
+        groupedExams.forEach(item => {
+            const tr = document.createElement("tr");
+            
+            // Render group tags
+            const groupTagsHtml = item.grupos.sort().map(g => {
+                const color = g.startsWith("M") ? "var(--accent-gold)" : "var(--accent-purple)";
+                const bg = g.startsWith("M") ? "hsla(38, 92%, 50%, 0.15)" : "hsla(262, 83%, 58%, 0.15)";
+                return `<span class="group-tag" style="background-color: ${bg}; color: ${color}; margin-right: 4px; padding: 2px 6px; font-size: 10px; font-weight: 600; border-radius: 4px;">${g}</span>`;
+            }).join('');
+            
+            const supportText = item.apoyos.size > 0 ? 
+                Array.from(item.apoyos).map(a => `<code>${a}</code>`).join(', ') : 
+                `<span style="color: var(--text-muted); font-style: italic;">Sin apoyo</span>`;
+            
+            tr.innerHTML = `
+                <td><code>${item.fecha}</code></td>
+                <td><strong>${item.horario}</strong></td>
+                <td><div style="display: flex; flex-wrap: wrap; gap: 4px;">${groupTagsHtml}</div></td>
+                <td>
+                    <span style="color: var(--text-primary); font-weight: 600;">${item.materia}</span>
+                </td>
+                <td><strong>${item.docente_titular}</strong></td>
+                <td>${supportText}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } else {
+        if (tableView) tableView.style.display = "none";
+        if (timelineView) timelineView.style.display = "block";
         
-        // Render group tags
-        const groupTagsHtml = item.grupos.sort().map(g => {
-            const color = g.startsWith("M") ? "var(--accent-gold)" : "var(--accent-purple)";
-            const bg = g.startsWith("M") ? "hsla(38, 92%, 50%, 0.15)" : "hsla(262, 83%, 58%, 0.15)";
-            return `<span class="group-tag" style="background-color: ${bg}; color: ${color}; margin-right: 4px; padding: 2px 6px; font-size: 10px; font-weight: 600; border-radius: 4px;">${g}</span>`;
-        }).join('');
+        const timelineContainer = document.getElementById("exams-timeline-container");
+        if (!timelineContainer) return;
+        timelineContainer.innerHTML = "";
         
-        const supportText = item.apoyos.size > 0 ? 
-            Array.from(item.apoyos).map(a => `<code>${a}</code>`).join(', ') : 
-            `<span style="color: var(--text-muted); font-style: italic;">Sin apoyo</span>`;
+        if (filteredExams.length === 0) {
+            timelineContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 30px;">No se encontraron exámenes para los filtros seleccionados.</div>`;
+            return;
+        }
         
-        tr.innerHTML = `
-            <td><code>${item.fecha}</code></td>
-            <td><strong>${item.horario}</strong></td>
-            <td><div style="display: flex; flex-wrap: wrap; gap: 4px;">${groupTagsHtml}</div></td>
-            <td>
-                <span style="color: var(--text-primary); font-weight: 600;">${item.materia}</span>
-            </td>
-            <td><strong>${item.docente_titular}</strong></td>
-            <td>${supportText}</td>
-        `;
-        tbody.appendChild(tr);
-    });
+        // Group exams for timeline
+        const groupedExams = [];
+        const groupedMap = {};
+        
+        filteredExams.forEach(exam => {
+            const key = `${exam.fecha}|${exam.horario}|${exam.materia}|${exam.docente_titular}`;
+            if (!groupedMap[key]) {
+                groupedMap[key] = {
+                    fecha: exam.fecha,
+                    horario: exam.horario,
+                    materia: exam.materia,
+                    docente_titular: exam.docente_titular,
+                    grupos: [],
+                    apoyos: new Set()
+                };
+                groupedExams.push(groupedMap[key]);
+            }
+            if (!groupedMap[key].grupos.includes(exam.grupo)) {
+                groupedMap[key].grupos.push(exam.grupo);
+            }
+            if (exam.docente_apoyo) {
+                groupedMap[key].apoyos.add(exam.docente_apoyo);
+            }
+        });
+        
+        // Sort grouped exams by date, then time
+        groupedExams.sort((a, b) => {
+            const parseDate = (dStr) => {
+                const parts = dStr.split('/');
+                return parts.length === 3 ? `20${parts[2]}${parts[1]}${parts[0]}` : dStr;
+            };
+            const dateCompare = parseDate(a.fecha).localeCompare(parseDate(b.fecha));
+            if (dateCompare !== 0) return dateCompare;
+            return a.horario.localeCompare(b.horario);
+        });
+        
+        // Group by Date for cards
+        const dailyMap = {};
+        const dailyList = [];
+        
+        groupedExams.forEach(item => {
+            if (!dailyMap[item.fecha]) {
+                dailyMap[item.fecha] = {
+                    fecha: item.fecha,
+                    exams: []
+                };
+                dailyList.push(dailyMap[item.fecha]);
+            }
+            dailyMap[item.fecha].exams.push(item);
+        });
+        
+        dailyList.forEach(day => {
+            // Format Date to friendly string (e.g. Viernes 12 de Junio)
+            let displayDate = day.fecha;
+            const parts = day.fecha.split('/');
+            if (parts.length === 3) {
+                const d = parseInt(parts[0], 10);
+                const m = parseInt(parts[1], 10) - 1; // 0-indexed
+                const y = 2000 + parseInt(parts[2], 10);
+                const dObj = new Date(y, m, d);
+                const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+                const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                
+                const nameDay = daysOfWeek[dObj.getDay()];
+                const nameMonth = months[m];
+                
+                displayDate = `${nameDay} ${d} de ${nameMonth}`;
+            }
+            
+            // Group day's exams by time slot
+            const slotMap = {};
+            const slotList = [];
+            
+            day.exams.forEach(exam => {
+                const slot = exam.horario;
+                if (!slotMap[slot]) {
+                    slotMap[slot] = {
+                        horario: slot,
+                        exams: []
+                    };
+                    slotList.push(slotMap[slot]);
+                }
+                slotMap[slot].exams.push(exam);
+            });
+            
+            // Sort slots alphabetically (time order)
+            slotList.sort((a, b) => a.horario.localeCompare(b.horario));
+            
+            let slotsHtml = "";
+            slotList.forEach(slot => {
+                const cleanSlot = slot.horario.replace(/\s+/g, "");
+                // Determine if Vespertino
+                const isVespertino = cleanSlot.startsWith("14") || cleanSlot.startsWith("16") || cleanSlot.startsWith("18");
+                const shiftClass = isVespertino ? "vespertino" : "matutino";
+                const slotIcon = isVespertino ? '<i class="fa-solid fa-cloud-moon"></i>' : '<i class="fa-solid fa-cloud-sun"></i>';
+                
+                let examItemsHtml = "";
+                slot.exams.forEach(e => {
+                    const groupTagsHtml = e.grupos.sort().map(g => {
+                        const color = g.startsWith("M") ? "var(--accent-gold)" : "var(--accent-purple)";
+                        const bg = g.startsWith("M") ? "hsla(38, 92%, 50%, 0.15)" : "hsla(262, 83%, 58%, 0.15)";
+                        return `<span class="group-tag" style="background-color: ${bg}; color: ${color}; padding: 2px 6px; font-size: 10px; font-weight: 600; border-radius: 4px;">${g}</span>`;
+                    }).join('');
+                    
+                    const supportText = e.apoyos.size > 0 ? 
+                        `<div><i class="fa-solid fa-user-plus"></i> Apoyo: <strong>${Array.from(e.apoyos).join(', ')}</strong></div>` : 
+                        "";
+                        
+                    examItemsHtml += `
+                        <div class="exam-slot-item">
+                            <div class="exam-item-subject">${e.materia}</div>
+                            <div class="exam-item-groups">${groupTagsHtml}</div>
+                            <div class="exam-item-teachers">
+                                <div><i class="fa-solid fa-user-tie"></i> Titular: <strong>${e.docente_titular}</strong></div>
+                                ${supportText}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                slotsHtml += `
+                    <div class="exam-slot-box ${shiftClass}">
+                        <div class="exam-slot-time ${shiftClass}">
+                            ${slotIcon} <span>${slot.horario}</span>
+                        </div>
+                        ${examItemsHtml}
+                    </div>
+                `;
+            });
+            
+            const card = document.createElement("div");
+            card.className = "exam-day-card";
+            card.innerHTML = `
+                <div class="exam-day-header">
+                    <span class="exam-day-title"><i class="fa-solid fa-calendar-day"></i> ${displayDate}</span>
+                    <span class="exam-day-count">${day.exams.length} UACs</span>
+                </div>
+                <div class="exam-day-body">
+                    ${slotsHtml}
+                </div>
+            `;
+            timelineContainer.appendChild(card);
+        });
+    }
 }
+
