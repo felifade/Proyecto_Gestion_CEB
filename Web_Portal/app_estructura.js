@@ -437,7 +437,7 @@ function estEsc(str) {
         .replace(/'/g, '&#039;');
 }
 
-// Renderiza la vista en bloques agrupando por grupo o por docente
+// Renderiza la vista en bloques agrupando por grupo o por docente usando tarjetas (cards)
 function renderEstructuraBlocks(filteredRows, viewType) {
     const container = document.getElementById("est-blocks-grid-container");
     if (!container) return;
@@ -446,40 +446,28 @@ function renderEstructuraBlocks(filteredRows, viewType) {
         container.innerHTML = `
             <div style="text-align: center; padding: 40px; color: var(--text-muted);">
                 <i class="fa-regular fa-folder-open" style="font-size: 28px; margin-bottom: 10px;"></i><br>
-                No hay datos que coincidan con los filtros aplicados para la vista en bloques.
+                No hay asignaciones que coincidan con los filtros aplicados.
             </div>
         `;
         return;
     }
     
     const groupsMap = {};
-    const groupsWithoutSchedule = [];
     const isDocenteView = (viewType === 'blocks-docente');
     
     filteredRows.forEach(row => {
-        const sessions = parseEstructuraSessions(row);
-        
         // Determinar la clave de agrupación
-        let key = row.grupo;
+        let key = row.grupo || 'Sin Grupo';
         if (isDocenteView) {
             const docName = (row.docente || '').trim();
             const esVacante = !docName || docName.toUpperCase() === 'SIN ASIGNAR' || docName.toUpperCase() === 'VACANTE' || docName.toUpperCase() === 'N/A';
             key = esVacante ? "Plaza Vacante / Sin Asignar" : docName;
         }
         
-        if (sessions.length > 0) {
-            if (!groupsMap[key]) {
-                groupsMap[key] = [];
-            }
-            groupsMap[key] = groupsMap[key].concat(sessions);
-        } else {
-            // Solo rastrear grupos sin distribución semanal en vista de grupo
-            if (row.grupo && !isDocenteView) {
-                if (!groupsWithoutSchedule.includes(row.grupo)) {
-                    groupsWithoutSchedule.push(row.grupo);
-                }
-            }
+        if (!groupsMap[key]) {
+            groupsMap[key] = [];
         }
+        groupsMap[key].push(row);
     });
     
     // Ordenar las claves alfabéticamente, enviando vacantes al final en vista docente
@@ -491,148 +479,75 @@ function renderEstructuraBlocks(filteredRows, viewType) {
     
     let html = '';
     
-    // Renderizar grilla semanal para cada clave (grupo o docente) que tenga sesiones
+    // Renderizar grilla de tarjetas para cada clave (grupo o docente)
     sortedKeys.forEach(key => {
         const icon = isDocenteView ? 'fa-user-clock' : 'fa-graduation-cap';
-        const titleLabel = isDocenteView ? 'Horario de Docente' : 'Horario de Grupo';
+        const titleLabel = isDocenteView ? 'Asignaciones de Docente' : 'Materias del Grupo';
         const titleColor = isDocenteView ? 'var(--accent-gold)' : 'var(--accent-purple)';
         
-        html += `<div class="est-group-block-wrapper" style="margin-bottom: 35px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
-                    <h3 style="color: #fff; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 16px;">
-                        <i class="fa-solid ${icon}" style="color: ${titleColor};"></i>
-                        ${titleLabel}: <span style="color: var(--accent-cyan); font-weight: 700;">${estEsc(key)}</span>
-                    </h3>
-                    ${buildWeeklyGridHTML(groupsMap[key], viewType)}
-                </div>`;
+        html += `
+            <div class="est-group-block-wrapper" style="margin-bottom: 35px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+                <h3 style="color: #fff; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 16px;">
+                    <i class="fa-solid ${icon}" style="color: ${titleColor};"></i>
+                    ${titleLabel}: <span style="color: var(--accent-cyan); font-weight: 700;">${estEsc(key)}</span>
+                </h3>
+                <div class="hor-mat-grid">
+                    ${groupsMap[key].map(row => buildCardHTML(row, isDocenteView)).join('')}
+                </div>
+            </div>
+        `;
     });
-    
-    // Mostrar avisos para grupos activos sin distribución semanal (solo en vista de grupo)
-    if (!isDocenteView) {
-        const missingSchedules = groupsWithoutSchedule.filter(g => !groupsMap[g]).sort();
-        if (missingSchedules.length > 0) {
-            html += `<div style="margin-top: 20px; padding: 15px; border-radius: 8px; border: 1px dashed rgba(234, 179, 8, 0.3); background: rgba(234, 179, 8, 0.05); color: var(--accent-gold);">
-                        <i class="fa-solid fa-triangle-exclamation"></i> <strong>Grupos sin distribución semanal asignada:</strong> ${missingSchedules.map(estEsc).join(', ')}.
-                        <div style="font-size: 12px; margin-top: 5px; color: var(--text-muted);">Estos grupos tienen materias registradas pero no tienen cargadas horas en los días de la semana en la Estructura Educativa.</div>
-                    </div>`;
-        }
-    }
     
     container.innerHTML = html;
 }
 
-// Genera el HTML de la grilla semanal (tabla con rowspans) para un grupo o docente
-function buildWeeklyGridHTML(sessions, viewType) {
-    if (!sessions || sessions.length === 0) return '';
+// Genera el HTML de una tarjeta individual (card) para la estructura educativa
+function buildCardHTML(row, isDocenteView) {
+    const hrs = parseFloat(row.tot_horas || row.horas || 0);
+    const hrsStr = `${hrs} hrs / semana`;
     
-    const dayOrder = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES'];
-    const dayLabels = { LUNES: 'Lunes', MARTES: 'Martes', MIERCOLES: 'Miércoles', JUEVES: 'Jueves', VIERNES: 'Viernes' };
-    const isDocenteView = (viewType === 'blocks-docente');
+    let cardLabel = '';
+    let cardDesc = '';
+    let colorKey = '';
     
-    // Obtener horas únicas de inicio ordenadas
-    const times = Array.from(new Set(
-        sessions.map(s => s.hora_inicio).filter(Boolean)
-    )).sort((a, b) => a.localeCompare(b));
-    
-    if (!times.length) {
-        return '<p style="color: var(--text-muted); font-style: italic;">Sin horarios definidos.</p>';
+    if (isDocenteView) {
+        cardLabel = `Grupo ${row.grupo}`;
+        cardDesc = row.uac;
+        colorKey = row.grupo; // Color basado en el grupo
+    } else {
+        cardLabel = row.uac;
+        const docName = (row.docente || '').trim();
+        const esVacante = !docName || docName.toUpperCase() === 'SIN ASIGNAR' || docName.toUpperCase() === 'VACANTE' || docName.toUpperCase() === 'N/A';
+        
+        if (esVacante) {
+            cardDesc = `<span class="badge-red" style="padding: 3px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; font-size: 10px;">
+                           <i class="fa-solid fa-triangle-exclamation"></i> VACANTE / SIN ASIGNAR
+                         </span>`;
+        } else {
+            cardDesc = `<i class="fa-regular fa-user" style="font-size: 11px; margin-right: 4px; color: var(--text-muted);"></i> ${docName}`;
+        }
+        colorKey = row.uac; // Color basado en la materia
     }
     
-    // Lookup de sesiones: dia -> hora_inicio -> sesión
-    const lookup = {};
-    sessions.forEach(s => {
-        if (!lookup[s.dia]) lookup[s.dia] = {};
-        if (!lookup[s.dia][s.hora_inicio]) lookup[s.dia][s.hora_inicio] = s;
-    });
+    const c = estColor(colorKey);
+    const campo = row.campo_disciplinar || 'Sin área disciplinar';
     
-    const occ = {}; // Rastreador de ocupación por rowspan
-    
-    let html = `
-        <div class="sched-scroll">
-            <table class="sched-table">
-                <thead>
-                    <tr>
-                        <th class="sched-th-time">Hora</th>
-                        ${dayOrder.map(d => `<th class="sched-th-day">${dayLabels[d]}</th>`).join('')}
-                    </tr>
-                </thead>
-                <tbody>
-    `;
-    
-    times.forEach((time, timeIdx) => {
-        html += `<tr>`;
-        html += `<td class="sched-td-time">${estEsc(time)}</td>`;
-        
-        dayOrder.forEach(day => {
-            const occKey = `${day}_${timeIdx}`;
-            if (occ[occKey]) return; // Celda ocupada por un rowspan de una fila anterior
-            
-            const s = lookup[day] && lookup[day][time];
-            if (s) {
-                // Calcular rowspan
-                let span = 1;
-                for (let k = timeIdx + 1; k < times.length; k++) {
-                    if (times[k] < s.hora_fin) {
-                        span++;
-                    } else {
-                        break;
-                    }
-                }
-                
-                // Marcar espacios ocupados en las siguientes filas
-                for (let j = 1; j < span; j++) {
-                    occ[`${day}_${timeIdx + j}`] = true;
-                }
-                
-                const c = estColor(s.materia);
-                const hrsNum = parseFloat(s.horas_bloque) || 0;
-                const hrsStr = (hrsNum % 1 === 0 ? String(Math.round(hrsNum)) : String(hrsNum)) + 'h';
-                
-                let cellLabel = '';
-                let cellSubLabel = '';
-                
-                if (isDocenteView) {
-                    cellLabel = s.grupo;
-                    cellSubLabel = s.materia;
-                } else {
-                    cellLabel = s.materia;
-                    const isVacante = !s.docente || s.docente.toUpperCase() === 'SIN ASIGNAR' || s.docente.toUpperCase() === 'VACANTE' || s.docente.toUpperCase() === 'N/A';
-                    if (isVacante) {
-                        cellSubLabel = `<span class="badge-red" style="padding: 3px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; font-size: 10px;">
-                                         <i class="fa-solid fa-triangle-exclamation"></i> VACANTE
-                                       </span>`;
-                    } else {
-                        cellSubLabel = estEsc(s.docente);
-                    }
-                }
-                
-                const tooltip = `${estEsc(s.materia)} · ${estEsc(s.docente || 'VACANTE')} · ${estEsc(s.hora_inicio)}–${estEsc(s.hora_fin)} (${hrsStr})`;
-                
-                html += `
-                    <td rowspan="${span}" class="sched-td-session" title="${tooltip}"
-                        style="background: ${c.bg}; border-left: 4px solid ${c.border}; border-top: 1px solid rgba(255,255,255,0.05);">
-                        <div class="sched-label" style="color: ${c.text}; font-weight: 600;">${estEsc(cellLabel)}</div>
-                        <div class="sched-sub">${cellSubLabel}</div>
-                        <div class="sched-time-tag">
-                            <i class="fa-regular fa-clock"></i> ${estEsc(s.hora_inicio)}–${estEsc(s.hora_fin)}
-                            <span class="sched-hrs-badge">${hrsStr}</span>
-                        </div>
-                    </td>
-                `;
-            } else {
-                html += `<td class="sched-td-empty"></td>`;
-            }
-        });
-        
-        html += `</tr>`;
-    });
-    
-    html += `
-                </tbody>
-            </table>
+    return `
+        <div class="hor-mat-card" style="border-left: 4px solid ${c.border}; background: ${c.bg};">
+            <div class="hor-mat-name" style="color: ${c.text}; font-weight: 700; font-size: 13.5px; margin-bottom: 6px; line-height: 1.35;">
+                ${estEsc(cardLabel)}
+            </div>
+            <div class="hor-mat-docente" style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">
+                ${cardDesc}
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">
+                ${estEsc(campo)}
+            </div>
+            <div class="hor-mat-hrs" style="font-size: 11px; color: var(--accent-gold); font-family: var(--font-mono); font-weight: 500;">
+                <i class="fa-regular fa-clock"></i> ${hrsStr}
+            </div>
         </div>
     `;
-    
-    return html;
 }
 
 // Paleta de colores para las materias en bloques (Dirección)
