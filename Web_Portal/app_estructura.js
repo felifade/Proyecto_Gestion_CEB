@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (navBtn) {
         navBtn.addEventListener("click", () => {
             // Cargar datos si aún no están cargados
-            if (window.EstructuraData.length === 0) {
+            if (!window.EstructuraData || window.EstructuraData.length === 0) {
                 loadEstructuraData();
             }
         });
@@ -37,8 +37,11 @@ function switchSubAreaDireccion(subAreaId) {
     const panels = pageDir.querySelectorAll(".sub-area-content");
     panels.forEach(p => p.classList.remove("active"));
 
-    // Activar el botón correspondiente
-    const btn = Array.from(buttons).find(b => b.getAttribute("onclick") && b.getAttribute("onclick").includes(subAreaId));
+    // Activar el botón correspondiente buscando por su atributo onclick
+    const btn = Array.from(buttons).find(b => {
+        const onclickAttr = b.getAttribute("onclick") || '';
+        return onclickAttr.includes(subAreaId);
+    });
     if (btn) btn.classList.add("active");
 
     // Mostrar el panel correspondiente
@@ -46,12 +49,12 @@ function switchSubAreaDireccion(subAreaId) {
     if (panel) panel.classList.add("active");
 
     // Si entramos a estructura educativa, asegurar que cargamos los datos
-    if (subAreaId === 'estructura-educativa' && window.EstructuraData.length === 0) {
+    if (subAreaId === 'estructura-educativa' && (!window.EstructuraData || window.EstructuraData.length === 0)) {
         loadEstructuraData();
     }
 }
 
-// Cargar datos de la estructura educativa (con caché local)
+// Cargar datos de la estructura educativa (con caché local protegida contra bloqueos de protocolo file://)
 async function loadEstructuraData(forceRefresh = false) {
     const tableBody = document.getElementById("est-table-body");
     if (tableBody) {
@@ -66,11 +69,19 @@ async function loadEstructuraData(forceRefresh = false) {
     }
 
     try {
-        let cached = sessionStorage.getItem(CACHE_KEY_EST);
-        let cachedTime = sessionStorage.getItem(CACHE_KEY_EST + '_time');
+        let cached = null;
+        let cachedTime = null;
         let now = Date.now();
 
-        if (!forceRefresh && cached && cachedTime && (now - cachedTime < CACHE_TIME_EST)) {
+        // Control de excepciones para sessionStorage (bloqueado bajo file:// en ciertos navegadores)
+        try {
+            cached = sessionStorage.getItem(CACHE_KEY_EST);
+            cachedTime = sessionStorage.getItem(CACHE_KEY_EST + '_time');
+        } catch (e) {
+            console.warn("sessionStorage no está disponible:", e);
+        }
+
+        if (!forceRefresh && cached && cachedTime && (now - parseInt(cachedTime) < CACHE_TIME_EST)) {
             console.log("Cargando Estructura Educativa desde la caché de la sesión.");
             window.EstructuraData = JSON.parse(cached);
             populateFiltersAndRender();
@@ -87,9 +98,13 @@ async function loadEstructuraData(forceRefresh = false) {
 
         window.EstructuraData = result.data || [];
         
-        // Guardar en caché
-        sessionStorage.setItem(CACHE_KEY_EST, JSON.stringify(window.EstructuraData));
-        sessionStorage.setItem(CACHE_KEY_EST + '_time', now.toString());
+        // Guardar en caché de forma segura
+        try {
+            sessionStorage.setItem(CACHE_KEY_EST, JSON.stringify(window.EstructuraData));
+            sessionStorage.setItem(CACHE_KEY_EST + '_time', now.toString());
+        } catch (e) {
+            console.warn("No se pudo escribir en sessionStorage:", e);
+        }
 
         populateFiltersAndRender();
 
@@ -121,7 +136,7 @@ function refreshEstructuraData() {
 function populateFiltersAndRender() {
     // 1. Popular filtro de grupos de forma dinámica
     const grupoSelect = document.getElementById("filter-est-grupo");
-    if (grupoSelect) {
+    if (grupoSelect && window.EstructuraData && window.EstructuraData.length > 0) {
         // Obtener grupos únicos
         const grupos = [...new Set(window.EstructuraData.map(r => r.grupo).filter(Boolean))].sort();
         
@@ -142,15 +157,39 @@ function populateFiltersAndRender() {
 // Filtrar y renderizar registros de estructura
 function filterEstructura() {
     const tableBody = document.getElementById("est-table-body");
-    if (!tableBody || window.EstructuraData.length === 0) return;
+    if (!tableBody) return;
 
-    // Obtener valores de filtros
-    const searchText = (document.getElementById("est-search").value || '').trim().toLowerCase();
-    const cicloVal = document.getElementById("filter-est-ciclo").value;
-    const periodoVal = document.getElementById("filter-est-periodo").value;
-    const semestreVal = document.getElementById("filter-est-semestre").value;
-    const grupoVal = document.getElementById("filter-est-grupo").value;
-    const coberturaVal = document.getElementById("filter-est-cobertura").value;
+    // Si los datos aún no están cargados
+    if (!window.EstructuraData || window.EstructuraData.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 30px; color: var(--text-muted);">
+                    <i class="fa-regular fa-folder-open" style="font-size: 28px; margin-bottom: 10px;"></i><br>
+                    No hay datos disponibles en este momento.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    // Obtener valores de filtros con salvaguardas contra elementos nulos
+    const searchEl = document.getElementById("est-search");
+    const searchText = searchEl ? (searchEl.value || '').trim().toLowerCase() : '';
+    
+    const cicloEl = document.getElementById("filter-est-ciclo");
+    const cicloVal = cicloEl ? cicloEl.value : 'all';
+    
+    const periodoEl = document.getElementById("filter-est-periodo");
+    const periodoVal = periodoEl ? periodoEl.value : 'all';
+    
+    const semestreEl = document.getElementById("filter-est-semestre");
+    const semestreVal = semestreEl ? semestreEl.value : 'all';
+    
+    const grupoEl = document.getElementById("filter-est-grupo");
+    const grupoVal = grupoEl ? grupoEl.value : 'all';
+    
+    const coberturaEl = document.getElementById("filter-est-cobertura");
+    const coberturaVal = coberturaEl ? coberturaEl.value : 'all';
 
     // Filtrar registros
     const filtered = window.EstructuraData.filter(r => {
@@ -206,11 +245,16 @@ function filterEstructura() {
         }
     });
 
-    // Renderizar estadísticas
-    document.getElementById("est-stat-materias").textContent = filtered.length;
-    document.getElementById("est-stat-horas").textContent = `${totalHoras}h`;
-    document.getElementById("est-stat-docentes").textContent = docentesUnicos.size;
-    document.getElementById("est-stat-vacantes").textContent = vacantesCount;
+    // Renderizar estadísticas con protección nula
+    const statMaterias = document.getElementById("est-stat-materias");
+    const statHoras = document.getElementById("est-stat-horas");
+    const statDocentes = document.getElementById("est-stat-docentes");
+    const statVacantes = document.getElementById("est-stat-vacantes");
+
+    if (statMaterias) statMaterias.textContent = filtered.length;
+    if (statHoras) statHoras.textContent = `${totalHoras}h`;
+    if (statDocentes) statDocentes.textContent = docentesUnicos.size;
+    if (statVacantes) statVacantes.textContent = vacantesCount;
 
     // Si no hay datos filtrados
     if (filtered.length === 0) {
