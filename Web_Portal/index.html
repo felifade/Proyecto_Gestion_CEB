@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema Integral de Gestión y Procesos Escolares - CEB. Acceso a Dirección, Subdirección y Coordinación Administrativa.">
+    <title>Portal de Gestión Escolar - CEB</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main CSS stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- App Container -->
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="logo-text">
+                    <h2>CEB</h2>
+                    <span>Gestión Escolar</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" id="nav-dashboard" onclick="switchTab('dashboard')">
+                    <i class="fa-solid fa-chart-line"></i> <span>Dashboard</span>
+                </button>
+                <div class="nav-separator">ÁREAS</div>
+                <button class="nav-btn" id="nav-direccion" onclick="switchTab('direccion')">
+                    <i class="fa-solid fa-user-tie"></i> <span>Dirección</span>
+                </button>
+                <button class="nav-btn" id="nav-subdireccion" onclick="switchTab('subdireccion')">
+                    <i class="fa-solid fa-users-gear"></i> <span>Subdirección</span>
+                </button>
+                <button class="nav-btn" id="nav-coordinacion" onclick="switchTab('coordinacion')">
+                    <i class="fa-solid fa-wallet"></i> <span>Coord. Administrativa</span>
+                </button>
+                <div class="nav-separator">HERRAMIENTAS</div>
+                <button class="nav-btn" id="nav-clasificador" onclick="switchTab('clasificador')">
+                    <i class="fa-solid fa-envelope-open-text"></i> <span>Clasificador de Correos</span>
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="user-info">
+                        <h4 id="user-role-display">Subdirector / Director</h4>
+                        <span id="user-domain">CEB Institucional</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Top Bar (Header) -->
+            <header class="top-bar">
+                <div class="search-container">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="global-search" placeholder="Buscar procesos, normas, documentos..." oninput="handleSearch()">
+                    <div class="search-results" id="search-results-box"></div>
+                </div>
+                <div class="header-actions">
+                    <div class="cycle-selector-container">
+                        <i class="fa-regular fa-calendar-days select-calendar-icon"></i>
+                        <select id="cycle-select" onchange="changeActiveCycle(this.value)">
+                            <!-- Options populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="status-indicator online">
+                        <span class="pulse-dot"></span>
+                        <span class="status-label">Cuentas Vinculadas</span>
+                    </div>
+                    <div class="profile-badge">
+                        <i class="fa-regular fa-bell"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Sections Container -->
+            <div class="page-container">
+                
+                <!-- 1. DASHBOARD PAGE -->
+                <section class="page-section active" id="page-dashboard">
+                    <div class="welcome-banner">
+                        <div class="welcome-text">
+                            <h1 id="main-title">Sistema de Gestión Escolar CEB</h1>
+                            <p id="main-subtitle">Control integral de horarios, alumnos, docentes e inventarios compartidos institucionalmente.</p>
+                        </div>
+                        <div class="banner-badge">
+                            <span class="badge-tag">Ciclo 2026-2027</span>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Cards -->
+                    <div class="metrics-grid">
+                        <div class="metric-card cyan-glow">
+                            <div class="metric-icon"><i class="fa-solid fa-network-wired"></i></div>
+                            <div class="metric-info">
+                                <h3>3 Áreas</h3>
+                                <p>Estructura General</p>
+                            </div>
+                        </div>
+                        <div class="metric-card blue-glow">
+                            <div class="metric-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                            <div class="metric-info">
+                                <h3>Docentes y Grupos</h3>
+                                <p>Schedules Integrados</p>
+                            </div>
+                        </div>
+                        <div class="metric-card purple-glow">
+                            <div class="metric-icon"><i class="fa-solid fa-book-open"></i></div>
+                            <div class="metric-info">
+                                <h3>16 Normas</h3>
+                                <p>Contexto Oposición</p>
+                            </div>
+                        </div>
+                        <div class="metric-card gold-glow">
+                            <div class="metric-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
+                            <div class="metric-info">
+                                <h3>Inventario</h3>
+                                <p>Bienes del Plantel</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Google Access Docs Section -->
+                    <div class="section-title">
+                        <h2><i class="fa-solid fa-folder-open"></i> Enlaces Rápidos a Documentos de Google</h2>
+                    </div>
+                    <div class="google-docs-grid">
+                        <a href="#" target="_blank" id="link-calendario" class="gdoc-card doc-blue">
+                            <div class="gdoc-icon"><i class="fa-regular fa-file-word"></i></div>
+                            <div class="gdoc-content">
+                                <h4>Calendario Escolar</h4>
+                                <p>Google Docs • Fechas Críticas</p>
+                            </div>
+                            <div class="gdoc-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                        </a>
+                        <a href="#" target="_blank" id="link-bitacora" class="gdoc-card doc-red">
+                            <div class="gdoc-icon"><i class="fa-regular fa-file-lines"></i></div>
+                            <div class="gdoc-content">
+                                <h4>Bitácora de Reuniones</h4>
+                                <p>Google Docs • Minutas y Acuerdos</p>
+                            </div>
+                            <div class="gdoc-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                        </a>
+                        <a href="#" target="_blank" id="link-control" class="gdoc-card doc-green">
+                            <div class="gdoc-icon"><i class="fa-regular fa-file-excel"></i></div>
+                            <div class="gdoc-content">
+                                <h4>Control de Proyectos</h4>
+                                <p>Google Sheets • Calendario General</p>
+                            </div>
+                            <div class="gdoc-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                        </a>
+                    </div>
+
+                    <!-- Area Cards Navigation -->
+                    <div class="section-title">
+                        <h2><i class="fa-solid fa-sitemap"></i> Navegar por las Áreas del CEB</h2>
+                    </div>
+                    <div class="areas-nav-grid">
+                        <div class="area-nav-card" onclick="switchTab('direccion')">
+                            <div class="area-header dir-color">
+                                <i class="fa-solid fa-user-tie"></i>
+                                <h3>DIRECCIÓN</h3>
+                            </div>
+                            <div class="area-body">
+                                <ul>
+                                    <li><i class="fa-solid fa-check"></i> Recursos Humanos</li>
+                                    <li><i class="fa-solid fa-check"></i> Normatividad (16 Normas)</li>
+                                    <li><i class="fa-solid fa-check"></i> Contexto Jurídico</li>
+                                </ul>
+                                <span class="explore-btn">Entrar a Dirección <i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+
+                        <div class="area-nav-card" onclick="switchTab('subdireccion')">
+                            <div class="area-header subdir-color">
+                                <i class="fa-solid fa-users-gear"></i>
+                                <h3>SUBDIRECCIÓN</h3>
+                            </div>
+                            <div class="area-body">
+                                <ul>
+                                    <li><i class="fa-solid fa-check"></i> Control Escolar</li>
+                                    <li><i class="fa-solid fa-check"></i> Plantilla Docente y Horarios</li>
+                                    <li><i class="fa-solid fa-check"></i> Orientación Educativa y Tutorías</li>
+                                    <li><i class="fa-solid fa-check"></i> Biblioteca Escolar</li>
+                                </ul>
+                                <span class="explore-btn">Entrar a Subdirección <i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+
+                        <div class="area-nav-card" onclick="switchTab('coordinacion')">
+                            <div class="area-header admin-color">
+                                <i class="fa-solid fa-wallet"></i>
+                                <h3>COORD. ADMINISTRATIVA</h3>
+                            </div>
+                            <div class="area-body">
+                                <ul>
+                                    <li><i class="fa-solid fa-check"></i> Inventario Físico y Tecnológico</li>
+                                    <li><i class="fa-solid fa-check"></i> Gestión de Recursos Materiales</li>
+                                    <li><i class="fa-solid fa-check"></i> Control de Altas y Bajas</li>
+                                </ul>
+                                <span class="explore-btn">Entrar a Coord. Administrativa <i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. DIRECCIÓN PAGE -->
+                <section class="page-section" id="page-direccion">
+                    <div class="page-header-title">
+                        <h1>Área de Dirección</h1>
+                        <p>Gestión estratégica, Recursos Humanos y Normativa Federal de Oposición.</p>
+                    </div>
+
+                    <div class="tab-content-layout">
+                        <!-- Left Panel: Recursos Humanos -->
+                        <div class="content-left">
+                            <div class="premium-card">
+                                <div class="card-header border-cyan">
+                                    <h3><i class="fa-solid fa-users-rectangle"></i> Recursos Humanos</h3>
+                                    <span class="badge-purple">Control Interno</span>
+                                </div>
+                                <div class="card-body">
+                                    <p>Gestión de expedientes de personal directivo, administrativo, de servicios y de apoyo. Seguimiento de incidencias, licencias y nombramientos.</p>
+                                    
+                                    <div class="process-flow-minimal">
+                                        <div class="flow-step-item"><span class="step-num">1</span> <span>Alta de Personal (Expediente)</span></div>
+                                        <div class="flow-step-item"><span class="step-num">2</span> <span>Asignación de Plaza y Nombramiento</span></div>
+                                        <div class="flow-step-item"><span class="step-num">3</span> <span>Seguimiento de Asistencia e Incidencias</span></div>
+                                    </div>
+                                    
+                                    <a href="#" id="link-rrhh" target="_blank" class="action-button-link mt-20">
+                                        <i class="fa-regular fa-file-excel"></i> Trabajar en Google Sheets (RRHH)
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Normas de Contexto -->
+                        <div class="content-right">
+                            <div class="premium-card">
+                                <div class="card-header border-blue">
+                                    <h3><i class="fa-solid fa-scale-balanced"></i> Normativa y Contexto de Oposición</h3>
+                                    <span class="badge-blue">16 Normas Clave</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-15">Biblioteca digital de las 16 leyes, acuerdos y lineamientos requeridos para el cargo. Los archivos PDF se encuentran almacenados localmente para consulta inmediata.</p>
+                                    
+                                    <!-- Norms List Container (Filled dynamically by JS) -->
+                                    <div class="norms-list" id="norms-list-container">
+                                        <!-- Dynamic items here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Full-Width Calendar Section -->
+                    <div class="full-width-section mt-20">
+                        <div class="premium-card">
+                            <div class="card-header border-gold">
+                                <h3><i class="fa-regular fa-calendar-check"></i> Calendario de Actividades Semestre B (Ciclo B.25.26)</h3>
+                                <div class="calendar-actions" style="display: flex; gap: 10px; align-items: center;">
+                                    <div class="view-toggle-container">
+                                        <button class="view-toggle-btn active" id="btn-view-table-cal" onclick="switchCalendarView('table')">
+                                            <i class="fa-solid fa-list-ul"></i> Lista de Actividades
+                                        </button>
+                                        <button class="view-toggle-btn" id="btn-view-weeks-cal" onclick="switchCalendarView('weeks')">
+                                            <i class="fa-solid fa-calendar-week"></i> Vista por Semanas
+                                        </button>
+                                    </div>
+                                    <a href="../2.25.26/Calendario de Actividades Sem B 25-26.pdf" target="_blank" class="action-button-link btn-gold btn-small" style="margin-top: 0; padding: 8px 14px; font-size: 12px; height: 34px; display: flex; align-items: center; gap: 6px;">
+                                        <i class="fa-solid fa-file-pdf"></i> PDF Original
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="directory-filters" style="margin-bottom: 20px;">
+                                    <div class="filter-item" style="flex: 1 1 60%;">
+                                        <label><i class="fa-solid fa-magnifying-glass"></i> Buscar Actividad</label>
+                                        <input type="text" id="calendar-search" placeholder="Buscar reinscripción, parcial, entrega..." oninput="filterCalendar()">
+                                    </div>
+                                    <div class="filter-item" style="flex: 1 1 40%;">
+                                        <label><i class="fa-solid fa-user-gear"></i> Responsable</label>
+                                        <select id="filter-calendar-responsable" onchange="filterCalendar()">
+                                            <option value="all">Todos</option>
+                                            <option value="Control escolar">Control escolar</option>
+                                            <option value="Subdirección">Subdirección</option>
+                                            <option value="Docentes">Docentes</option>
+                                            <option value="Estudiantes">Estudiantes</option>
+                                            <option value="Tutor de Grupo">Tutor de Grupo</option>
+                                            <option value="General">General</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- View 1: List of Activities Table -->
+                                <div class="calendar-view-container active" id="calendar-list-view">
+                                    <div class="directory-table-container">
+                                        <table class="premium-table" id="calendar-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Actividad</th>
+                                                    <th>Responsable</th>
+                                                    <th>Fecha de Ejecución</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="calendar-table-body">
+                                                <tr>
+                                                    <td colspan="3" style="text-align: center; color: var(--text-muted);">Cargando calendario...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- View 2: Weeks View (Timeline/Calendar grid) -->
+                                <div class="calendar-view-container" id="calendar-weeks-view" style="display: none;">
+                                    <div class="weeks-timeline-grid" id="weeks-timeline-container">
+                                        <!-- Populated dynamically -->
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. SUBDIRECCIÓN PAGE -->
+                <section class="page-section" id="page-subdireccion">
+                    <div class="page-header-title">
+                        <h1>Área de Subdirección</h1>
+                        <p>Control escolar, horarios de docentes, orientación educativa, tutorías y biblioteca.</p>
+                    </div>
+
+                    <!-- Subdirección Tabs / Navigation for Sub-areas -->
+                    <div class="sub-tabs">
+                        <button class="sub-tab-btn active" onclick="switchSubArea('control-escolar')">Control Escolar</button>
+                        <button class="sub-tab-btn" onclick="switchSubArea('docentes')">Docentes y Horarios</button>
+                        <button class="sub-tab-btn" onclick="switchSubArea('orientacion')">Orientación y Tutorías</button>
+                        <button class="sub-tab-btn" onclick="switchSubArea('biblioteca')">Biblioteca</button>
+                    </div>
+
+                    <!-- Sub-area 1: Control Escolar -->
+                    <div class="sub-area-content active" id="sub-control-escolar">
+                        <div class="tab-content-layout">
+                            <div class="content-left">
+                                <div class="premium-card">
+                                    <div class="card-header border-purple">
+                                        <h3><i class="fa-solid fa-address-book"></i> Control Escolar</h3>
+                                        <span class="badge-green">Matrícula Escolar</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Inscripciones, reinscripciones, acreditación, expedientes de alumnos y emisión de certificados oficiales.</p>
+                                        <div class="button-group-vertical">
+                                            <a href="#" id="link-control-escolar" target="_blank" class="action-button-link btn-purple">
+                                                <i class="fa-regular fa-file-excel"></i> Google Sheets: Matrícula y Expedientes
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-right">
+                                <div class="premium-card">
+                                    <div class="card-header">
+                                        <h3><i class="fa-solid fa-diagram-project"></i> Proceso de Inscripción y Reinscripción</h3>
+                                    </div>
+                                    <div class="card-body centered-svg">
+                                        <!-- Interactive SVG Flowchart for Control Escolar -->
+                                        <svg class="flowchart-svg" viewBox="0 0 500 240" id="svg-inscripcion">
+                                            <defs>
+                                                <linearGradient id="grad-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" style="stop-color:hsl(262, 83%, 58%);stop-opacity:1" />
+                                                    <stop offset="100%" style="stop-color:hsl(280, 80%, 45%);stop-opacity:1" />
+                                                </linearGradient>
+                                                <linearGradient id="grad-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" style="stop-color:hsl(190, 95%, 44%);stop-opacity:1" />
+                                                    <stop offset="100%" style="stop-color:hsl(210, 90%, 50%);stop-opacity:1" />
+                                                </linearGradient>
+                                                <linearGradient id="grad-green" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" style="stop-color:hsl(142, 71%, 45%);stop-opacity:1" />
+                                                    <stop offset="100%" style="stop-color:hsl(160, 80%, 35%);stop-opacity:1" />
+                                                </linearGradient>
+                                                <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                                    <path d="M 0 1 L 10 5 L 0 9 z" fill="rgba(255,255,255,0.4)" />
+                                                </marker>
+                                            </defs>
+                                            <!-- Steps nodes -->
+                                            <g class="flow-node" onclick="showFlowDetail('1. Recepción de Documentos', 'El estudiante entrega la papelería requerida de acuerdo a la convocatoria oficial. Se verifica curp, acta de nacimiento, certificados previos.')">
+                                                <rect x="20" y="80" width="110" height="60" rx="10" fill="url(#grad-purple)" />
+                                                <text x="75" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">1. Recepción</text>
+                                                <text x="75" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Documental</text>
+                                            </g>
+                                            
+                                            <path d="M 130 110 L 180 110" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4" class="flow-line" />
+                                            
+                                            <g class="flow-node" onclick="showFlowDetail('2. Cotejo y Validación', 'Control escolar verifica en sistemas oficiales de la SEP la veracidad de la información y asigna grupo según disponibilidad y promedio.')">
+                                                <rect x="190" y="80" width="110" height="60" rx="10" fill="url(#grad-cyan)" />
+                                                <text x="245" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">2. Cotejo</text>
+                                                <text x="245" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">y Validación</text>
+                                            </g>
+                                            
+                                            <path d="M 300 110 L 350 110" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4" class="flow-line" />
+                                            
+                                            <g class="flow-node" onclick="showFlowDetail('3. Alta en Matrícula', 'Se genera la matrícula definitiva del estudiante en Google Sheets, se le asigna su tutor y correo institucional de estudiante.')">
+                                                <rect x="360" y="80" width="110" height="60" rx="10" fill="url(#grad-green)" />
+                                                <text x="415" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">3. Alta</text>
+                                                <text x="415" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">en Sistema</text>
+                                            </g>
+                                        </svg>
+                                        <div class="flow-detail-box" id="detail-inscripcion">
+                                            <p class="select-info-text"><i class="fa-solid fa-circle-info"></i> Haz clic en los pasos del diagrama para ver los detalles del proceso administrativo.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sub-area 2: Docentes -->
+                    <div class="sub-area-content" id="sub-docentes">
+                        <div class="tab-content-layout">
+                            <div class="content-left">
+                                <div class="premium-card">
+                                    <div class="card-header border-purple">
+                                        <h3><i class="fa-solid fa-chalkboard-user"></i> Gestión de Docentes</h3>
+                                        <span class="badge-blue">Schedules y Cargas</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Asignación de horarios, grupos, materias y control de planeaciones didácticas semestrales.</p>
+                                        <div class="button-group-vertical">
+                                            <a href="#" id="link-docentes" target="_blank" class="action-button-link btn-purple">
+                                                <i class="fa-regular fa-file-excel"></i> Google Sheets: Plantilla Docente y Horarios
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-right">
+                                <div class="premium-card">
+                                    <div class="card-header">
+                                        <h3><i class="fa-solid fa-diagram-project"></i> Proceso de Estructuración de Horarios</h3>
+                                    </div>
+                                    <div class="card-body centered-svg">
+                                        <!-- SVG Flowchart for Horarios -->
+                                        <svg class="flowchart-svg" viewBox="0 0 500 240" id="svg-horarios">
+                                            <!-- Steps nodes -->
+                                            <g class="flow-node" onclick="showFlowDetailDoc('1. Carga Académica', 'Dirección y Subdirección definen las materias a impartir según el plan de estudios y la matrícula escolar proyectada.')">
+                                                <rect x="20" y="80" width="110" height="60" rx="10" fill="url(#grad-purple)" />
+                                                <text x="75" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">1. Definir</text>
+                                                <text x="75" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Carga Académica</text>
+                                            </g>
+                                            
+                                            <path d="M 130 110 L 180 110" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4" class="flow-line" />
+                                            
+                                            <g class="flow-node" onclick="showFlowDetailDoc('2. Disponibilidad Docente', 'Se cotejan las horas disponibles de cada profesor, considerando su perfil profesional y compatibilidad de empleos.')">
+                                                <rect x="190" y="80" width="110" height="60" rx="10" fill="url(#grad-cyan)" />
+                                                <text x="245" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">2. Analizar</text>
+                                                <text x="245" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Compatibilidad</text>
+                                            </g>
+                                            
+                                            <path d="M 300 110 L 350 110" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4" class="flow-line" />
+                                            
+                                            <g class="flow-node" onclick="showFlowDetailDoc('3. Publicación de Horarios', 'Se consolidan las horas en el Google Sheet central y se publica el PDF para consulta de docentes y alumnos.')">
+                                                <rect x="360" y="80" width="110" height="60" rx="10" fill="url(#grad-green)" />
+                                                <text x="415" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">3. Publicar</text>
+                                                <text x="415" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Horarios Oficiales</text>
+                                            </g>
+                                        </svg>
+                                        <div class="flow-detail-box" id="detail-docentes">
+                                            <p class="select-info-text"><i class="fa-solid fa-circle-info"></i> Haz clic en los pasos del diagrama para ver los detalles del proceso administrativo.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Full-Width Directory Section -->
+                        <div class="full-width-section mt-20">
+                            <div class="premium-card">
+                                <div class="card-header border-cyan">
+                                    <h3><i class="fa-solid fa-address-book"></i> Directorio de Docentes y Materias</h3>
+                                    <div class="view-toggle-container">
+                                        <button class="view-toggle-btn active" id="btn-view-table-dir" onclick="switchDirectoryView('table')">
+                                            <i class="fa-solid fa-list"></i> Tabla
+                                        </button>
+                                        <button class="view-toggle-btn" id="btn-view-cards-dir" onclick="switchDirectoryView('cards')">
+                                            <i class="fa-solid fa-grip"></i> Vista por Grupos
+                                        </button>
+                                        <button class="view-toggle-btn" id="btn-view-tutors-dir" onclick="switchDirectoryView('tutors')">
+                                            <i class="fa-solid fa-user-shield"></i> Tutores
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Filter Panel -->
+                                    <div class="directory-filters">
+                                        <div class="filter-item">
+                                            <label><i class="fa-solid fa-magnifying-glass"></i> Buscar</label>
+                                            <input type="text" id="teacher-search" placeholder="Nombre o materia..." oninput="filterTeacherDirectory()">
+                                        </div>
+                                        <div class="filter-item">
+                                            <label><i class="fa-solid fa-layer-group"></i> Semestre</label>
+                                            <select id="filter-semestre" onchange="onSemesterOrShiftChange()">
+                                                <option value="all">Todos</option>
+                                            </select>
+                                        </div>
+                                        <div class="filter-item">
+                                            <label><i class="fa-solid fa-sun"></i> Turno</label>
+                                            <select id="filter-turno" onchange="onSemesterOrShiftChange()">
+                                                <option value="all">Todos</option>
+                                            </select>
+                                        </div>
+                                        <div class="filter-item">
+                                            <label><i class="fa-solid fa-users"></i> Grupo</label>
+                                            <select id="filter-grupo" onchange="filterTeacherDirectory()">
+                                                <option value="all">Todos</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="directory-table-container" id="directory-table-view">
+                                        <table class="premium-table" id="teacher-directory-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Docente</th>
+                                                    <th>Correo Institucional</th>
+                                                    <th>Asignaciones (Materia y Grupos)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="teacher-directory-body">
+                                                <tr>
+                                                    <td colspan="3" style="text-align: center; color: var(--text-muted);">Cargando directorio...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="classified-directory-grid" id="directory-cards-view" style="display: none;">
+                                        <!-- Populated dynamically -->
+                                    </div>
+
+                                    <div class="directory-table-container" id="directory-tutors-view" style="display: none;">
+                                        <table class="premium-table" id="tutors-directory-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Grupo</th>
+                                                    <th>Semestre y Turno</th>
+                                                    <th>Tutor Asignado</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tutors-directory-body">
+                                                <tr>
+                                                    <td colspan="3" style="text-align: center; color: var(--text-muted);">Cargando tutores...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <!-- Sub-area 3: Orientación y Tutorías -->
+                    <div class="sub-area-content" id="sub-orientacion">
+                        <div class="tab-content-layout">
+                            <div class="content-left">
+                                <div class="premium-card">
+                                    <div class="card-header border-purple">
+                                        <h3><i class="fa-solid fa-masks-theater"></i> Orientación Educativa y Tutorías</h3>
+                                        <span class="badge-purple">Seguimiento y Apoyo</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Atención psicopedagógica, prevención del abandono escolar, y coordinación del Programa de Tutorías.</p>
+                                        <div class="button-group-vertical">
+                                            <a href="#" id="link-orientacion" target="_blank" class="action-button-link btn-purple mb-10">
+                                                <i class="fa-regular fa-file-word"></i> Google Docs: Diagnóstico y Expedientes
+                                            </a>
+                                            <a href="#" id="link-tutorias" target="_blank" class="action-button-link btn-purple">
+                                                <i class="fa-regular fa-file-excel"></i> Google Sheets: Seguimiento de Tutorías
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-right">
+                                <div class="premium-card">
+                                    <div class="card-header">
+                                        <h3><i class="fa-solid fa-diagram-project"></i> Canalización y Apoyo a Estudiantes</h3>
+                                    </div>
+                                    <div class="card-body centered-svg">
+                                        <svg class="flowchart-svg" viewBox="0 0 500 240" id="svg-orientacion">
+                                            <g class="flow-node" onclick="showFlowDetailOri('1. Detección', 'El tutor grupal o docente identifica conductas de alerta (académicas, conductuales o emocionales) y levanta el reporte.')">
+                                                <rect x="20" y="80" width="110" height="60" rx="10" fill="url(#grad-purple)" />
+                                                <text x="75" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">1. Detectar</text>
+                                                <text x="75" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Reporte de Tutor</text>
+                                            </g>
+                                            
+                                            <path d="M 130 110 L 180 110" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4" class="flow-line" />
+                                            
+                                            <g class="flow-node" onclick="showFlowDetailOri('2. Canalización', 'Orientación educativa cita al estudiante y a su tutor legal. Se realiza entrevista diagnóstica y se define plan de acción.')">
+                                                <rect x="190" y="80" width="110" height="60" rx="10" fill="url(#grad-cyan)" />
+                                                <text x="245" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">2. Canalizar</text>
+                                                <text x="245" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Plan de Acción</text>
+                                            </g>
+                                            
+                                            <path d="M 300 110 L 350 110" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4" class="flow-line" />
+                                            
+                                            <g class="flow-node" onclick="showFlowDetailOri('3. Seguimiento', 'Se evalúa periódicamente el progreso académico y socioemocional del estudiante, coordinándose con padres y docentes.')">
+                                                <rect x="360" y="80" width="110" height="60" rx="10" fill="url(#grad-green)" />
+                                                <text x="415" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">3. Seguimiento</text>
+                                                <text x="415" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Evaluación del Avance</text>
+                                            </g>
+                                        </svg>
+                                        <div class="flow-detail-box" id="detail-orientacion">
+                                            <p class="select-info-text"><i class="fa-solid fa-circle-info"></i> Haz clic en los pasos del diagrama para ver los detalles del proceso administrativo.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sub-area 4: Biblioteca -->
+                    <div class="sub-area-content" id="sub-biblioteca">
+                        <div class="tab-content-layout">
+                            <div class="content-left">
+                                <div class="premium-card">
+                                    <div class="card-header border-purple">
+                                        <h3><i class="fa-solid fa-book"></i> Biblioteca Escolar</h3>
+                                        <span class="badge-blue">Acervo Bibliográfico</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Control de préstamos de libros físicos, inventario de libros de texto, y recursos digitales para el estudio.</p>
+                                        <div class="button-group-vertical">
+                                            <a href="#" id="link-biblioteca" target="_blank" class="action-button-link btn-purple">
+                                                <i class="fa-regular fa-file-excel"></i> Google Sheets: Control de Libros y Préstamos
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-right">
+                                <div class="premium-card">
+                                    <div class="card-header">
+                                        <h3><i class="fa-solid fa-diagram-project"></i> Préstamo de Libros y Devoluciones</h3>
+                                    </div>
+                                    <div class="card-body centered-svg">
+                                        <svg class="flowchart-svg" viewBox="0 0 500 240" id="svg-biblioteca">
+                                            <g class="flow-node" onclick="showFlowDetailBib('1. Solicitud', 'El alumno busca el libro en el acervo físico, presenta su credencial de estudiante y solicita el préstamo.')">
+                                                <rect x="20" y="80" width="110" height="60" rx="10" fill="url(#grad-purple)" />
+                                                <text x="75" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">1. Solicitar</text>
+                                                <text x="75" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Credencial e ISBN</text>
+                                            </g>
+                                            
+                                            <path d="M 130 110 L 180 110" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4" class="flow-line" />
+                                            
+                                            <g class="flow-node" onclick="showFlowDetailBib('2. Registro de Préstamo', 'El bibliotecario registra el libro y la matrícula del alumno en el Google Sheet de préstamos, indicando la fecha de devolución.')">
+                                                <rect x="190" y="80" width="110" height="60" rx="10" fill="url(#grad-cyan)" />
+                                                <text x="245" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">2. Registrar</text>
+                                                <text x="245" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Fecha Límite</text>
+                                            </g>
+                                            
+                                            <path d="M 300 110 L 350 110" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4" class="flow-line" />
+                                            
+                                            <g class="flow-node" onclick="showFlowDetailBib('3. Devolución', 'El alumno entrega el libro. Se revisa el estado del material y se marca el préstamo como devuelto en el Google Sheet.')">
+                                                <rect x="360" y="80" width="110" height="60" rx="10" fill="url(#grad-green)" />
+                                                <text x="415" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">3. Devolución</text>
+                                                <text x="415" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Liberación/Multa</text>
+                                            </g>
+                                        </svg>
+                                        <div class="flow-detail-box" id="detail-biblioteca">
+                                            <p class="select-info-text"><i class="fa-solid fa-circle-info"></i> Haz clic en los pasos del diagrama para ver los detalles del proceso administrativo.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. COORDINACIÓN ADMINISTRATIVA PAGE -->
+                <section class="page-section" id="page-coordinacion">
+                    <div class="page-header-title">
+                        <h1>Área de Coordinación Administrativa</h1>
+                        <p>Control de inventarios de bienes del CEB, recursos materiales y control patrimonial.</p>
+                    </div>
+
+                    <div class="tab-content-layout">
+                        <!-- Left Panel: Inventarios -->
+                        <div class="content-left">
+                            <div class="premium-card">
+                                <div class="card-header border-gold">
+                                    <h3><i class="fa-solid fa-boxes-stacked"></i> Inventarios</h3>
+                                    <span class="badge-gold">Recursos Materiales</span>
+                                </div>
+                                <div class="card-body">
+                                    <p>Levantamiento periódico de activos fijos, insumos de papelería, mobiliario escolar de las aulas, y equipos tecnológicos en la dirección y laboratorios.</p>
+                                    
+                                    <div class="process-flow-minimal">
+                                        <div class="flow-step-item"><span class="step-num step-gold">1</span> <span>Etiquetado de Activos Fijos</span></div>
+                                        <div class="flow-step-item"><span class="step-num step-gold">2</span> <span>Verificación Semestral de Existencia</span></div>
+                                        <div class="flow-step-item"><span class="step-num step-gold">3</span> <span>Trámite de Bajas por Desgaste o Daño</span></div>
+                                    </div>
+                                    
+                                    <a href="#" id="link-inventarios" target="_blank" class="action-button-link btn-gold mt-20">
+                                        <i class="fa-regular fa-file-excel"></i> Trabajar en Google Sheets (Inventarios)
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Proceso de Inventarios -->
+                        <div class="content-right">
+                            <div class="premium-card">
+                                <div class="card-header border-cyan">
+                                    <h3><i class="fa-solid fa-diagram-project"></i> Flujo de Control Patrimonial</h3>
+                                </div>
+                                <div class="card-body centered-svg">
+                                    <svg class="flowchart-svg" viewBox="0 0 500 240" id="svg-inventarios">
+                                        <defs>
+                                            <linearGradient id="grad-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" style="stop-color:hsl(38, 92%, 50%);stop-opacity:1" />
+                                                <stop offset="100%" style="stop-color:hsl(25, 90%, 40%);stop-opacity:1" />
+                                            </linearGradient>
+                                        </defs>
+                                        <g class="flow-node" onclick="showFlowDetailInv('1. Registro y Plaqueo', 'Todo bien mueble que ingresa al CEB se registra en el catálogo de inventario con número de serie, factura y se le coloca una placa física.')">
+                                            <rect x="20" y="80" width="110" height="60" rx="10" fill="url(#grad-gold)" />
+                                            <text x="75" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">1. Registrar</text>
+                                            <text x="75" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Plaqueo y Catálogo</text>
+                                        </g>
+                                        
+                                        <path d="M 130 110 L 180 110" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4" class="flow-line" />
+                                        
+                                        <g class="flow-node" onclick="showFlowDetailInv('2. Asignación y Resguardo', 'Se define el área física o el personal responsable a quien se le confía el bien. Se firma un acta de resguardo administrativo.')">
+                                            <rect x="190" y="80" width="110" height="60" rx="10" fill="url(#grad-cyan)" />
+                                            <text x="245" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">2. Asignar</text>
+                                            <text x="245" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Actas de Resguardo</text>
+                                        </g>
+                                        
+                                        <path d="M 300 110 L 350 110" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4" class="flow-line" />
+                                        
+                                        <g class="flow-node" onclick="showFlowDetailInv('3. Auditoría Física', 'Anualmente la Coordinación Administrativa realiza un recorrido físico para verificar la ubicación, estado y conservación de cada activo.')">
+                                            <rect x="360" y="80" width="110" height="60" rx="10" fill="url(#grad-green)" />
+                                            <text x="415" y="105" text-anchor="middle" fill="#fff" font-weight="600" font-size="12">3. Auditoría</text>
+                                            <text x="415" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Confrontación Física</text>
+                                        </g>
+                                    </svg>
+                                    <div class="flow-detail-box" id="detail-inventarios">
+                                        <p class="select-info-text"><i class="fa-solid fa-circle-info"></i> Haz clic en los pasos del diagrama para ver los detalles del proceso administrativo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. CLASIFICADOR DE CORREOS PAGE -->
+                <section class="page-section" id="page-clasificador">
+                    <div class="page-header-title">
+                        <h1>Clasificador de Correos</h1>
+                        <p>Analiza correos entrantes, clasifícalos por área y genera borradores de respuesta formales automáticamente.</p>
+                    </div>
+
+                    <div class="tab-content-layout">
+                        <!-- Left Panel: Input Form -->
+                        <div class="content-left">
+                            <div class="premium-card">
+                                <div class="card-header border-purple">
+                                    <h3><i class="fa-solid fa-keyboard"></i> Entrada de Correo</h3>
+                                    <button class="settings-toggle-btn" onclick="toggleApiSettings()" title="Configuración de API Key" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px; transition: var(--transition-fast);">
+                                        <i class="fa-solid fa-gear"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <!-- API Key Config (Collapsible) -->
+                                    <div class="api-settings-box" id="api-settings-panel" style="display: none; background: hsla(217, 30%, 15%, 0.6); border: 1px dashed var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 20px;">
+                                        <h4 style="font-size: 13px; font-weight:600; display:flex; align-items:center; gap:6px; margin-bottom:6px;"><i class="fa-solid fa-key" style="color:var(--accent-purple);"></i> Configurar API Key de Gemini</h4>
+                                        <p style="font-size: 11px; margin-bottom: 8px; color: var(--text-secondary); line-height:1.4;">Para análisis con IA, introduce tu clave de API de Google AI Studio. Se guarda de forma local en tu navegador.</p>
+                                        <div class="api-key-input-group" style="display:flex; gap:8px;">
+                                            <input type="password" id="gemini-api-key" placeholder="AIzaSy..." style="flex:1; padding: 8px 12px; border-radius: 6px; background: hsla(222, 47%, 9%, 0.8); border: 1px solid var(--border-color); color: #fff; font-size:12px; outline:none;">
+                                            <button class="action-button-link btn-purple" onclick="saveApiKey()" style="margin-top:0; padding: 8px 12px; font-size:12px; border-radius:6px; flex-shrink:0; width:auto; height:34px; display:flex; align-items:center; justify-content:center;">Guardar</button>
+                                        </div>
+                                        <span id="api-key-status" style="font-size: 10px; margin-top: 6px; display: block; color: var(--text-muted);"></span>
+                                    </div>
+
+                                    <div class="form-group mb-15">
+                                        <label for="email-subject" style="font-size:13px; font-weight:500; color:var(--text-secondary);">Asunto del Correo</label>
+                                        <input type="text" id="email-subject" placeholder="Ej: Justificante de inasistencia..." style="width:100%; padding: 10px 14px; border-radius: 8px; background: hsla(217, 30%, 15%, 0.4); border: 1px solid var(--border-color); color: #fff; margin-top: 6px; outline:none; font-size:14px; transition: var(--transition-fast);">
+                                    </div>
+                                    <div class="form-group mb-15" style="margin-top: 15px;">
+                                        <label for="email-body" style="font-size:13px; font-weight:500; color:var(--text-secondary);">Cuerpo del Correo</label>
+                                        <textarea id="email-body" rows="10" placeholder="Pega aquí el contenido completo del correo..." style="width:100%; padding: 12px 14px; border-radius: 8px; background: hsla(217, 30%, 15%, 0.4); border: 1px solid var(--border-color); color: #fff; margin-top: 6px; font-family: var(--font-body); resize: vertical; outline:none; font-size:13px; line-height:1.5; transition: var(--transition-fast);"></textarea>
+                                    </div>
+
+                                    <button class="action-button-link btn-purple mt-20" onclick="processEmail()" id="btn-classify" style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analizar y Clasificar Correo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Classification Results -->
+                        <div class="content-right">
+                            <div class="premium-card" id="classifier-placeholder-card" style="height:100%; min-height:430px; display:flex; align-items:center; justify-content:center;">
+                                <div class="card-body" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text-muted); padding: 40px 20px; width: 100%;">
+                                    <i class="fa-solid fa-envelope-open-text" style="font-size: 48px; margin-bottom: 16px; color: hsla(262, 83%, 58%, 0.2);"></i>
+                                    <h3 style="font-family: var(--font-heading); font-size: 20px; font-weight:600; color: var(--text-primary);">Esperando Correo</h3>
+                                    <p style="font-size: 13px; max-width: 320px; margin-top: 8px; line-height:1.5;">Pega un correo en el panel de la izquierda y haz clic en "Analizar y Clasificar" para ver la categoría, prioridad y el borrador de respuesta.</p>
+                                </div>
+                            </div>
+
+                            <div class="premium-card" id="classifier-results-card" style="display: none; height:100%;">
+                                <div class="card-header border-green">
+                                    <h3><i class="fa-solid fa-square-poll-horizontal"></i> Resultados del Análisis</h3>
+                                    <span class="badge-green" id="result-mode-badge" style="background: hsla(142, 71%, 45%, 0.2); color: var(--accent-green);">Offline</span>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Result Grid Metrics -->
+                                    <div class="metrics-grid" style="grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
+                                        <div class="metric-card" style="padding: 12px 16px; gap: 10px; min-width: 0; background: hsla(223, 47%, 14%, 0.4);">
+                                            <div class="metric-icon" style="width:36px; height:36px; font-size:15px; border-radius:8px; background: hsla(262, 83%, 58%, 0.1); color: var(--accent-purple); flex-shrink:0;"><i class="fa-solid fa-tag"></i></div>
+                                            <div style="min-width:0; overflow:hidden;">
+                                                <p style="font-size: 10px; color: var(--text-muted); margin-bottom:2px;">Categoría</p>
+                                                <h4 id="result-category" style="font-size:12px; font-weight:600; text-overflow:ellipsis; white-space:nowrap; overflow:hidden;">Control Escolar</h4>
+                                            </div>
+                                        </div>
+                                        <div class="metric-card" style="padding: 12px 16px; gap: 10px; min-width: 0; background: hsla(223, 47%, 14%, 0.4);">
+                                            <div class="metric-icon" id="priority-icon-container" style="width:36px; height:36px; font-size:15px; border-radius:8px; background: hsla(355, 85%, 55%, 0.1); color: var(--accent-red); flex-shrink:0;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                                            <div style="min-width:0; overflow:hidden;">
+                                                <p style="font-size: 10px; color: var(--text-muted); margin-bottom:2px;">Prioridad</p>
+                                                <h4 id="result-priority" style="font-size:12px; font-weight:600; color: var(--accent-red); text-overflow:ellipsis; white-space:nowrap; overflow:hidden;">Alta</h4>
+                                            </div>
+                                        </div>
+                                        <div class="metric-card" style="padding: 12px 16px; gap: 10px; min-width: 0; background: hsla(223, 47%, 14%, 0.4);">
+                                            <div class="metric-icon" style="width:36px; height:36px; font-size:15px; border-radius:8px; background: hsla(190, 95%, 44%, 0.1); color: var(--accent-cyan); flex-shrink:0;"><i class="fa-solid fa-building-user"></i></div>
+                                            <div style="min-width:0; overflow:hidden;">
+                                                <p style="font-size: 10px; color: var(--text-muted); margin-bottom:2px;">Área Sugerida</p>
+                                                <h4 id="result-area" style="font-size:12px; font-weight:600; text-overflow:ellipsis; white-space:nowrap; overflow:hidden;">Subdirección</h4>
+                                            </div>
+                                        </div>
+                                        <div class="metric-card" style="padding: 12px 16px; gap: 10px; min-width: 0; background: hsla(223, 47%, 14%, 0.4);">
+                                            <div class="metric-icon" style="width:36px; height:36px; font-size:15px; border-radius:8px; background: hsla(38, 92%, 50%, 0.1); color: var(--accent-gold); flex-shrink:0;"><i class="fa-solid fa-user-tie"></i></div>
+                                            <div style="min-width:0; overflow:hidden;">
+                                                <p style="font-size: 10px; color: var(--text-muted); margin-bottom:2px;">Remitente</p>
+                                                <h4 id="result-sender" style="font-size:12px; font-weight:600; text-overflow:ellipsis; white-space:nowrap; overflow:hidden;">Padre de Familia</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="result-section mb-15" style="margin-bottom: 16px;">
+                                        <h4 style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;"><i class="fa-solid fa-align-left" style="color:var(--accent-green);"></i> Resumen</h4>
+                                        <p id="result-summary" style="font-size: 13px; color: var(--text-primary); background: hsla(217, 30%, 15%, 0.3); padding: 10px 14px; border-radius: 8px; border-left: 3px solid var(--accent-green); line-height: 1.5; margin-bottom: 0;"></p>
+                                    </div>
+
+                                    <div class="result-section mb-15" style="margin-bottom: 16px;">
+                                        <h4 style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;"><i class="fa-solid fa-list-check" style="color:var(--accent-blue);"></i> Acciones / Tareas Clave</h4>
+                                        <ul id="result-actions" style="font-size: 13px; color: var(--text-secondary); padding-left: 20px; line-height: 1.6; margin-bottom: 0;">
+                                        </ul>
+                                    </div>
+
+                                    <div class="result-section" style="margin-top: 16px;">
+                                        <h4 style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+                                            <span><i class="fa-solid fa-reply" style="color:var(--accent-purple);"></i> Borrador de Respuesta</span>
+                                        </h4>
+                                        <textarea id="result-draft" rows="8" style="width:100%; padding: 12px; border-radius: 8px; background: hsla(217, 30%, 15%, 0.4); border: 1px solid var(--border-color); color: #fff; font-family: var(--font-body); font-size: 13px; line-height: 1.5; resize: vertical; margin-bottom: 12px; outline:none; transition: var(--transition-fast);"></textarea>
+                                        
+                                        <div class="button-group-horizontal" style="display: flex; gap: 12px;">
+                                            <button class="action-button-link btn-purple" onclick="copyDraft()" style="margin-top:0; flex: 1; height:38px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                                                <i class="fa-solid fa-copy"></i> Copiar Borrador
+                                            </button>
+                                            <a href="#" id="result-mailto-btn" class="action-button-link btn-green" style="margin-top:0; flex: 1; height:38px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; text-decoration:none;">
+                                                <i class="fa-solid fa-paper-plane"></i> Enviar Correo
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Main JS files -->
+    <script src="directorio.js"></script>
+    <script src="calendario.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

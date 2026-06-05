@@ -1,0 +1,98 @@
+[
+  {
+    "number": 1,
+    "filename": "1.pdf",
+    "title": "Ley General de Responsabilidades Administrativas",
+    "description": "Establece las responsabilidades administrativas de los servidores públicos, sus obligaciones, sanciones y procedimientos."
+  },
+  {
+    "number": 2,
+    "filename": "2.pdf",
+    "title": "Constitución Política de los Estados Unidos Mexicanos",
+    "description": "Marco constitucional de México. Artículos clave en materia educativa (1º, 3º, 31º)."
+  },
+  {
+    "number": 3,
+    "filename": "3.pdf",
+    "title": "Ley General de Educación",
+    "description": "Regula la educación que imparte el Estado, federación, entidades y municipios, estableciendo las bases del Sistema Educativo Nacional."
+  },
+  {
+    "number": 4,
+    "filename": "4.pdf",
+    "title": "Ley General de los Derechos de Niñas, Niños y Adolescentes",
+    "description": "Garantiza el pleno ejercicio, respeto, protección y promoción de los derechos humanos de la niñez y adolescencia en el entorno escolar."
+  },
+  {
+    "number": 5,
+    "filename": "5.pdf",
+    "title": "Ley General de Acceso de las Mujeres a una Vida Libre de Violencia",
+    "description": "Establece los principios de coordinación para garantizar la prevención, sanción y erradicación de la violencia contra las mujeres."
+  },
+  {
+    "number": 6,
+    "filename": "6.pdf",
+    "title": "Curso-Taller 1: Hacia una práctica docente colaborativa en las áreas de acceso al conocimiento (MCCEMS)",
+    "description": "Cuaderno de trabajo para docentes sobre didáctica y colaboración en Ciencias Naturales, Sociales y Humanidades."
+  },
+  {
+    "number": 7,
+    "filename": "7.pdf",
+    "title": "Curso-Taller 3: Hacia una práctica docente colaborativa en los recursos socioemocionales (MCCEMS)",
+    "description": "Enfocado en la formación socioemocional y el desarrollo integral de las comunidades escolares dentro del marco educativo nacional."
+  },
+  {
+    "number": 8,
+    "filename": "8.pdf",
+    "title": "Lineamientos para la Planeación de la Mejora Continua",
+    "description": "Directrices oficiales para estructurar y evaluar los Planes de Mejora Continua (PMC) de los planteles de EMS."
+  },
+  {
+    "number": 9,
+    "filename": "9.pdf",
+    "title": "Acuerdo 21/08/25: Marco Curricular Común de la Educación Media Superior (MCCEMS)",
+    "description": "Establece y regula la estructura curricular, las áreas de conocimiento y los recursos sociocognitivos de la EMS."
+  },
+  {
+    "number": 10,
+    "filename": "10.pdf",
+    "title": "Protocolo para la Protección y Cuidado del Estudiantado en la Revisión de Útiles Escolares",
+    "description": "Normativas y medidas para la revisión segura de pertenencias de alumnos en planteles federales de EMS."
+  },
+  {
+    "number": 11,
+    "filename": "11.pdf",
+    "title": "Protocolos de Seguridad para los Planteles Federales de EMS",
+    "description": "Acciones preventivas, de seguridad y de reacción ante situaciones de emergencia o riesgo en los centros educativos."
+  },
+  {
+    "number": 12,
+    "filename": "12.pdf",
+    "title": "Curso-Taller 2: Hacia una práctica docente colaborativa en los recursos sociocognitivos (MCCEMS)",
+    "description": "Capacitación sobre comunicación, pensamiento matemático, conciencia histórica y cultura digital en el aula."
+  },
+  {
+    "number": 13,
+    "filename": "13.pdf",
+    "title": "Acuerdo 04/07/23: Código de Conducta de la Secretaría de Educación Pública",
+    "description": "Regula el comportamiento ético, los valores institucionales y la conducta debida de todo el personal que labora en la SEP."
+  },
+  {
+    "number": 14,
+    "filename": "14.pdf",
+    "title": "Modelo Educativo del Marco Curricular Común de la EMS",
+    "description": "Documento base explicativo del modelo educativo, el Sistema Nacional de Bachillerato y la Nueva Escuela Mexicana."
+  },
+  {
+    "number": 15,
+    "filename": "15.pdf",
+    "title": "Programa Aula, Escuela y Comunidad (PAEC)",
+    "description": "Guía práctica para estructurar los proyectos comunitarios y la vinculación transversal de la escuela con su entorno."
+  },
+  {
+    "number": 16,
+    "filename": "16.pdf",
+    "title": "Declaratoria de Cero Tolerancia a las Violencias en EMS",
+    "description": "Declaración oficial contra todo tipo de hostigamiento, acoso, discriminación o violencia de género en los planteles."
+  }
+]

@@ -1,0 +1,53 @@
+{
+  "schoolName": "Centro de Estudios de Bachillerato (CEB)",
+  "subtitle": "Portal de Gestión de Procesos Directiva y Administrativa",
+  "activeCycle": "B.25.26",
+  "cycles": {
+    "B.25.26": {
+      "name": "Ciclo B.25.26 (Feb - Jul 2026)",
+      "documents": {
+        "general": {
+          "calendarioEscolar": "https://docs.google.com/document/d/example_calendario_B2526",
+          "bitacoraReuniones": "../00_Memorias_y_Bitacoras/Bitacora_Reuniones.md",
+          "controlProyectos": "../00_Memorias_y_Bitacoras/Control_Proyectos_Calendario.md"
+        },
+        "direccion": {
+          "recursosHumanos": "https://docs.google.com/spreadsheets/d/example_rrhh_B2526"
+        },
+        "subdireccion": {
+          "controlEscolar": "https://docs.google.com/spreadsheets/d/1KR8f7ObGmO8F2dVgJepKpKYBeMEktBme2jTTbImS8nM/edit#gid=796470242",
+          "docentes": "https://docs.google.com/spreadsheets/d/example_docentes_B2526",
+          "orientacionEducativa": "https://docs.google.com/document/d/example_orientacion_B2526",
+          "tutorias": "https://docs.google.com/spreadsheets/d/example_tutorias_B2526",
+          "biblioteca": "https://docs.google.com/spreadsheets/d/example_biblioteca_B2526"
+        },
+        "coordinacionAdministrativa": {
+          "inventarios": "https://docs.google.com/spreadsheets/d/example_inventarios_B2526"
+        }
+      }
+    },
+    "A.26.27": {
+      "name": "Ciclo A.26.27 (Ago 2026 - Ene 2027)",
+      "documents": {
+        "general": {
+          "calendarioEscolar": "https://docs.google.com/document/d/example_calendario_A2627",
+          "bitacoraReuniones": "../00_Memorias_y_Bitacoras/Bitacora_Reuniones.md",
+          "controlProyectos": "../00_Memorias_y_Bitacoras/Control_Proyectos_Calendario.md"
+        },
+        "direccion": {
+          "recursosHumanos": "https://docs.google.com/spreadsheets/d/example_rrhh_A2627"
+        },
+        "subdireccion": {
+          "controlEscolar": "https://docs.google.com/spreadsheets/d/example_control_escolar_A2627",
+          "docentes": "https://docs.google.com/spreadsheets/d/example_docentes_A2627",
+          "orientacionEducativa": "https://docs.google.com/document/d/example_orientacion_A2627",
+          "tutorias": "https://docs.google.com/spreadsheets/d/example_tutorias_A2627",
+          "biblioteca": "https://docs.google.com/spreadsheets/d/example_biblioteca_A2627"
+        },
+        "coordinacionAdministrativa": {
+          "inventarios": "https://docs.google.com/spreadsheets/d/example_inventarios_A2627"
+        }
+      }
+    }
+  }
+}

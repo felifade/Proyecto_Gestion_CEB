@@ -1,0 +1,1685 @@
+{
+  "headers": [
+    "Grupo",
+    "Materia",
+    "Docente",
+    "Correo",
+    "Parcial",
+    "Ponderacion"
+  ],
+  "total_rows": 209,
+  "rows": [
+    [
+      "M201",
+      "Pensamiento Filosófico y Humanidades II",
+      "ARTEAGA BADILLO ALICIA",
+      "d.aarteaga54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M201",
+      "Taller de ciencias",
+      "BUSTAMANTE ABONCE JOSE MAURO ROBERTO",
+      "d.jmrbustamante54@dgb.edu.mx",
+      "2",
+      "0.6"
+    ],
+    [
+      "M201",
+      "Ingles II",
+      "CADENA GALINDO LAURA MARIA",
+      "d.lmcadena54@dgb.edu.mx",
+      "1",
+      "0.2"
+    ],
+    [
+      "M201",
+      "Formación Socioemocional II",
+      "HERRERA GOMEZ ALFONSO",
+      "d.aherrera54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M201",
+      "Ciencias Sociales II",
+      "GARCIA LOPEZ JUANA MARIA",
+      "d.jmgarcia54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M201",
+      "Ciencias Naturales, Experimentales...",
+      "HERNANDEZ VARGAS SOILA",
+      "d.shernandez54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M201",
+      "Pensamiento Matemático II",
+      "LOPEZ GARCIA MARTHA MARIA",
+      "d.mmlopez54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M201",
+      "Cultura Digital II",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1,3",
+      "0.4, 2.0"
+    ],
+    [
+      "M201",
+      "Lengua y Comunicación II",
+      "MENDOZA GARCIA MARIA ISABEL",
+      "d.mmendoza54@dgb.edu.mx",
+      "1",
+      "0.2"
+    ],
+    [
+      "M202",
+      "Pensamiento Filosófico y Humanidades II",
+      "ARTEAGA BADILLO ALICIA",
+      "d.aarteaga54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M202",
+      "Taller de ciencias",
+      "BUSTAMANTE ABONCE JOSE MAURO ROBERTO",
+      "d.jmrbustamante54@dgb.edu.mx",
+      "2",
+      "0.6"
+    ],
+    [
+      "M202",
+      "Ingles II",
+      "CADENA GALINDO LAURA MARIA",
+      "d.lmcadena54@dgb.edu.mx",
+      "1",
+      "0.2"
+    ],
+    [
+      "M202",
+      "Formación Socioemocional II",
+      "HERRERA GOMEZ ALFONSO",
+      "d.aherrera54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M202",
+      "Ciencias Sociales II",
+      "GARCIA LOPEZ JUANA MARIA",
+      "d.jmgarcia54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M202",
+      "Ciencias Naturales, Experimentales...",
+      "HERNANDEZ VARGAS SOILA",
+      "d.shernandez54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M202",
+      "Pensamiento Matemático II",
+      "LOPEZ GARCIA MARTHA MARIA",
+      "d.mmlopez54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M202",
+      "Cultura Digital II",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1,3",
+      "0.4, 2.0"
+    ],
+    [
+      "M202",
+      "Lengua y Comunicación II",
+      "MENDOZA GARCIA MARIA ISABEL",
+      "d.mmendoza54@dgb.edu.mx",
+      "1",
+      "0.2"
+    ],
+    [
+      "M203",
+      "Pensamiento Filosófico y Humanidades II",
+      "ARTEAGA BADILLO ALICIA",
+      "d.aarteaga54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M203",
+      "Ingles II",
+      "CADENA GALINDO LAURA MARIA",
+      "d.lmcadena54@dgb.edu.mx",
+      "1",
+      "0.2"
+    ],
+    [
+      "M203",
+      "Formación Socioemocional II",
+      "HERRERA GOMEZ ALFONSO",
+      "d.aherrera54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M203",
+      "Ciencias Sociales II",
+      "GARCIA LOPEZ JUANA MARIA",
+      "d.jmgarcia54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M203",
+      "Taller de ciencias",
+      "GAYOSSO TOLENTINO ERIKA ITZEL",
+      "d.erikagayossot5_4@dgb.edu.mx",
+      "2",
+      "0.6"
+    ],
+    [
+      "M203",
+      "Ciencias Naturales, Experimentales...",
+      "HERNANDEZ VARGAS SOILA",
+      "d.shernandez54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M203",
+      "Pensamiento Matemático II",
+      "LOPEZ GARCIA MARTHA MARIA",
+      "d.mmlopez54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M203",
+      "Cultura Digital II",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1,3",
+      "0.4, 2.0"
+    ],
+    [
+      "M203",
+      "Lengua y Comunicación II",
+      "MENDOZA GARCIA MARIA ISABEL",
+      "d.mmendoza54@dgb.edu.mx",
+      "1",
+      "0.2"
+    ],
+    [
+      "M204",
+      "Pensamiento Filosófico y Humanidades II",
+      "ARTEAGA BADILLO ALICIA",
+      "d.aarteaga54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M204",
+      "Ingles II",
+      "CADENA GALINDO LAURA MARIA",
+      "d.lmcadena54@dgb.edu.mx",
+      "1",
+      "0.2"
+    ],
+    [
+      "M204",
+      "Ciencias Sociales II",
+      "GARCIA LOPEZ JUANA MARIA",
+      "d.jmgarcia54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M204",
+      "Taller de ciencias",
+      "GAYOSSO TOLENTINO ERIKA ITZEL",
+      "d.erikagayossot5_4@dgb.edu.mx",
+      "2",
+      "0.6"
+    ],
+    [
+      "M204",
+      "Ciencias Naturales, Experimentales...",
+      "HERNANDEZ VARGAS SOILA",
+      "d.shernandez54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M204",
+      "Formación Socioemocional II",
+      "HERRERA GOMEZ ALFONSO",
+      "d.aherrera54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M204",
+      "Pensamiento Matemático II",
+      "LOPEZ GARCIA MARTHA MARIA",
+      "d.mmlopez54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M204",
+      "Cultura Digital II",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1,3",
+      "0.4, 2.0"
+    ],
+    [
+      "M204",
+      "Lengua y Comunicación II",
+      "MENDOZA GARCIA MARIA ISABEL",
+      "d.mmendoza54@dgb.edu.mx",
+      "1",
+      "0.2"
+    ],
+    [
+      "M205",
+      "Ingles II",
+      "CADENA GALINDO LAURA MARIA",
+      "d.lmcadena54@dgb.edu.mx",
+      "1",
+      "0.2"
+    ],
+    [
+      "M205",
+      "Taller de ciencias",
+      "CANSECO PRADO ANGELA GABRIELA",
+      "d.acansecop54@dgb.edu.mx",
+      "2",
+      "0.6"
+    ],
+    [
+      "M205",
+      "Ciencias Sociales II",
+      "GARCIA LOPEZ JUANA MARIA",
+      "d.jmgarcia54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M205",
+      "Pensamiento Filosófico y Humanidades II",
+      "GARCIA LOPEZ JUANA MARIA",
+      "d.jmgarcia54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M205",
+      "Ciencias Naturales, Experimentales...",
+      "HERNANDEZ VARGAS SOILA",
+      "d.shernandez54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M205",
+      "Formación Socioemocional II",
+      "HERRERA GOMEZ ALFONSO",
+      "d.aherrera54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M205",
+      "Pensamiento Matemático II",
+      "LOPEZ GARCIA MARTHA MARIA",
+      "d.mmlopez54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M205",
+      "Cultura Digital II",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1,3",
+      "0.4, 2.0"
+    ],
+    [
+      "M205",
+      "Lengua y Comunicación II",
+      "MENDOZA GARCIA MARIA ISABEL",
+      "d.mmendoza54@dgb.edu.mx",
+      "1",
+      "0.2"
+    ],
+    [
+      "M206",
+      "Ingles II",
+      "CADENA GALINDO LAURA MARIA",
+      "d.lmcadena54@dgb.edu.mx",
+      "1",
+      "0.2"
+    ],
+    [
+      "M206",
+      "Taller de ciencias",
+      "CANSECO PRADO ANGELA GABRIELA",
+      "d.acansecop54@dgb.edu.mx",
+      "2",
+      "0.6"
+    ],
+    [
+      "M206",
+      "Lengua y Comunicación II",
+      "GALAN MIRELES EVA MARIA",
+      "d.evagalanezm54@dgb.edu.mx",
+      "1",
+      "0.2"
+    ],
+    [
+      "M206",
+      "Ciencias Sociales II",
+      "GARCIA LOPEZ JUANA MARIA",
+      "d.jmgarcia54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M206",
+      "Pensamiento Filosófico y Humanidades II",
+      "GARCIA LOPEZ JUANA MARIA",
+      "d.jmgarcia54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M206",
+      "Ciencias Naturales, Experimentales...",
+      "HERNANDEZ VARGAS SOILA",
+      "d.shernandez54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M206",
+      "Formación Socioemocional II",
+      "HERRERA GOMEZ ALFONSO",
+      "d.aherrera54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M206",
+      "Pensamiento Matemático II",
+      "LOPEZ GARCIA MARTHA MARIA",
+      "d.mmlopez54@dgb.edu.mx",
+      "1",
+      "0.4"
+    ],
+    [
+      "M206",
+      "Cultura Digital II",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1,3",
+      "0.4, 2.0"
+    ],
+    [
+      "M401",
+      "Conciencia Histórica I. Perspectivas...",
+      "AGUDO GARCIA JOSE ALFREDO",
+      "d.jaagudo54@dgb.edu.mx",
+      "1",
+      "0.7"
+    ],
+    [
+      "M401",
+      "Formación Socioemocional IV",
+      "ALVAREZ PEREZ IRMA",
+      "d.ialvarez54@dgb.edu.mx",
+      "2",
+      "0.6"
+    ],
+    [
+      "M401",
+      "Comunidades Virtuales",
+      "CANO LOPEZ TERESA",
+      "d.tcano54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M401",
+      "Pensamiento Literario",
+      "GALAN MIRELES EVA MARIA",
+      "d.evagalanezm54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "M402",
+      "Formación Socioemocional IV",
+      "ALVAREZ PEREZ IRMA",
+      "d.ialvarez54@dgb.edu.mx",
+      "2",
+      "0.6"
+    ],
+    [
+      "M401",
+      "Ciencias Sociales III",
+      "HERNANDEZ CAMARGO SIVONNEY",
+      "d.shernandezc54@dgb.edu.mx",
+      "1",
+      "0.7"
+    ],
+    [
+      "M401",
+      "Taller de Cultura Digital",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "0.6"
+    ],
+    [
+      "M401",
+      "Reacciones Químicas: Conservación de la Materia...",
+      "MARTINEZ FLORES GRINDELIA",
+      "d.gmartinez54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M403",
+      "Formación Socioemocional IV",
+      "ALVAREZ PEREZ IRMA",
+      "d.ialvarez54@dgb.edu.mx",
+      "2",
+      "0.6"
+    ],
+    [
+      "M401",
+      "Espacio y Sociedad",
+      "OVIEDO JUAREZ HERNAN SAIDE",
+      "d.hsoviedo54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M401",
+      "Mantenimiento y Redes de Cómputo",
+      "RUBIO GARCIA MARIA ELENA",
+      "d.merubio54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M402",
+      "Conciencia Histórica I. Perspectivas...",
+      "AGUDO GARCIA JOSE ALFREDO",
+      "d.jaagudo54@dgb.edu.mx",
+      "1",
+      "0.7"
+    ],
+    [
+      "M404",
+      "Formación Socioemocional IV",
+      "ALVAREZ PEREZ IRMA",
+      "d.ialvarez54@dgb.edu.mx",
+      "2",
+      "0.6"
+    ],
+    [
+      "M402",
+      "Comunidades Virtuales",
+      "CANO LOPEZ TERESA",
+      "d.tcano54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M402",
+      "Pensamiento Literario",
+      "GALAN MIRELES EVA MARIA",
+      "d.evagalanezm54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "M405",
+      "Formación Socioemocional IV",
+      "LOPEZ VAZQUEZ LUZ MARIA DEL CARMEN",
+      "d.lmclopez54@dgb.edu.mx",
+      "2",
+      "0.6"
+    ],
+    [
+      "M402",
+      "Ciencias Sociales III",
+      "HERNANDEZ CAMARGO SIVONNEY",
+      "d.shernandezc54@dgb.edu.mx",
+      "1",
+      "0.7"
+    ],
+    [
+      "M402",
+      "Taller de Cultura Digital",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "0.6"
+    ],
+    [
+      "M402",
+      "Reacciones Químicas: Conservación de la Materia...",
+      "MARTINEZ FLORES GRINDELIA",
+      "d.gmartinez54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M406",
+      "Formación Socioemocional IV",
+      "LOPEZ VAZQUEZ LUZ MARIA DEL CARMEN",
+      "d.lmclopez54@dgb.edu.mx",
+      "2",
+      "0.6"
+    ],
+    [
+      "M402",
+      "Espacio y Sociedad",
+      "OVIEDO JUAREZ HERNAN SAIDE",
+      "d.hsoviedo54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M402",
+      "Mantenimiento y Redes de Cómputo",
+      "RUBIO GARCIA MARIA ELENA",
+      "d.merubio54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M403",
+      "Conciencia Histórica I. Perspectivas...",
+      "AGUDO GARCIA JOSE ALFREDO",
+      "d.jaagudo54@dgb.edu.mx",
+      "1",
+      "0.7"
+    ],
+    [
+      "V407",
+      "Formación Socioemocional IV",
+      "MARTINEZ FLORES DANIEL",
+      "d.dmartinez54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "M403",
+      "Intervención Escolar",
+      "ENRIQUEZ AGUILAR LETICIA",
+      "d.lenriquez54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M403",
+      "Pensamiento Literario",
+      "GALAN MIRELES EVA MARIA",
+      "d.evagalanezm54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "V408",
+      "Formación Socioemocional IV",
+      "ALVAREZ PEREZ IRMA",
+      "d.ialvarez54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "M403",
+      "Ciencias Sociales III",
+      "HERNANDEZ CAMARGO SIVONNEY",
+      "d.shernandezc54@dgb.edu.mx",
+      "1",
+      "0.7"
+    ],
+    [
+      "M403",
+      "Taller de Cultura Digital",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "0.6"
+    ],
+    [
+      "M403",
+      "Reacciones Químicas: Conservación de la Materia...",
+      "MARTINEZ FLORES GRINDELIA",
+      "d.gmartinez54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "V409",
+      "Formación Socioemocional IV",
+      "ALVAREZ PEREZ IRMA",
+      "d.ialvarez54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "M403",
+      "Espacio y Sociedad",
+      "PEREZ PICAZO DELFINO",
+      "d.delfinoperezp54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M403",
+      "Intervención en el Aula",
+      "SANCHEZ MEZA JERUSALEN",
+      "d.jsanchez54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M404",
+      "Conciencia Histórica I. Perspectivas...",
+      "AGUDO GARCIA JOSE ALFREDO",
+      "d.jaagudo54@dgb.edu.mx",
+      "1",
+      "0.7"
+    ],
+    [
+      "V410",
+      "Formación Socioemocional IV",
+      "ALVAREZ PEREZ IRMA",
+      "d.ialvarez54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "M404",
+      "Intervención Escolar",
+      "ENRIQUEZ AGUILAR LETICIA",
+      "d.lenriquez54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M404",
+      "Pensamiento Literario",
+      "GALAN MIRELES EVA MARIA",
+      "d.evagalanezm54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "M401",
+      "Inglés IV",
+      "GONZALEZ GARDINI CLAUDIA NAYELI",
+      "d.cgonzalezg54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M404",
+      "Ciencias Sociales III",
+      "HERNANDEZ CAMARGO SIVONNEY",
+      "d.shernandezc54@dgb.edu.mx",
+      "1",
+      "0.7"
+    ],
+    [
+      "M404",
+      "Taller de Cultura Digital",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "0.6"
+    ],
+    [
+      "M404",
+      "Reacciones Químicas: Conservación de la Materia...",
+      "MARTINEZ FLORES GRINDELIA",
+      "d.gmartinez54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M402",
+      "Inglés IV",
+      "GONZALEZ GARDINI CLAUDIA NAYELI",
+      "d.cgonzalezg54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M404",
+      "Espacio y Sociedad",
+      "PEREZ PICAZO DELFINO",
+      "d.delfinoperezp54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M404",
+      "Intervención en el Aula",
+      "SANCHEZ MEZA JERUSALEN",
+      "d.jsanchez54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M405",
+      "Conciencia Histórica I. Perspectivas...",
+      "AGUDO GARCIA JOSE ALFREDO",
+      "d.jaagudo54@dgb.edu.mx",
+      "1",
+      "0.7"
+    ],
+    [
+      "M405",
+      "Salud Pública",
+      "CANSECO PRADO ANGELA GABRIELA",
+      "d.acansecop54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M403",
+      "Inglés IV",
+      "GONZALEZ GARDINI CLAUDIA NAYELI",
+      "d.cgonzalezg54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M405",
+      "Pensamiento Literario",
+      "GALAN MIRELES EVA MARIA",
+      "d.evagalanezm54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "M404",
+      "Inglés IV",
+      "GONZALEZ GARDINI CLAUDIA NAYELI",
+      "d.cgonzalezg54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M405",
+      "Ciencias Sociales III",
+      "HERNANDEZ CAMARGO SIVONNEY",
+      "d.shernandezc54@dgb.edu.mx",
+      "1",
+      "0.7"
+    ],
+    [
+      "M405",
+      "Taller de Cultura Digital",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "0.6"
+    ],
+    [
+      "M405",
+      "Inglés IV",
+      "GONZALEZ GARDINI CLAUDIA NAYELI",
+      "d.cgonzalezg54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M405",
+      "Reacciones Químicas: Conservación de la Materia...",
+      "MARTINEZ FLORES GRINDELIA",
+      "d.gmartinez54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M405",
+      "Espacio y Sociedad",
+      "PEREZ PICAZO DELFINO",
+      "d.delfinoperezp54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M405",
+      "Nutrición",
+      "VAZQUEZ ALAMILLA ISMAEL",
+      "d.ivazquez54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M406",
+      "Salud Pública",
+      "CANSECO PRADO ANGELA GABRIELA",
+      "d.acansecop54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M406",
+      "Inglés IV",
+      "GONZALEZ GARDINI CLAUDIA NAYELI",
+      "d.cgonzalezg54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "M406",
+      "Pensamiento Literario",
+      "GALAN MIRELES EVA MARIA",
+      "d.evagalanezm54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "V407",
+      "Inglés IV",
+      "GONZALEZ GARDINI CLAUDIA NAYELI",
+      "d.cgonzalezg54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "M406",
+      "Ciencias Sociales III",
+      "HERNANDEZ CAMARGO SIVONNEY",
+      "d.shernandezc54@dgb.edu.mx",
+      "1",
+      "0.7"
+    ],
+    [
+      "M406",
+      "Taller de Cultura Digital",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "0.6"
+    ],
+    [
+      "V408",
+      "Inglés IV",
+      "GONZALEZ GARDINI CLAUDIA NAYELI",
+      "d.cgonzalezg54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "M406",
+      "Reacciones Químicas: Conservación de la Materia...",
+      "MARTINEZ FLORES GRINDELIA",
+      "d.gmartinez54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M406",
+      "Espacio y Sociedad",
+      "OVIEDO JUAREZ HERNAN SAIDE",
+      "d.hsoviedo54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M406",
+      "Nutrición",
+      "VAZQUEZ ALAMILLA ISMAEL",
+      "d.ivazquez54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M406",
+      "Conciencia Histórica I. Perspectivas...",
+      "VITE BARRERA SAUL ELIAS",
+      "d.saulviteb54@dgb.edu.mx",
+      "1",
+      "0.7"
+    ],
+    [
+      "V207",
+      "Pensamiento Matemático II",
+      "ARENAS OROZCO ELVIA ABIGAIL",
+      "d.earenas54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V207",
+      "Ingles II",
+      "CADENA GALINDO LAURA MARIA",
+      "d.lmcadena54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "V207",
+      "Ciencias Sociales II",
+      "GARCIA LOPEZ JUANA MARIA",
+      "d.jmgarcia54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V207",
+      "Pensamiento Filosófico y Humanidades II",
+      "GARCIA LOPEZ JUANA MARIA",
+      "d.jmgarcia54@dgb.edu.mx",
+      "1,2",
+      "0.5,0.5"
+    ],
+    [
+      "V207",
+      "Taller de ciencias",
+      "GAYOSSO TOLENTINO ERIKA ITZEL",
+      "d.erikagayossot5_4@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V207",
+      "Formación Socioemocional II",
+      "HERRERA GOMEZ ALFONSO",
+      "d.aherrera54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "V207",
+      "Cultura Digital II",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V207",
+      "Ciencias Naturales, Experimentales...",
+      "OVIEDO JUAREZ HERNAN SAIDE",
+      "d.hsoviedo54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V207",
+      "Lengua y Comunicación II",
+      "RIOS CRUZ OSCAR GEOVANI",
+      "d.oscarriosc54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V208",
+      "Pensamiento Matemático II",
+      "ARENAS OROZCO ELVIA ABIGAIL",
+      "d.earenas54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V208",
+      "Ingles II",
+      "CORTEZ CERVANTES J.JESUS",
+      "d.jesuscortezc54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "V208",
+      "Ciencias Sociales II",
+      "GARCIA LOPEZ JUANA MARIA",
+      "d.jmgarcia54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V208",
+      "Pensamiento Filosófico y Humanidades II",
+      "GARCIA LOPEZ JUANA MARIA",
+      "d.jmgarcia54@dgb.edu.mx",
+      "1,2",
+      "0.5,0.5"
+    ],
+    [
+      "V208",
+      "Taller de ciencias",
+      "GAYOSSO TOLENTINO ERIKA ITZEL",
+      "d.erikagayossot5_4@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V208",
+      "Formación Socioemocional II",
+      "HERRERA GOMEZ ALFONSO",
+      "d.aherrera54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "V208",
+      "Cultura Digital II",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V208",
+      "Ciencias Naturales, Experimentales...",
+      "OVIEDO JUAREZ HERNAN SAIDE",
+      "d.hsoviedo54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V208",
+      "Lengua y Comunicación II",
+      "RIOS CRUZ OSCAR GEOVANI",
+      "d.oscarriosc54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V209",
+      "Pensamiento Matemático II",
+      "ARENAS OROZCO ELVIA ABIGAIL",
+      "d.earenas54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V209",
+      "Taller de ciencias",
+      "BAÑOS RUIZ VICTOR ARTURO",
+      "d.victorbansruiz.54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V209",
+      "Ingles II",
+      "CORTEZ CERVANTES J.JESUS",
+      "d.jesuscortezc54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "V209",
+      "Ciencias Sociales II",
+      "HERNANDEZ HERNANDEZ LUIS IGNACIO",
+      "d.lihernandez54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V209",
+      "Formación Socioemocional II",
+      "ESPINOSA ARTEAGA MARTIN",
+      "d.mespinosa54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "V209",
+      "Cultura Digital II",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V209",
+      "Ciencias Naturales, Experimentales...",
+      "OVIEDO JUAREZ HERNAN SAIDE",
+      "d.hsoviedo54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V209",
+      "Lengua y Comunicación II",
+      "RIOS CRUZ OSCAR GEOVANI",
+      "d.oscarriosc54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V209",
+      "Pensamiento Filosófico y Humanidades II",
+      "VITE BARRERA SAUL ELIAS",
+      "d.saulviteb54@dgb.edu.mx",
+      "1,2",
+      "0.5,0.5"
+    ],
+    [
+      "V210",
+      "Pensamiento Matemático II",
+      "ARENAS OROZCO ELVIA ABIGAIL",
+      "d.earenas54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V210",
+      "Ciencias Naturales, Experimentales...",
+      "BAÑOS RUIZ VICTOR ARTURO",
+      "d.victorbansruiz.54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V210",
+      "Taller de ciencias",
+      "BAÑOS RUIZ VICTOR ARTURO",
+      "d.victorbansruiz.54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V210",
+      "Ingles II",
+      "CORTEZ CERVANTES J.JESUS",
+      "d.jesuscortezc54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "V210",
+      "Ciencias Sociales II",
+      "HERNANDEZ HERNANDEZ LUIS IGNACIO",
+      "d.lihernandez54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V210",
+      "Formación Socioemocional II",
+      "ESPINOSA ARTEAGA MARTIN",
+      "d.mespinosa54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "V210",
+      "Cultura Digital II",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V210",
+      "Lengua y Comunicación II",
+      "RIOS CRUZ OSCAR GEOVANI",
+      "d.oscarriosc54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V210",
+      "Pensamiento Filosófico y Humanidades II",
+      "VITE BARRERA SAUL ELIAS",
+      "d.saulviteb54@dgb.edu.mx",
+      "1,2",
+      "0.5,0.5"
+    ],
+    [
+      "V211",
+      "Pensamiento Matemático II",
+      "ARENAS OROZCO ELVIA ABIGAIL",
+      "d.earenas54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V211",
+      "Ciencias Naturales, Experimentales...",
+      "BAÑOS RUIZ VICTOR ARTURO",
+      "d.victorbansruiz.54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V211",
+      "Taller de ciencias",
+      "BAÑOS RUIZ VICTOR ARTURO",
+      "d.victorbansruiz.54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ],
+    [
+      "V211",
+      "Ingles II",
+      "CORTEZ CERVANTES J.JESUS",
+      "d.jesuscortezc54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "V211",
+      "Ciencias Sociales II",
+      "HERNANDEZ HERNANDEZ LUIS IGNACIO",
+      "d.lihernandez54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V211",
+      "Formación Socioemocional II",
+      "ESPINOSA ARTEAGA MARTIN",
+      "d.mespinosa54@dgb.edu.mx",
+      "3",
+      "1"
+    ],
+    [
+      "V211",
+      "Cultura Digital II",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V211",
+      "Lengua y Comunicación II",
+      "PRIEGO CARDOZA OLGA LETICIA",
+      "d.olpriego54@dgb.edu.mx",
+      "1",
+      "0.5"
+    ],
+    [
+      "V211",
+      "Pensamiento Filosófico y Humanidades II",
+      "VITE BARRERA SAUL ELIAS",
+      "d.saulviteb54@dgb.edu.mx",
+      "1,2",
+      "0.5,0.5"
+    ],
+    [
+      "V407",
+      "Reacciones Químicas: Conservación de la Materia...",
+      "BUSTAMANTE ABONCE JOSE MAURO ROBERTO",
+      "d.jmrbustamante54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "V407",
+      "Conciencia Histórica I. Perspectivas...",
+      "CAMARGO CONTRERAS PEDRO",
+      "d.pcamargo54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "V409",
+      "Inglés IV",
+      "GONZALEZ GARDINI CLAUDIA NAYELI",
+      "d.cgonzalezg54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "V407",
+      "Ciencias Sociales III",
+      "HERNANDEZ CAMARGO SIVONNEY",
+      "d.shernandezc54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "V407",
+      "Taller de Cultura Digital",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "2"
+    ],
+    [
+      "V410",
+      "Inglés IV",
+      "GONZALEZ GARDINI CLAUDIA NAYELI",
+      "d.cgonzalezg54@dgb.edu.mx",
+      "2",
+      "0.3"
+    ],
+    [
+      "M401",
+      "Temas Selectos de Matemáticas I",
+      "MARTINEZ RUIZ MARTIN",
+      "d.mmartinezr54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "V407",
+      "Espacio y Sociedad",
+      "PEREZ PICAZO DELFINO",
+      "d.delfinoperezp54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "V407",
+      "Pensamiento Literario",
+      "PRIEGO CARDOZA OLGA LETICIA",
+      "d.olpriego54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "V407",
+      "Comunidades Virtuales",
+      "RUBIO GARCIA MARIA ELENA",
+      "d.merubio54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "V407",
+      "Mantenimiento y Redes de Cómputo",
+      "RUBIO GARCIA MARIA ELENA",
+      "d.merubio54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "M402",
+      "Temas Selectos de Matemáticas I",
+      "MARTINEZ RUIZ MARTIN",
+      "d.mmartinezr54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "V408",
+      "Reacciones Químicas: Conservación de la Materia...",
+      "BUSTAMANTE ABONCE JOSE MAURO ROBERTO",
+      "d.jmrbustamante54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "V408",
+      "Conciencia Histórica I. Perspectivas...",
+      "CAMARGO CONTRERAS PEDRO",
+      "d.pcamargo54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M403",
+      "Temas Selectos de Matemáticas I",
+      "MARTINEZ RUIZ MARTIN",
+      "d.mmartinezr54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "V408",
+      "Ciencias Sociales III",
+      "HERNANDEZ CAMARGO SIVONNEY",
+      "d.shernandezc54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "V408",
+      "Intervención en el Aula",
+      "HERNANDEZ PICAZO LUIS FRANCISCO",
+      "d.luisfpicazo5_4@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "V408",
+      "Intervención Escolar",
+      "JUAREZ FLORES AURORA",
+      "d.ajuarez54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "V408",
+      "Taller de Cultura Digital",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "2"
+    ],
+    [
+      "M404",
+      "Temas Selectos de Matemáticas I",
+      "MARTINEZ RUIZ MARTIN",
+      "d.mmartinezr54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "V408",
+      "Espacio y Sociedad",
+      "PEREZ PICAZO DELFINO",
+      "d.delfinoperezp54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "V408",
+      "Pensamiento Literario",
+      "PRIEGO CARDOZA OLGA LETICIA",
+      "d.olpriego54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "M405",
+      "Temas Selectos de Matemáticas I",
+      "CARRANZA QUIROZ CLAUDIA",
+      "d.ccarranza54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "V409",
+      "Reacciones Químicas: Conservación de la Materia...",
+      "BUSTAMANTE ABONCE JOSE MAURO ROBERTO",
+      "d.jmrbustamante54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "V409",
+      "Conciencia Histórica I. Perspectivas...",
+      "CAMARGO CONTRERAS PEDRO",
+      "d.pcamargo54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "V409",
+      "Ciencias Sociales III",
+      "CAMARGO CONTRERAS PEDRO",
+      "d.pcamargo54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "M406",
+      "Temas Selectos de Matemáticas I",
+      "CARRANZA QUIROZ CLAUDIA",
+      "d.ccarranza54@dgb.edu.mx",
+      "2",
+      "0.7"
+    ],
+    [
+      "V409",
+      "Intervención en el Aula",
+      "HERNANDEZ PICAZO LUIS FRANCISCO",
+      "d.luisfpicazo5_4@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "V409",
+      "Taller de Cultura Digital",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "2"
+    ],
+    [
+      "V407",
+      "Temas Selectos de Matemáticas I",
+      "MARTINEZ RUIZ MARTIN",
+      "d.mmartinezr54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "V409",
+      "Espacio y Sociedad",
+      "PEREZ PICAZO DELFINO",
+      "d.delfinoperezp54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "V409",
+      "Pensamiento Literario",
+      "PRIEGO CARDOZA OLGA LETICIA",
+      "d.olpriego54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "V409",
+      "Intervención Escolar",
+      "SANCHEZ MEZA JERUSALEN",
+      "d.jsanchez54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "V408",
+      "Temas Selectos de Matemáticas I",
+      "MARTINEZ RUIZ MARTIN",
+      "d.mmartinezr54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "V409",
+      "Temas Selectos de Matemáticas I",
+      "MARTINEZ RUIZ MARTIN",
+      "d.mmartinezr54@dgb.edu.mx",
+      "2",
+      "0.4"
+    ],
+    [
+      "V410",
+      "Espacio y Sociedad",
+      "BAÑOS RUIZ VICTOR ARTURO",
+      "d.victorbansruiz.54@dgb.edu.mx",
+      "2",
+      "0.3"
+    ],
+    [
+      "V410",
+      "Nutrición",
+      "BECERRA HERNANDEZ FABIOLA ALEJANDRA",
+      "d.fabecerra54@dgb.edu.mx",
+      "3",
+      ""
+    ],
+    [
+      "V410",
+      "Salud Pública",
+      "BECERRA HERNANDEZ FABIOLA ALEJANDRA",
+      "d.fabecerra54@dgb.edu.mx",
+      "2",
+      "0.3"
+    ],
+    [
+      "V410",
+      "Reacciones Químicas: Conservación de la Materia...",
+      "BUSTAMANTE ABONCE JOSE MAURO ROBERTO",
+      "d.jmrbustamante54@dgb.edu.mx",
+      "2",
+      "0.3"
+    ],
+    [
+      "V410",
+      "Conciencia Histórica I. Perspectivas...",
+      "CAMARGO CONTRERAS PEDRO",
+      "d.pcamargo54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "V410",
+      "Ciencias Sociales III",
+      "CAMARGO CONTRERAS PEDRO",
+      "d.pcamargo54@dgb.edu.mx",
+      "3",
+      "0.5"
+    ],
+    [
+      "V410",
+      "Temas Selectos de Matemáticas I",
+      "ARENAS OROZCO ELVIA ABIGAIL",
+      "d.earenas54@dgb.edu.mx",
+      "2",
+      "0.3"
+    ],
+    [
+      "V410",
+      "Taller de Cultura Digital",
+      "LOPEZ SALAZAR FELIPE",
+      "d.flopez54@dgb.edu.mx",
+      "1",
+      "2"
+    ],
+    [
+      "V410",
+      "Pensamiento Literario",
+      "PRIEGO CARDOZA OLGA LETICIA",
+      "d.olpriego54@dgb.edu.mx",
+      "2",
+      "0.5"
+    ]
+  ]
+}
