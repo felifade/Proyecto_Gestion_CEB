@@ -640,6 +640,8 @@ function filterTeacherDirectory() {
         renderClassifiedDirectory(filteredData);
     } else if (activeDirectoryView === 'tutors') {
         renderTutorsDirectory();
+    } else if (activeDirectoryView === 'exams') {
+        renderExamsDirectory();
     }
 }
 
@@ -675,6 +677,21 @@ function updateGroupFilterOptions() {
     const cycle = appConfig.activeCycle || "B.25.26";
     const cycleTutors = (typeof tutoresFallbackData !== 'undefined') ? (tutoresFallbackData[cycle] || {}) : {};
     Object.keys(cycleTutors).forEach(g => {
+        const shift = g.substring(0, 1);
+        const semester = g.substring(1, 2);
+        
+        const matchSemestre = (selectedSemestre === "all" || semester === selectedSemestre);
+        const matchTurno = (selectedTurno === "all" || shift === selectedTurno);
+        
+        if (matchSemestre && matchTurno) {
+            groupsSet.add(g);
+        }
+    });
+    
+    // Also add from globalesFallbackData for active cycle
+    const cycleExams = (typeof globalesFallbackData !== 'undefined') ? (globalesFallbackData.exams || []) : [];
+    cycleExams.forEach(exam => {
+        const g = exam.grupo;
         const shift = g.substring(0, 1);
         const semester = g.substring(1, 2);
         
@@ -731,31 +748,47 @@ function switchDirectoryView(viewMode) {
     const btnTable = document.getElementById("btn-view-table-dir");
     const btnCards = document.getElementById("btn-view-cards-dir");
     const btnTutors = document.getElementById("btn-view-tutors-dir");
+    const btnExams = document.getElementById("btn-view-exams-dir");
     const tableContainer = document.getElementById("directory-table-view");
     const cardsContainer = document.getElementById("directory-cards-view");
     const tutorsContainer = document.getElementById("directory-tutors-view");
+    const examsContainer = document.getElementById("directory-exams-view");
+    const dateFilterItem = document.getElementById("filter-fecha-item");
+    
+    // Reset buttons
+    if (btnTable) btnTable.classList.remove("active");
+    if (btnCards) btnCards.classList.remove("active");
+    if (btnTutors) btnTutors.classList.remove("active");
+    if (btnExams) btnExams.classList.remove("active");
+    
+    // Reset containers
+    if (tableContainer) tableContainer.style.display = "none";
+    if (cardsContainer) cardsContainer.style.display = "none";
+    if (tutorsContainer) tutorsContainer.style.display = "none";
+    if (examsContainer) examsContainer.style.display = "none";
+    
+    // Toggle date filter visibility
+    if (dateFilterItem) {
+        if (viewMode === 'exams') {
+            dateFilterItem.style.display = "block";
+            updateExamsDateFilterOptions();
+        } else {
+            dateFilterItem.style.display = "none";
+        }
+    }
     
     if (viewMode === 'table') {
         if (btnTable) btnTable.classList.add("active");
-        if (btnCards) btnCards.classList.remove("active");
-        if (btnTutors) btnTutors.classList.remove("active");
         if (tableContainer) tableContainer.style.display = "block";
-        if (cardsContainer) cardsContainer.style.display = "none";
-        if (tutorsContainer) tutorsContainer.style.display = "none";
     } else if (viewMode === 'cards') {
-        if (btnTable) btnTable.classList.remove("active");
         if (btnCards) btnCards.classList.add("active");
-        if (btnTutors) btnTutors.classList.remove("active");
-        if (tableContainer) tableContainer.style.display = "none";
         if (cardsContainer) cardsContainer.style.display = "grid";
-        if (tutorsContainer) tutorsContainer.style.display = "none";
     } else if (viewMode === 'tutors') {
-        if (btnTable) btnTable.classList.remove("active");
-        if (btnCards) btnCards.classList.remove("active");
         if (btnTutors) btnTutors.classList.add("active");
-        if (tableContainer) tableContainer.style.display = "none";
-        if (cardsContainer) cardsContainer.style.display = "none";
         if (tutorsContainer) tutorsContainer.style.display = "block";
+    } else if (viewMode === 'exams') {
+        if (btnExams) btnExams.classList.add("active");
+        if (examsContainer) examsContainer.style.display = "block";
     }
     filterTeacherDirectory();
 }
@@ -789,6 +822,22 @@ function updateSemesterAndShiftFilterOptions() {
     const cycle = appConfig.activeCycle || "B.25.26";
     const cycleTutors = (typeof tutoresFallbackData !== 'undefined') ? (tutoresFallbackData[cycle] || {}) : {};
     Object.keys(cycleTutors).forEach(g => {
+        if (g.length >= 2) {
+            const shift = g.substring(0, 1);
+            const semester = g.substring(1, 2);
+            if (shift === "M" || shift === "V") {
+                turnoSet.add(shift);
+            }
+            if (!isNaN(semester)) {
+                semSet.add(semester);
+            }
+        }
+    });
+
+    // Also populate from globalesFallbackData for active cycle to cover any other groups/semesters
+    const cycleExams = (typeof globalesFallbackData !== 'undefined') ? (globalesFallbackData.exams || []) : [];
+    cycleExams.forEach(exam => {
+        const g = exam.grupo;
         if (g.length >= 2) {
             const shift = g.substring(0, 1);
             const semester = g.substring(1, 2);
@@ -1534,4 +1583,230 @@ function runLocalClassifier(subject, body) {
     const results = document.getElementById("classifier-results-card");
     if (placeholder) placeholder.style.display = "none";
     if (results) results.style.display = "block";
+}
+
+function updateExamsDateFilterOptions() {
+    const fechaSelect = document.getElementById("filter-fecha");
+    if (!fechaSelect) return;
+    
+    const cycleExams = (typeof globalesFallbackData !== 'undefined') ? (globalesFallbackData.exams || []) : [];
+    
+    const datesSet = new Set();
+    cycleExams.forEach(exam => {
+        if (exam.fecha) {
+            datesSet.add(exam.fecha);
+        }
+    });
+    
+    const sortedDates = Array.from(datesSet).sort((a, b) => {
+        const parseDate = (dStr) => {
+            const parts = dStr.split('/');
+            if (parts.length === 3) {
+                return `20${parts[2]}${parts[1]}${parts[0]}`;
+            }
+            return dStr;
+        };
+        return parseDate(a).localeCompare(parseDate(b));
+    });
+    
+    const previousValue = fechaSelect.value;
+    fechaSelect.innerHTML = '<option value="all">Todos los días</option>';
+    
+    sortedDates.forEach(d => {
+        const option = document.createElement("option");
+        option.value = d;
+        let displayDate = d;
+        const parts = d.split('/');
+        if (parts.length === 3) {
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10);
+            const months = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+            displayDate = `${day} de ${months[month - 1]} (20${parts[2]})`;
+        }
+        option.textContent = displayDate;
+        if (d === previousValue) {
+            option.selected = true;
+        }
+        fechaSelect.appendChild(option);
+    });
+}
+
+function renderExamsDirectory() {
+    const tbody = document.getElementById("exams-directory-body");
+    const auditContainer = document.getElementById("exams-audit-container");
+    if (!tbody) return;
+    
+    tbody.innerHTML = "";
+    
+    const cycleExams = (typeof globalesFallbackData !== 'undefined') ? (globalesFallbackData.exams || []) : [];
+    const cycleWarnings = (typeof globalesFallbackData !== 'undefined') ? (globalesFallbackData.warnings || []) : [];
+    
+    const query = document.getElementById("teacher-search")?.value.toLowerCase().trim() || "";
+    const selectedSemestre = document.getElementById("filter-semestre")?.value || "all";
+    const selectedTurno = document.getElementById("filter-turno")?.value || "all";
+    const selectedGrupo = document.getElementById("filter-grupo")?.value || "all";
+    const selectedFecha = document.getElementById("filter-fecha")?.value || "all";
+    
+    const filteredExams = [];
+    
+    cycleExams.forEach(exam => {
+        const shift = exam.grupo.substring(0, 1);
+        const semester = exam.grupo.substring(1, 2);
+        
+        const matchesQuery = exam.materia.toLowerCase().includes(query) || 
+                             exam.docente_titular.toLowerCase().includes(query) || 
+                             exam.docente_apoyo.toLowerCase().includes(query) ||
+                             exam.grupo.toLowerCase().includes(query);
+                             
+        const matchesSemestre = (selectedSemestre === "all" || semester === selectedSemestre);
+        const matchesTurno = (selectedTurno === "all" || shift === selectedTurno);
+        const matchesGrupo = (selectedGrupo === "all" || exam.grupo === selectedGrupo);
+        const matchesFecha = (selectedFecha === "all" || exam.fecha === selectedFecha);
+        
+        if (matchesQuery && matchesSemestre && matchesTurno && matchesGrupo && matchesFecha) {
+            filteredExams.push(exam);
+        }
+    });
+    
+    // 1. Render Audit Summary
+    if (auditContainer) {
+        const filteredWarnings = cycleWarnings.filter(w => {
+            if (selectedGrupo !== "all" && !w.message.includes(selectedGrupo)) {
+                return false;
+            }
+            if (selectedSemestre !== "all") {
+                const groupsFound = w.message.match(/[MV]\d{3}/g) || [];
+                if (groupsFound.length > 0) {
+                    const hasMatch = groupsFound.some(g => g.substring(1, 2) === selectedSemestre);
+                    if (!hasMatch) return false;
+                }
+            }
+            if (selectedTurno !== "all") {
+                const groupsFound = w.message.match(/[MV]\d{3}/g) || [];
+                if (groupsFound.length > 0) {
+                    const hasMatch = groupsFound.some(g => g.substring(0, 1) === selectedTurno);
+                    if (!hasMatch) return false;
+                }
+            }
+            return true;
+        });
+        
+        if (filteredWarnings.length === 0) {
+            auditContainer.innerHTML = `
+                <div style="background: linear-gradient(135deg, hsla(142, 71%, 45%, 0.15) 0%, rgba(0,0,0,0) 100%); border: 1px solid var(--accent-green); padding: 15px 20px; border-radius: 10px; display: flex; align-items: center; gap: 12px;">
+                    <i class="fa-solid fa-circle-check" style="color: var(--accent-green); font-size: 18px;"></i>
+                    <div>
+                        <h4 style="margin: 0 0 2px 0; color: #fff; font-size: 13px;">Auditoría de Calendario: Correcta</h4>
+                        <p style="margin: 0; font-size: 11.5px; color: var(--text-secondary);">No se encontraron cruces de horarios de alumnos, de docentes ni discrepancias con la plantilla en los filtros seleccionados.</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            const criticalCount = filteredWarnings.filter(w => w.severity === "CRITICAL").length;
+            const highCount = filteredWarnings.filter(w => w.severity === "HIGH").length;
+            const mediumCount = filteredWarnings.filter(w => w.severity === "MEDIUM").length;
+            const lowCount = filteredWarnings.filter(w => w.severity === "LOW").length;
+            
+            let badgeHtml = "";
+            if (criticalCount > 0) badgeHtml += `<span class="badge-tag" style="background-color: hsla(355, 85%, 55%, 0.2); color: var(--accent-red); margin-right: 6px;">${criticalCount} Críticos</span>`;
+            if (highCount > 0) badgeHtml += `<span class="badge-tag" style="background-color: hsla(25, 95%, 50%, 0.2); color: var(--accent-gold); margin-right: 6px;">${highCount} Altos</span>`;
+            if (mediumCount + lowCount > 0) badgeHtml += `<span class="badge-tag" style="background-color: hsla(190, 95%, 44%, 0.2); color: var(--accent-cyan);">${mediumCount + lowCount} Advertencias</span>`;
+            
+            let warningListHtml = "";
+            const showLimit = 4;
+            const extraCount = filteredWarnings.length - showLimit;
+            
+            filteredWarnings.slice(0, showLimit).forEach(w => {
+                let severityColor = "var(--accent-cyan)";
+                let iconClass = "fa-circle-info";
+                if (w.severity === "CRITICAL") {
+                    severityColor = "var(--accent-red)";
+                    iconClass = "fa-triangle-exclamation";
+                } else if (w.severity === "HIGH") {
+                    severityColor = "var(--accent-gold)";
+                    iconClass = "fa-circle-exclamation";
+                }
+                
+                warningListHtml += `
+                    <div style="display: flex; gap: 8px; font-size: 11.5px; line-height: 1.4; color: var(--text-secondary); margin-bottom: 6px; align-items: flex-start;">
+                        <i class="fa-solid ${iconClass}" style="color: ${severityColor}; margin-top: 3px; font-size: 11px; flex-shrink: 0;"></i>
+                        <span>${w.message}</span>
+                    </div>
+                `;
+            });
+            
+            let toggleBtnHtml = "";
+            if (extraCount > 0) {
+                let hiddenWarningsHtml = "";
+                filteredWarnings.slice(showLimit).forEach(w => {
+                    let severityColor = "var(--accent-cyan)";
+                    let iconClass = "fa-circle-info";
+                    if (w.severity === "CRITICAL") {
+                        severityColor = "var(--accent-red)";
+                        iconClass = "fa-triangle-exclamation";
+                    } else if (w.severity === "HIGH") {
+                        severityColor = "var(--accent-gold)";
+                        iconClass = "fa-circle-exclamation";
+                    }
+                    hiddenWarningsHtml += `
+                        <div style="display: flex; gap: 8px; font-size: 11.5px; line-height: 1.4; color: var(--text-secondary); margin-bottom: 6px; align-items: flex-start;">
+                            <i class="fa-solid ${iconClass}" style="color: ${severityColor}; margin-top: 3px; font-size: 11px; flex-shrink: 0;"></i>
+                            <span>${w.message}</span>
+                        </div>
+                    `;
+                });
+                
+                toggleBtnHtml = `
+                    <button onclick="document.getElementById('hidden-warnings').style.display = document.getElementById('hidden-warnings').style.display === 'none' ? 'block' : 'none'; this.textContent = this.textContent.includes('Ver todas') ? 'Ocultar advertencias' : 'Ver todas las ${filteredWarnings.length} advertencias';" 
+                        style="background: none; border: none; color: var(--accent-cyan); cursor: pointer; font-size: 11px; font-weight: 600; padding: 0; margin-top: 6px; text-decoration: underline; display: block;">
+                        Ver todas las ${filteredWarnings.length} advertencias
+                    </button>
+                    <div id="hidden-warnings" style="display: none; margin-top: 6px; border-top: 1px dashed hsla(217, 30%, 25%, 0.5); padding-top: 8px;">
+                        ${hiddenWarningsHtml}
+                    </div>
+                `;
+            }
+            
+            auditContainer.innerHTML = `
+                <div style="background: linear-gradient(135deg, hsla(355, 85%, 55%, 0.1) 0%, rgba(0,0,0,0) 100%); border: 1px solid hsla(355, 85%, 55%, 0.3); padding: 16px 20px; border-radius: 12px; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-red); font-size: 18px;"></i>
+                            <h4 style="margin: 0; color: #fff; font-size: 13.5px; font-weight: 700;">Auditoría del Calendario de Exámenes</h4>
+                        </div>
+                        <div style="display: flex;">${badgeHtml}</div>
+                    </div>
+                    <div style="border-top: 1px solid hsla(217, 30%, 25%, 0.3); padding-top: 10px; max-height: 250px; overflow-y: auto; padding-right: 6px;">
+                        ${warningListHtml}
+                        ${toggleBtnHtml}
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    // 2. Render Table
+    if (filteredExams.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No se encontraron exámenes para los filtros seleccionados.</td></tr>`;
+        return;
+    }
+    
+    filteredExams.forEach(item => {
+        const tr = document.createElement("tr");
+        
+        const shiftBadgeClass = item.grupo.startsWith("M") ? "badge-matutino" : "badge-vespertino";
+        const supportText = item.docente_apoyo ? `<code>${item.docente_apoyo}</code>` : `<span style="color: var(--text-muted); font-style: italic;">Sin apoyo</span>`;
+        
+        tr.innerHTML = `
+            <td><code>${item.fecha}</code></td>
+            <td><strong>${item.horario}</strong></td>
+            <td><span class="group-tag" style="font-size: 11px;">${item.grupo}</span></td>
+            <td>
+                <span style="color: var(--text-primary); font-weight: 600;">${item.materia}</span>
+            </td>
+            <td><strong>${item.docente_titular}</strong></td>
+            <td>${supportText}</td>
+        `;
+        tbody.appendChild(tr);
+    });
 }

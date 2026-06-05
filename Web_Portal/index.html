@@ -506,6 +506,9 @@
                                         <button class="view-toggle-btn" id="btn-view-tutors-dir" onclick="switchDirectoryView('tutors')">
                                             <i class="fa-solid fa-user-shield"></i> Tutores
                                         </button>
+                                        <button class="view-toggle-btn" id="btn-view-exams-dir" onclick="switchDirectoryView('exams')">
+                                            <i class="fa-solid fa-file-signature"></i> Exámenes Globales
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -530,6 +533,12 @@
                                         <div class="filter-item">
                                             <label><i class="fa-solid fa-users"></i> Grupo</label>
                                             <select id="filter-grupo" onchange="filterTeacherDirectory()">
+                                                <option value="all">Todos</option>
+                                            </select>
+                                        </div>
+                                        <div class="filter-item" id="filter-fecha-item" style="display: none;">
+                                            <label><i class="fa-solid fa-calendar-day"></i> Día</label>
+                                            <select id="filter-fecha" onchange="filterTeacherDirectory()">
                                                 <option value="all">Todos</option>
                                             </select>
                                         </div>
@@ -568,6 +577,32 @@
                                             <tbody id="tutors-directory-body">
                                                 <tr>
                                                     <td colspan="3" style="text-align: center; color: var(--text-muted);">Cargando tutores...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div class="directory-table-container" id="directory-exams-view" style="display: none;">
+                                        <!-- Audit Warnings Section -->
+                                        <div class="audit-summary-box" id="exams-audit-container" style="margin-bottom: 20px;">
+                                            <!-- Dynamically populated -->
+                                        </div>
+                                        
+                                        <!-- Exams Table -->
+                                        <table class="premium-table" id="exams-directory-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Fecha</th>
+                                                    <th>Horario</th>
+                                                    <th>Grupo</th>
+                                                    <th>Materia (UAC)</th>
+                                                    <th>Docente Titular</th>
+                                                    <th>Docente Apoyo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="exams-directory-body">
+                                                <tr>
+                                                    <td colspan="6" style="text-align: center; color: var(--text-muted);">Cargando exámenes...</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -904,6 +939,7 @@
     <!-- Main JS files -->
     <script src="directorio.js"></script>
     <script src="calendario.js"></script>
+    <script src="globales.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
