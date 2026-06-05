@@ -16,21 +16,29 @@ function switchEstView(view) {
     window.EstructuraActiveView = view;
     
     const btnList = document.getElementById("btn-est-view-list");
-    const btnBlocks = document.getElementById("btn-est-view-blocks");
+    const btnBlocksGrupo = document.getElementById("btn-est-view-blocks-grupo");
+    const btnBlocksDocente = document.getElementById("btn-est-view-blocks-docente");
     const viewList = document.getElementById("est-list-view");
     const viewBlocks = document.getElementById("est-blocks-view");
     
-    if (btnList && btnBlocks && viewList && viewBlocks) {
+    if (btnList && btnBlocksGrupo && btnBlocksDocente && viewList && viewBlocks) {
+        // Resetear clases de todos los botones
+        btnList.classList.remove("active");
+        btnBlocksGrupo.classList.remove("active");
+        btnBlocksDocente.classList.remove("active");
+        
         if (view === 'list') {
             btnList.classList.add("active");
-            btnBlocks.classList.remove("active");
             viewList.style.display = "block";
             viewList.classList.add("active");
             viewBlocks.style.display = "none";
             viewBlocks.classList.remove("active");
         } else {
-            btnList.classList.remove("active");
-            btnBlocks.classList.add("active");
+            if (view === 'blocks-grupo') {
+                btnBlocksGrupo.classList.add("active");
+            } else {
+                btnBlocksDocente.classList.add("active");
+            }
             viewList.style.display = "none";
             viewList.classList.remove("active");
             viewBlocks.style.display = "block";
@@ -287,9 +295,9 @@ function filterEstructura() {
     if (statVacantes) statVacantes.textContent = vacantesCount;
 
     // Si la vista activa es bloques, redirigir
-    if (window.EstructuraActiveView === 'blocks') {
+    if (window.EstructuraActiveView && window.EstructuraActiveView.startsWith('blocks')) {
         tableBody.innerHTML = '';
-        renderEstructuraBlocks(filtered);
+        renderEstructuraBlocks(filtered, window.EstructuraActiveView);
         return;
     }
 
