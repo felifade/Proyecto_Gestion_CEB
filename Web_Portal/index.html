@@ -351,6 +351,7 @@
                         <button class="sub-tab-btn" onclick="switchSubArea('docentes')">Docentes y Horarios</button>
                         <button class="sub-tab-btn" onclick="switchSubArea('orientacion')">Orientación y Tutorías</button>
                         <button class="sub-tab-btn" onclick="switchSubArea('biblioteca')">Biblioteca</button>
+                        <button class="sub-tab-btn" onclick="switchSubArea('horarios-escolares')">Horarios Escolares</button>
                     </div>
 
                     <!-- Sub-area 1: Control Escolar -->
@@ -747,6 +748,109 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Sub-area 5: Horarios Escolares -->
+                    <div class="sub-area-content" id="sub-horarios-escolares">
+                        <div class="hor-container" id="hor-container">
+                            <div class="hor-header-mini">
+                                <h3><i class="fa-regular fa-calendar-days"></i> Visor de Horarios Escolares</h3>
+                                <p>Consulta la asignación semanal de clases por grupo, por docente o en vista general de sesiones.</p>
+                            </div>
+                            
+                            <!-- PESTAÑAS INTERNAS DE HORARIOS -->
+                            <div class="hor-tabs-row">
+                                <button class="hor-tab-btn active" data-tab="grupo">Por Grupo</button>
+                                <button class="hor-tab-btn" data-tab="docente">Por Docente</button>
+                                <button class="hor-tab-btn" data-tab="general">Vista General</button>
+                            </div>
+
+                            <!-- CARGANDO -->
+                            <div id="hor-loading" class="hor-loading" style="display: none;">
+                                <div class="hor-loading-spinner"></div>
+                                <span>Cargando datos de horarios...</span>
+                            </div>
+
+                            <!-- ERROR -->
+                            <div id="hor-error" style="display: none;"></div>
+
+                            <div id="hor-main" style="display: none;">
+                                <!-- PESTAÑA: POR GRUPO -->
+                                <div id="pane-grupo" class="hor-tab-pane active">
+                                    <div class="hor-filters">
+                                        <div class="hor-filter-field">
+                                            <label for="sel-ciclo-grupo">Ciclo Escolar</label>
+                                            <select id="sel-ciclo-grupo"></select>
+                                        </div>
+                                        <div class="hor-filter-field">
+                                            <label for="sel-grupo">Grupo</label>
+                                            <select id="sel-grupo"></select>
+                                        </div>
+                                        <button class="hor-print-btn hor-print-all-btn" onclick="horImprimirTodosGrupos()" title="Generar PDF con todos los grupos del ciclo">
+                                            <i class="fa-solid fa-file-pdf"></i> Imprimir todos los grupos
+                                        </button>
+                                    </div>
+                                    <div id="view-grupo">
+                                        <p class="hor-hint">Selecciona un ciclo y grupo para ver el horario.</p>
+                                    </div>
+                                </div>
+
+                                <!-- PESTAÑA: POR DOCENTE -->
+                                <div id="pane-docente" class="hor-tab-pane">
+                                    <div class="hor-filters">
+                                        <div class="hor-filter-field">
+                                            <label for="sel-ciclo-doc">Ciclo Escolar</label>
+                                            <select id="sel-ciclo-doc"></select>
+                                        </div>
+                                        <div class="hor-filter-field">
+                                            <label for="sel-docente">Docente</label>
+                                            <select id="sel-docente"></select>
+                                        </div>
+                                        <button class="hor-print-btn hor-print-all-btn" onclick="horImprimirTodosDocentes()" title="Generar PDF con todos los docentes del ciclo">
+                                            <i class="fa-solid fa-file-pdf"></i> Imprimir todos los docentes
+                                        </button>
+                                    </div>
+                                    <div id="view-docente">
+                                        <p class="hor-hint">Selecciona un ciclo y docente para ver el horario.</p>
+                                    </div>
+                                </div>
+
+                                <!-- PESTAÑA: VISTA GENERAL -->
+                                <div id="pane-general" class="hor-tab-pane">
+                                    <div class="hor-filters">
+                                        <div class="hor-filter-field hor-search-field">
+                                            <label for="search-gen">Buscar</label>
+                                            <input type="text" id="search-gen" placeholder="Grupo, materia, docente, ciclo...">
+                                        </div>
+                                        <div class="hor-filter-field">
+                                            <label for="filter-dia-gen">Día</label>
+                                            <select id="filter-dia-gen">
+                                                <option value="">Todos los días</option>
+                                                <option value="LUNES">Lunes</option>
+                                                <option value="MARTES">Martes</option>
+                                                <option value="MIERCOLES">Miércoles</option>
+                                                <option value="JUEVES">Jueves</option>
+                                                <option value="VIERNES">Viernes</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="view-general">
+                                        <p class="hor-hint">Usa los filtros para buscar sesiones.</p>
+                                    </div>
+                                </div>
+
+                                <!-- ACCIÓN ADMINISTRATIVA DE REGENERACIÓN -->
+                                <div class="hor-admin-bar">
+                                    <div class="hor-admin-label">
+                                        <strong>Actualización de datos:</strong>
+                                        Regenera la tabla consolidada en Google Sheets a partir de las cargas académicas raw. Requiere clave de administrador.
+                                    </div>
+                                    <button id="btn-regenerar" class="btn-regen-hor">
+                                        <i class="fa-solid fa-arrows-rotate"></i> Regenerar Horarios
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- 4. COORDINACIÓN ADMINISTRATIVA PAGE -->
@@ -833,6 +937,9 @@
     <script src="directorio.js"></script>
     <script src="calendario.js"></script>
     <script src="globales.js"></script>
+    <script src="api_horarios.js"></script>
+    <script src="print_horarios.js"></script>
+    <script src="app_horarios.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
