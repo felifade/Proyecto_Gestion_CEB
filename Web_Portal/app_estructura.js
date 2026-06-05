@@ -375,3 +375,46 @@ function filterEstructura() {
         `;
     }).join('');
 }
+
+// Parsear rangos horarios como "07:00-09:00 / 10:00-11:00" en sesiones individuales
+function parseEstructuraSessions(row) {
+    const sessions = [];
+    const days = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes'];
+    const timeRegex = /(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})/g;
+    
+    days.forEach(day => {
+        const val = (row[day] || '').trim();
+        if (!val || val === '0') return;
+        
+        // Separar por '/' si hay múltiples bloques en el mismo día
+        const parts = val.split('/');
+        parts.forEach(part => {
+            // Reiniciar el índice del regex
+            timeRegex.lastIndex = 0;
+            const match = timeRegex.exec(part);
+            if (match) {
+                const inicio = match[1];
+                const fin = match[2];
+                
+                // Calcular duración en horas
+                const [hIni, mIni] = inicio.split(':').map(Number);
+                const [hFin, mFin] = fin.split(':').map(Number);
+                const durHrs = ((hFin * 60 + mFin) - (hIni * 60 + mIni)) / 60;
+                
+                sessions.push({
+                    grupo: row.grupo,
+                    semestre: row.semestre,
+                    materia: row.uac,
+                    docente: row.docente,
+                    campo_disciplinar: row.campo_disciplinar || '',
+                    dia: day.toUpperCase(),
+                    hora_inicio: inicio,
+                    hora_fin: fin,
+                    horas_bloque: durHrs
+                });
+            }
+        });
+    });
+    return sessions;
+}
+
