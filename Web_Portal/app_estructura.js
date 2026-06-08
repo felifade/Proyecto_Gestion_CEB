@@ -504,7 +504,7 @@ function renderEstructuraBlocks(filteredRows, viewType) {
 // Genera el HTML de una tarjeta individual compacta (card chip) para la estructura educativa
 function buildCompactCardHTML(row, isDocenteView) {
     const hrs = parseFloat(row.tot_horas || row.horas || 0);
-    const hrsStr = `${hrs}h`;
+    const hrsStr = `${hrs} hrs totales`;
     
     let cardLabel = '';
     let cardDesc = '';
@@ -533,19 +533,23 @@ function buildCompactCardHTML(row, isDocenteView) {
     const campo = row.campo_disciplinar || 'Sin área';
     
     return `
-        <div class="est-compact-card-chip" style="padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-color); border-left: 4px solid ${c.border}; background: ${c.bg}; transition: var(--transition-fast); display: flex; flex-direction: column; justify-content: space-between; gap: 4px;"
-             title="${estEsc(row.uac)} · ${estEsc(row.docente || 'VACANTE')} · ${hrsStr}"
-             onmouseover="this.style.transform='translateY(-1px)'; this.style.borderColor='rgba(255, 255, 255, 0.15)'"
-             onmouseout="this.style.transform='none'; this.style.borderColor='var(--border-color)'">
-            <div style="font-weight: 600; font-size: 12.5px; line-height: 1.25; color: ${c.text}; word-break: break-word;">
+        <div class="hor-mat-card" style="border-left: 4px solid ${c.border}; background: ${c.bg}; padding: 10px 12px; border-radius: 8px; transition: var(--transition-fast); display: flex; flex-direction: column; justify-content: space-between; gap: 4px; height: 100%; box-sizing: border-box;"
+             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-md)'; this.style.borderColor='rgba(255,255,255,0.15)';"
+             onmouseout="this.style.transform='none'; this.style.boxShadow='none'; this.style.borderColor='var(--border-color)';"
+             title="${estEsc(row.uac)} · ${estEsc(row.docente || 'VACANTE')} · ${hrsStr}">
+            <div class="hor-mat-name" style="color: ${c.text}; font-size: 12.5px; font-weight: 700; margin-bottom: 2px; line-height: 1.25; word-break: break-word;">
                 ${estEsc(cardLabel)}
             </div>
-            <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            <div class="hor-mat-docente" style="font-size: 11px; color: var(--text-secondary); line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px; display: flex; align-items: center; gap: 4px;">
                 ${cardDesc}
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--text-muted); margin-top: 2px;">
-                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px;" title="${estEsc(campo)}">${estEsc(campo)}</span>
-                <span style="font-family: var(--font-mono); color: var(--accent-gold); font-weight: 600; flex-shrink: 0;"><i class="fa-regular fa-clock" style="font-size: 9px;"></i> ${hrsStr}</span>
+            <div class="hor-mat-comp" style="margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                <span class="badge-tag" style="font-size: 9px; padding: 2px 5px; background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border-radius: 4px; text-transform: uppercase; font-weight: 500; letter-spacing: 0.3px;">
+                    ${estEsc(campo)}
+                </span>
+            </div>
+            <div class="hor-mat-hrs" style="font-size: 10px; color: var(--accent-gold); font-weight: 600; font-family: var(--font-mono); display: flex; align-items: center; gap: 4px; margin-top: auto;">
+                <i class="fa-regular fa-clock" style="font-size: 9.5px;"></i> ${hrsStr}
             </div>
         </div>
     `;
