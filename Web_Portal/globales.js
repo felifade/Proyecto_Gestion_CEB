@@ -3065,7 +3065,12 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Docente 'JUANA MARIA GARCIA LOPEZ/ALFONSO HERRERA GOMEZ' en V207 - 'INGLÉS II. THESE ARE A FEW OF MY FAVORITE THINGS' no se encontró en la plantilla general."
+      "message": "Docente 'JUANA MARIA GARCIA LOPEZ' en V207 - 'INGLÉS II. THESE ARE A FEW OF MY FAVORITE THINGS' no se encontró en la plantilla general."
+    },
+    {
+      "type": "discrepancia_plantilla",
+      "severity": "LOW",
+      "message": "Discrepancia en V207 - 'INGLÉS II. THESE ARE A FEW OF MY FAVORITE THINGS': El docente programado para el examen es ALFONSO HERRERA GOMEZ, pero en la plantilla general es HERRERA GOMEZ ALFONSO."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3170,17 +3175,12 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Docente 'SIVO / GRIN' en M401 - 'REACCIONES QUÍMICAS: CONSERVACIÓN DE LA MATERIA EN LA FORMACIÓN DE NUEVAS SUSTANCIAS' no se encontró en la plantilla general."
-    },
-    {
-      "type": "discrepancia_plantilla",
-      "severity": "LOW",
       "message": "Discrepancia en M402 - 'REACCIONES QUÍMICAS: CONSERVACIÓN DE LA MATERIA EN LA FORMACIÓN DE NUEVAS SUSTANCIAS': El docente programado para el examen es MARTÍNEZ FLORES GRINDELIA, pero en la plantilla general es MARTINEZ FLORES GRINDELIA."
     },
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Docente 'GALAN / GARDINI' en M402 - 'REACCIONES QUÍMICAS: CONSERVACIÓN DE LA MATERIA EN LA FORMACIÓN DE NUEVAS SUSTANCIAS' no se encontró en la plantilla general."
+      "message": "Docente 'GARDINI' en M402 - 'REACCIONES QUÍMICAS: CONSERVACIÓN DE LA MATERIA EN LA FORMACIÓN DE NUEVAS SUSTANCIAS' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3200,17 +3200,12 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Docente 'AGUDO / SIVO' en M404 - 'REACCIONES QUÍMICAS: CONSERVACIÓN DE LA MATERIA EN LA FORMACIÓN DE NUEVAS SUSTANCIAS' no se encontró en la plantilla general."
-    },
-    {
-      "type": "discrepancia_plantilla",
-      "severity": "LOW",
       "message": "Discrepancia en M405 - 'REACCIONES QUÍMICAS: CONSERVACIÓN DE LA MATERIA EN LA FORMACIÓN DE NUEVAS SUSTANCIAS': El docente programado para el examen es MARTÍNEZ FLORES GRINDELIA, pero en la plantilla general es MARTINEZ FLORES GRINDELIA."
     },
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Docente 'GRIN / CARMEN' en M405 - 'REACCIONES QUÍMICAS: CONSERVACIÓN DE LA MATERIA EN LA FORMACIÓN DE NUEVAS SUSTANCIAS' no se encontró en la plantilla general."
+      "message": "Docente 'CARMEN' en M405 - 'REACCIONES QUÍMICAS: CONSERVACIÓN DE LA MATERIA EN LA FORMACIÓN DE NUEVAS SUSTANCIAS' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3220,7 +3215,7 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Discrepancia en M406 - 'REACCIONES QUÍMICAS: CONSERVACIÓN DE LA MATERIA EN LA FORMACIÓN DE NUEVAS SUSTANCIAS': El docente programado para el examen es CARRANZA / GALAN, pero en la plantilla general es CARRANZA QUIROZ CLAUDIA."
+      "message": "Docente 'CARRANZA' en M406 - 'REACCIONES QUÍMICAS: CONSERVACIÓN DE LA MATERIA EN LA FORMACIÓN DE NUEVAS SUSTANCIAS' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3230,17 +3225,17 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Discrepancia en M405 - 'NUTRICIÓN': El docente programado para el examen es ALAMILLA /FELIPE, pero en la plantilla general es LOPEZ SALAZAR FELIPE."
+      "message": "Docente 'ALAMILLA' en M405 - 'NUTRICIÓN' no se encontró en la plantilla general."
+    },
+    {
+      "type": "discrepancia_plantilla",
+      "severity": "LOW",
+      "message": "Docente 'FELIPE' en M405 - 'NUTRICIÓN' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
       "message": "Discrepancia en M406 - 'NUTRICIÓN': El docente programado para el examen es VÁZQUEZ ALAMILLA ISMAEL, pero en la plantilla general es VAZQUEZ ALAMILLA ISMAEL."
-    },
-    {
-      "type": "discrepancia_plantilla",
-      "severity": "LOW",
-      "message": "Docente 'SAUL /GALAN' en M406 - 'NUTRICIÓN' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3260,7 +3255,12 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Discrepancia en M401 - 'CIENCIAS SOCIALES III': El docente programado para el examen es MARTIN / GARDINI, pero en la plantilla general es MARTINEZ RUIZ MARTIN."
+      "message": "Docente 'MARTIN' en M401 - 'CIENCIAS SOCIALES III' no se encontró en la plantilla general."
+    },
+    {
+      "type": "discrepancia_plantilla",
+      "severity": "LOW",
+      "message": "Docente 'GARDINI' en M401 - 'CIENCIAS SOCIALES III' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3270,7 +3270,12 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Discrepancia en M402 - 'CIENCIAS SOCIALES III': El docente programado para el examen es OVIEDO / FELIPE, pero en la plantilla general es LOPEZ SALAZAR FELIPE."
+      "message": "Docente 'OVIEDO' en M402 - 'CIENCIAS SOCIALES III' no se encontró en la plantilla general."
+    },
+    {
+      "type": "discrepancia_plantilla",
+      "severity": "LOW",
+      "message": "Docente 'FELIPE' en M402 - 'CIENCIAS SOCIALES III' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3280,7 +3285,12 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Discrepancia en M403 - 'CIENCIAS SOCIALES III': El docente programado para el examen es FELIPE / MARTIN, pero en la plantilla general es MARTINEZ RUIZ MARTIN."
+      "message": "Docente 'FELIPE' en M403 - 'CIENCIAS SOCIALES III' no se encontró en la plantilla general."
+    },
+    {
+      "type": "discrepancia_plantilla",
+      "severity": "LOW",
+      "message": "Docente 'MARTIN' en M403 - 'CIENCIAS SOCIALES III' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3290,7 +3300,7 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Docente 'DELFINO / GRIN' en M404 - 'CIENCIAS SOCIALES III' no se encontró en la plantilla general."
+      "message": "Docente 'DELFINO' en M404 - 'CIENCIAS SOCIALES III' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3300,7 +3310,7 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Docente 'GRIN / GABRIELA' en M405 - 'CIENCIAS SOCIALES III' no se encontró en la plantilla general."
+      "message": "Docente 'GABRIELA' en M405 - 'CIENCIAS SOCIALES III' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3310,7 +3320,7 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Docente 'ISMAEL / SIVO' en M406 - 'CIENCIAS SOCIALES III' no se encontró en la plantilla general."
+      "message": "Docente 'ISMAEL' en M406 - 'CIENCIAS SOCIALES III' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3330,7 +3340,7 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Discrepancia en M403 - 'TEMAS SELECTOS DE MATEMÁTICAS I': El docente programado para el examen es GALAN / MARTIN, pero en la plantilla general es GALAN MIRELES EVA MARIA."
+      "message": "Docente 'MARTIN' en M403 - 'TEMAS SELECTOS DE MATEMÁTICAS I' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3340,12 +3350,17 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Discrepancia en M405 - 'TEMAS SELECTOS DE MATEMÁTICAS I': El docente programado para el examen es CARRANZA / ISMAEL, pero en la plantilla general es CARRANZA QUIROZ CLAUDIA."
+      "message": "Docente 'CARRANZA' en M405 - 'TEMAS SELECTOS DE MATEMÁTICAS I' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Docente 'SAUL / CARRANZA' en M406 - 'TEMAS SELECTOS DE MATEMÁTICAS I' no se encontró en la plantilla general."
+      "message": "Docente 'ISMAEL' en M405 - 'TEMAS SELECTOS DE MATEMÁTICAS I' no se encontró en la plantilla general."
+    },
+    {
+      "type": "discrepancia_plantilla",
+      "severity": "LOW",
+      "message": "Docente 'CARRANZA' en M406 - 'TEMAS SELECTOS DE MATEMÁTICAS I' no se encontró en la plantilla general."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3365,7 +3380,12 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Discrepancia en M401 - 'ESPACIO Y SOCIEDAD': El docente programado para el examen es HERNANDEZ CAMARGO SIVONEY/GRINDELIA MARTINEZ FLORES, pero en la plantilla general es HERNANDEZ CAMARGO SIVONNEY."
+      "message": "Discrepancia en M401 - 'ESPACIO Y SOCIEDAD': El docente programado para el examen es HERNANDEZ CAMARGO SIVONEY, pero en la plantilla general es HERNANDEZ CAMARGO SIVONNEY."
+    },
+    {
+      "type": "discrepancia_plantilla",
+      "severity": "LOW",
+      "message": "Discrepancia en M401 - 'ESPACIO Y SOCIEDAD': El docente programado para el examen es GRINDELIA MARTINEZ FLORES, pero en la plantilla general es MARTINEZ FLORES DANIEL."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3375,7 +3395,7 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Discrepancia en M402 - 'ESPACIO Y SOCIEDAD': El docente programado para el examen es EVA MARIA GALAN MIRELES/GONZALEZ GARDINI CLAUDIA NAYELI, pero en la plantilla general es GONZALEZ GARDINI CLAUDIA NAYELI."
+      "message": "Discrepancia en M402 - 'ESPACIO Y SOCIEDAD': El docente programado para el examen es EVA MARIA GALAN MIRELES, pero en la plantilla general es GALAN MIRELES EVA MARIA."
     },
     {
       "type": "discrepancia_plantilla",
@@ -3385,17 +3405,12 @@ const globalesFallbackData = {
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Docente 'CLAUDIIA CARRANZA QUIROZ/EVA MARIA GALAN MIRELES' en M406 - 'ESPACIO Y SOCIEDAD' no se encontró en la plantilla general."
+      "message": "Discrepancia en M406 - 'ESPACIO Y SOCIEDAD': El docente programado para el examen es CLAUDIIA CARRANZA QUIROZ, pero en la plantilla general es CARRANZA QUIROZ CLAUDIA."
     },
     {
       "type": "discrepancia_plantilla",
       "severity": "LOW",
-      "message": "Discrepancia en V407 - 'CIENCIAS SOCIALES III': El docente programado para el examen es HERNANDEZ CAMARGO SIVONNEY / GONZALEZ GARDINI CLAUDIA NAYELI, pero en la plantilla general es GONZALEZ GARDINI CLAUDIA NAYELI."
-    },
-    {
-      "type": "discrepancia_plantilla",
-      "severity": "LOW",
-      "message": "Discrepancia en V408 - 'CIENCIAS SOCIALES III': El docente programado para el examen es GONZALEZ GARDINI CLAUDIA NAYELI / MARTINEZ RUIZ MARTIN, pero en la plantilla general es GONZALEZ GARDINI CLAUDIA NAYELI."
+      "message": "Discrepancia en M406 - 'ESPACIO Y SOCIEDAD': El docente programado para el examen es EVA MARIA GALAN MIRELES, pero en la plantilla general es GALAN MIRELES EVA MARIA."
     },
     {
       "type": "discrepancia_plantilla",

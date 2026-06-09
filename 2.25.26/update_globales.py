@@ -121,6 +121,13 @@ def find_similar_teacher(name, plantilla):
                 return p
     return None
 
+def split_teachers(teacher_string):
+    if not teacher_string:
+        return []
+    # Dividir por '/' y limpiar espacios vacíos
+    parts = [clean_text(p) for p in teacher_string.split('/')]
+    return [p for p in parts if p and p.upper() not in ["", "VACANTE", "SIN DOCENTE"]]
+
 def run_audit(exams, plantilla):
     warnings = []
     
@@ -130,10 +137,10 @@ def run_audit(exams, plantilla):
     
     for exam in exams:
         teachers = []
-        if exam["docente_titular"] and exam["docente_titular"].upper() not in ["", "VACANTE", "SIN DOCENTE"]:
-            teachers.append(exam["docente_titular"])
-        if exam["docente_apoyo"] and exam["docente_apoyo"].upper() not in ["", "VACANTE", "SIN DOCENTE"]:
-            teachers.append(exam["docente_apoyo"])
+        if exam["docente_titular"]:
+            teachers.extend(split_teachers(exam["docente_titular"]))
+        if exam["docente_apoyo"]:
+            teachers.extend(split_teachers(exam["docente_apoyo"]))
             
         for teacher in teachers:
             key = (teacher, exam["fecha"], exam["horario"])
@@ -157,25 +164,30 @@ def run_audit(exams, plantilla):
     # 2. Auditoría de discrepancias de nombres con plantilla
     for exam in exams:
         for role, field in [("docente_titular", "docente_titular"), ("docente_apoyo", "docente_apoyo")]:
-            teacher = exam[field]
-            if not teacher or teacher.upper() in ["", "VACANTE", "SIN DOCENTE"]:
+            teacher_string = exam[field]
+            if not teacher_string:
                 continue
                 
-            if teacher not in plantilla:
-                closest = find_similar_teacher(teacher, plantilla)
-                if closest:
-                    # Para evitar duplicados en la misma materia y grupo, podemos revisar si ya agregamos
-                    msg = f"Discrepancia en {exam['grupo']} - '{exam['materia']}': El docente programado para el examen es {teacher}, pero en la plantilla general es {closest}."
-                else:
-                    msg = f"Docente '{teacher}' en {exam['grupo']} - '{exam['materia']}' no se encontró en la plantilla general."
-                
-                # Evitar alertas de advertencia idénticas
-                if msg not in [w["message"] for w in warnings]:
-                    warnings.append({
-                        "type": "discrepancia_plantilla",
-                        "severity": "LOW",
-                        "message": msg
-                    })
+            sub_teachers = split_teachers(teacher_string)
+            for teacher in sub_teachers:
+                # Si es un nombre extremadamente corto (como iniciales o un solo apellido abreviado, ej. SIVO, GRIN), omitimos
+                if len(teacher) <= 5:
+                    continue
+                    
+                if teacher not in plantilla:
+                    closest = find_similar_teacher(teacher, plantilla)
+                    if closest:
+                        msg = f"Discrepancia en {exam['grupo']} - '{exam['materia']}': El docente programado para el examen es {teacher}, pero en la plantilla general es {closest}."
+                    else:
+                        msg = f"Docente '{teacher}' en {exam['grupo']} - '{exam['materia']}' no se encontró en la plantilla general."
+                    
+                    # Evitar alertas de advertencia idénticas
+                    if msg not in [w["message"] for w in warnings]:
+                        warnings.append({
+                            "type": "discrepancia_plantilla",
+                            "severity": "LOW",
+                            "message": msg
+                        })
                     
     return warnings
 
