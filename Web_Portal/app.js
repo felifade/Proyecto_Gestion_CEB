@@ -98,8 +98,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Initialize calendar
     initCalendar();
 
-    // Load saved API key for classifier
-    loadApiKey();
+    // Initialize interactive Organigrama
+    initOrganigrama();
     
     // Close search box on clicking outside
     document.addEventListener("click", (e) => {
@@ -397,6 +397,27 @@ function handleSearch() {
         }
     });
     
+    // Search in Organigrama & Functions
+    if (typeof organigramaData !== 'undefined') {
+        Object.keys(organigramaData).forEach(nodeId => {
+            const data = organigramaData[nodeId];
+            const matchTitle = data.title.toLowerCase().includes(query);
+            const matchDept = data.department.toLowerCase().includes(query);
+            const matchFunctions = data.functions.some(f => f.toLowerCase().includes(query));
+            
+            if (matchTitle || matchDept || matchFunctions) {
+                matches.push({
+                    title: `${data.title} - Funciones y Puesto`,
+                    category: "Organigrama",
+                    action: () => {
+                        switchTab("organigrama");
+                        selectOrganigramaNode(nodeId);
+                    }
+                });
+            }
+        });
+    }
+    
     // Render results
     if (matches.length > 0) {
         resultsBox.style.display = "block";
@@ -410,6 +431,8 @@ function handleSearch() {
                 catColor = "background-color: var(--accent-purple); color: #fff;";
             } else if (match.category === "Normatividad") {
                 catColor = "background-color: var(--accent-cyan); color: #000;";
+            } else if (match.category === "Organigrama") {
+                catColor = "background-color: var(--accent-green); color: #fff;";
             }
             
             item.innerHTML = `
@@ -1675,5 +1698,298 @@ function renderExamsDirectory() {
             timelineContainer.appendChild(card);
         });
     }
+}
+
+// ==========================================================================
+// ORGANIGRAMA Y FUNCIONES DE ÁREAS (NORMATIVA DGB)
+// ==========================================================================
+const organigramaData = {
+    direccion: {
+        title: "Dirección de Plantel",
+        department: "Dirección",
+        name: "Puesto por Asignar",
+        initials: "DIR",
+        color: "var(--accent-blue)",
+        avatarClass: "bg-blue-grad",
+        mission: "Dirigir, coordinar y supervisar de manera integral la prestación del servicio educativo en el plantel, asegurando la aplicación de los planes y programas de estudio de la DGB y el cumplimiento de las metas del Programa de Mejora Continua (PMC).",
+        functions: [
+            "Planear, organizar, dirigir, controlar y evaluar los procesos académicos, escolares y administrativos del plantel conforme a la normatividad de la Dirección General de Bachillerato (DGB).",
+            "Representar legal y administrativamente a la institución ante las autoridades educativas, dependencias gubernamentales y la comunidad escolar.",
+            "Liderar la planeación estratégica y la formulación del Programa de Mejora Continua (PMC) y supervisar el cumplimiento de sus objetivos y metas.",
+            "Supervisar la administración transparente, eficiente y oportuna de los recursos humanos, materiales y financieros del plantel.",
+            "Fomentar la vinculación institucional con el sector social, educativo y de servicios para enriquecer el entorno de aprendizaje de los alumnos.",
+            "Promover la sana convivencia, la inclusión y la equidad escolar, asegurando un clima de trabajo colaborativo y respetuoso."
+        ]
+    },
+    subdireccion: {
+        title: "Subdirección Académica",
+        department: "Subdirección",
+        name: "Puesto por Asignar",
+        initials: "SUB",
+        color: "var(--accent-cyan)",
+        avatarClass: "bg-cyan-grad",
+        mission: "Planear, coordinar y evaluar el desarrollo de las actividades académicas, de docencia, orientación y control escolar, garantizando la calidad del aprendizaje y el apego al Marco Curricular Común.",
+        functions: [
+            "Coordinar y supervisar el desempeño del cuerpo docente y la correcta implementación de las planeaciones didácticas semestrales.",
+            "Vigilar la oportuna aplicación de las normas de control escolar referentes a inscripción, reinscripción, acreditación y certificación de alumnos.",
+            "Liderar y evaluar el Programa Institucional de Tutorías y las actividades del departamento de Orientación Educativa.",
+            "Promover y dar seguimiento a las reuniones de las Academias por disciplina para el diseño de estrategias pedagógicas transversales.",
+            "Gestionar y coordinar los programas de formación, actualización y capacitación continua para el personal docente.",
+            "Supervisar el funcionamiento de los servicios de apoyo académico como la biblioteca escolar y los laboratorios."
+        ]
+    },
+    coordinacion: {
+        title: "Coordinación Administrativa",
+        department: "Coordinación",
+        name: "Puesto por Asignar",
+        initials: "ADM",
+        color: "var(--accent-gold)",
+        avatarClass: "bg-gold-grad",
+        mission: "Administrar eficientemente los recursos materiales, financieros y humanos asignados al plantel, asegurando el correcto funcionamiento físico y operativo de las instalaciones.",
+        functions: [
+            "Planear, organizar y controlar la dotación y conservación de los recursos materiales y de servicios generales en el plantel.",
+            "Coordinar y controlar el registro de asistencia, incidencias laborales y la integración de expedientes de Recursos Humanos.",
+            "Supervisar el programa de mantenimiento preventivo y correctivo de aulas, laboratorios, oficinas y áreas comunes.",
+            "Realizar el levantamiento físico, etiquetado e inventario periódico de los bienes muebles y control patrimonial del plantel.",
+            "Elaborar y presentar ante la DGB los informes financieros trimestrales y anuales de la captación y ejercicio de recursos propios.",
+            "Coordinar las acciones del Comité de Protección Civil y seguridad para salvaguardar la integridad de la comunidad escolar."
+        ]
+    },
+    control_escolar: {
+        title: "Control Escolar",
+        department: "Subdirección - Servicios Escolares",
+        name: "Puesto por Asignar",
+        initials: "CE",
+        color: "var(--accent-cyan)",
+        avatarClass: "bg-cyan-grad",
+        mission: "Registrar, controlar y validar el historial académico de los alumnos del plantel desde su ingreso hasta su egreso, garantizando la validez oficial de sus estudios ante la DGB.",
+        functions: [
+            "Gestionar los trámites de inscripción y reinscripción de los estudiantes al plantel, integrando sus expedientes oficiales.",
+            "Registrar and capturar en los sistemas correspondientes las calificaciones parciales, finales y extraordinarias de los alumnos.",
+            "Controlar y tramitar las solicitudes de regularización académica, exámenes extraordinarios y cursos intersemestrales.",
+            "Expedir credenciales de estudiantes, boletas de calificaciones, constancias oficiales de estudio y certificados de terminación.",
+            "Elaborar y reportar oportunamente las estadísticas de matrícula, retención y egreso escolar solicitadas por la DGB."
+        ]
+    },
+    orientacion: {
+        title: "Orientación Educativa y Tutorías",
+        department: "Subdirección - Servicios al Estudiante",
+        name: "Puesto por Asignar",
+        initials: "OE",
+        color: "var(--accent-cyan)",
+        avatarClass: "bg-cyan-grad",
+        mission: "Apoyar la formación integral del estudiante mediante servicios psicopedagógicos, orientación vocacional y tutorías, propiciando su permanencia y éxito escolar.",
+        functions: [
+            "Coordinar el Programa Institucional de Tutorías y guiar a los docentes tutores en el seguimiento del desarrollo de sus grupos.",
+            "Proporcionar orientación psicopedagógica y socioemocional a alumnos y canalizar casos que requieran atención externa especializada.",
+            "Organizar y aplicar programas de orientación vocacional y profesiográfica para facilitar la elección de estudios superiores.",
+            "Desarrollar pláticas, talleres y campañas preventivas sobre adicciones, violencia de género, salud mental y acoso escolar.",
+            "Diseñar estrategias conjuntas con docentes y padres de familia para la prevención de la reprobación y abandono escolar."
+        ]
+    },
+    biblioteca: {
+        title: "Biblioteca Escolar",
+        department: "Subdirección - Apoyo Académico",
+        name: "Puesto por Asignar",
+        initials: "BIB",
+        color: "var(--accent-cyan)",
+        avatarClass: "bg-cyan-grad",
+        mission: "Resguardar y organizar el acervo bibliográfico e informático del plantel, facilitando el acceso a la información y promoviendo el hábito de lectura.",
+        functions: [
+            "Clasificar, catalogar, ordenar e inventariar el acervo bibliográfico y el material hemerográfico o digital de consulta.",
+            "Administrar el servicio de préstamo de libros en sala y a domicilio, llevando un control riguroso de usuarios y fechas de entrega.",
+            "Fomentar el gusto por la lectura a través de círculos de lectura, exposiciones bibliográficas y actividades culturales.",
+            "Asesorar y orientar a estudiantes y docentes en la búsqueda y selección de información para tareas o proyectos de investigación.",
+            "Vigilar la conservación de las obras, del mobiliario y coordinar la actualización de existencias de libros de texto."
+        ]
+    },
+    docentes: {
+        title: "Cuerpo Docente y Academias",
+        department: "Subdirección - Área Académica",
+        name: "Personal Docente CEB",
+        initials: "DOC",
+        color: "var(--accent-cyan)",
+        avatarClass: "bg-cyan-grad",
+        mission: "Facilitar el aprendizaje significativo de los estudiantes a través de una práctica pedagógica de excelencia basada en el Marco Curricular Común de la EMS.",
+        functions: [
+            "Diseñar e instrumentar la planeación didáctica semestral de las asignaturas a su cargo conforme a los lineamientos oficiales.",
+            "Participar de forma activa en las reuniones de Academias disciplinares para homologar contenidos y criterios de evaluación.",
+            "Evaluar el proceso de aprendizaje de los estudiantes mediante estrategias formativas y sumativas de manera oportuna.",
+            "Brindar asesorías académicas a los alumnos que presenten rezago educativo y colaborar activamente en la labor de tutoría.",
+            "Diseñar y desarrollar proyectos transversales y actividades que complementen la formación integral y ética del alumnado."
+        ]
+    },
+    recursos_humanos: {
+        title: "Recursos Humanos",
+        department: "Coordinación - Administración",
+        name: "Puesto por Asignar",
+        initials: "RH",
+        color: "var(--accent-gold)",
+        avatarClass: "bg-gold-grad",
+        mission: "Administrar de forma oportuna y apegada a la normatividad laboral federal el expediente, asistencia e incidencias del personal del plantel.",
+        functions: [
+            "Mantener permanentemente actualizados los expedientes del personal docente, administrativo y de servicios del plantel.",
+            "Registrar y controlar la asistencia, retardos, incidencias diarias, permisos económicos y licencias médicas oficiales.",
+            "Gestionar y tramitar las propuestas de contratación, prórrogas laborales, altas y bajas de plazas federales ante la DGB.",
+            "Elaborar constancias de servicio oficiales y apoyar en el llenado de formatos para prestaciones o créditos del personal.",
+            "Coordinar la entrega de reconocimientos, estímulos por años de servicio y premios de puntualidad y asistencia."
+        ]
+    },
+    recursos_materiales: {
+        title: "Recursos Materiales y Servicios",
+        department: "Coordinación - Administración",
+        name: "Puesto por Asignar",
+        initials: "RM",
+        color: "var(--accent-gold)",
+        avatarClass: "bg-gold-grad",
+        mission: "Garantizar el abasto de insumos consumibles, el resguardo del patrimonio del plantel y la seguridad e higiene de las instalaciones físicas.",
+        functions: [
+            "Administrar el almacén de bienes consumibles, coordinando la entrega de papelería, insumos didácticos y de limpieza.",
+            "Supervisar, controlar y mantener debidamente etiquetado el inventario y resguardo patrimonial del mobiliario y equipo tecnológico.",
+            "Planear y coordinar el mantenimiento y limpieza periódica de aulas, laboratorios, oficinas, sanitarios y áreas verdes.",
+            "Asignar y controlar el uso y préstamo de proyectores, equipos de audio y herramientas de soporte a docentes.",
+            "Coordinar los simulacros de protección civil e inspeccionar las medidas de seguridad física e higiene en el centro educativo."
+        ]
+    }
+};
+
+let activeOrganigramaNodeId = 'direccion';
+
+function initOrganigrama() {
+    console.log("Inicializando interactividad del Organigrama...");
+    
+    // Set initial active details view (Dirección)
+    selectOrganigramaNode('direccion');
+    
+    // Clear search input on init
+    const searchInput = document.getElementById("organigrama-search");
+    if (searchInput) {
+        searchInput.value = "";
+    }
+}
+
+function selectOrganigramaNode(nodeId) {
+    const data = organigramaData[nodeId];
+    if (!data) return;
+    
+    activeOrganigramaNodeId = nodeId;
+    
+    // 1. Update active card in the organigrama tree
+    const allNodes = document.querySelectorAll(".organigrama-node");
+    allNodes.forEach(node => {
+        node.classList.remove("active-node");
+        node.style.removeProperty('--active-accent');
+        node.style.removeProperty('--active-glow');
+    });
+    
+    const activeNodeEl = document.getElementById(`node-${nodeId}`);
+    if (activeNodeEl) {
+        activeNodeEl.classList.add("active-node");
+        
+        // Dynamically pass theme colors to CSS properties
+        let accentGlow = "hsla(217, 91%, 60%, 0.35)";
+        if (data.color.includes("cyan")) accentGlow = "hsla(190, 95%, 44%, 0.35)";
+        if (data.color.includes("gold")) accentGlow = "hsla(38, 92%, 50%, 0.35)";
+        
+        activeNodeEl.style.setProperty('--active-accent', data.color);
+        activeNodeEl.style.setProperty('--active-glow', accentGlow);
+    }
+    
+    // 2. Update Details Panel (Right Card)
+    const detailsCard = document.getElementById("organigrama-details-card");
+    const avatarEl = document.getElementById("details-avatar");
+    const deptBadge = document.getElementById("details-department-badge");
+    const roleTitle = document.getElementById("details-role-title");
+    const roleName = document.getElementById("details-role-name-text");
+    const missionText = document.getElementById("details-role-mission");
+    const functionsList = document.getElementById("details-role-functions");
+    
+    const missionIcon = document.getElementById("details-mission-icon");
+    const functionsIcon = document.getElementById("details-functions-icon");
+    
+    if (detailsCard) {
+        // Set dynamic properties on parent card for checks coloring and avatar outline
+        detailsCard.style.setProperty('--details-accent', data.color);
+    }
+    
+    if (avatarEl) {
+        avatarEl.textContent = data.initials;
+        avatarEl.className = `detail-avatar ${data.avatarClass}`;
+    }
+    
+    if (deptBadge) {
+        deptBadge.textContent = data.department;
+        deptBadge.style.color = data.color;
+        
+        let badgeBg = "hsla(217, 91%, 60%, 0.1)";
+        if (data.color.includes("cyan")) badgeBg = "hsla(190, 95%, 44%, 0.1)";
+        if (data.color.includes("gold")) badgeBg = "hsla(38, 92%, 50%, 0.1)";
+        deptBadge.style.backgroundColor = badgeBg;
+    }
+    
+    if (roleTitle) roleTitle.textContent = data.title;
+    if (roleName) roleName.textContent = data.name;
+    
+    if (missionText) {
+        missionText.textContent = data.mission;
+        missionText.style.borderLeftColor = data.color;
+    }
+    
+    if (missionIcon) missionIcon.style.color = data.color;
+    if (functionsIcon) functionsIcon.style.color = data.color;
+    
+    if (functionsList) {
+        // Clear old list
+        functionsList.innerHTML = "";
+        
+        // Add new functions
+        data.functions.forEach((func, idx) => {
+            const li = document.createElement("li");
+            li.textContent = func;
+            li.style.animation = `fade-in-up 0.3s ease both`;
+            li.style.animationDelay = `${idx * 0.05}s`;
+            functionsList.appendChild(li);
+        });
+    }
+}
+
+function handleOrganigramaSearch() {
+    const searchInput = document.getElementById("organigrama-search");
+    if (!searchInput) return;
+    
+    const query = searchInput.value.toLowerCase().trim();
+    const allNodes = document.querySelectorAll(".organigrama-node");
+    
+    if (query === "") {
+        // Reset styles when query is empty
+        allNodes.forEach(node => {
+            node.classList.remove("dimmed");
+            node.classList.remove("search-match");
+        });
+        return;
+    }
+    
+    // Search roles matching query in title, name, or functions
+    allNodes.forEach(nodeEl => {
+        const nodeId = nodeEl.id.replace("node-", "");
+        const data = organigramaData[nodeId];
+        
+        if (!data) return;
+        
+        const titleMatch = data.title.toLowerCase().includes(query);
+        const nameMatch = data.name.toLowerCase().includes(query);
+        const deptMatch = data.department.toLowerCase().includes(query);
+        
+        // Check if any of the functions matches the query
+        const functionsMatch = data.functions.some(func => func.toLowerCase().includes(query));
+        
+        if (titleMatch || nameMatch || deptMatch || functionsMatch) {
+            nodeEl.classList.remove("dimmed");
+            nodeEl.classList.add("search-match");
+        } else {
+            nodeEl.classList.remove("search-match");
+            nodeEl.classList.add("dimmed");
+        }
+    });
 }
 

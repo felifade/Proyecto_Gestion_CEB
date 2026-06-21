@@ -662,6 +662,7 @@ body {
 .dir-color { background: linear-gradient(135deg, hsla(190, 95%, 44%, 0.3) 0%, rgba(0,0,0,0) 100%); border-bottom: 2px solid var(--accent-cyan); }
 .subdir-color { background: linear-gradient(135deg, hsla(262, 83%, 58%, 0.3) 0%, rgba(0,0,0,0) 100%); border-bottom: 2px solid var(--accent-purple); }
 .admin-color { background: linear-gradient(135deg, hsla(38, 92%, 50%, 0.3) 0%, rgba(0,0,0,0) 100%); border-bottom: 2px solid var(--accent-gold); }
+.organigrama-color { background: linear-gradient(135deg, hsla(142, 71%, 45%, 0.3) 0%, rgba(0,0,0,0) 100%); border-bottom: 2px solid var(--accent-green); }
 
 .area-header i {
     font-size: 22px;
@@ -2426,6 +2427,370 @@ body {
     padding: 40px 20px;
     color: var(--text-muted);
     font-size: 13.5px;
+}
+
+/* ==========================================================================
+   ORGANIGRAMA Y FUNCIONES STYLING
+   ========================================================================= */
+.organigrama-card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 15px;
+    overflow-x: auto;
+}
+
+.organigrama-tree-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-width: 580px;
+}
+
+.tree-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    width: 100%;
+    position: relative;
+}
+
+.row-level-1 {
+    z-index: 3;
+}
+
+.row-level-2 {
+    z-index: 2;
+}
+
+/* Vertical and horizontal branch connectors */
+.tree-connector-v {
+    width: 2px;
+    height: 30px;
+    background: linear-gradient(180deg, var(--accent-blue) 0%, var(--border-color) 100%);
+    position: relative;
+}
+
+.tree-connector-v::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--accent-cyan);
+}
+
+.tree-row-columns-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.tree-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* Connectors for level 3 */
+.tree-connector-sub-v {
+    width: 2px;
+    height: 20px;
+    background: var(--accent-cyan);
+    margin-bottom: 10px;
+}
+
+.tree-connector-adm-v {
+    width: 2px;
+    height: 20px;
+    background: var(--accent-gold);
+    margin-bottom: 10px;
+}
+
+.tree-sub-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 280px;
+}
+
+/* Organigrama Node Cards */
+.organigrama-node {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth), opacity var(--transition-fast);
+    position: relative;
+    user-select: none;
+    min-width: 240px;
+    box-shadow: var(--shadow-sm);
+}
+
+.organigrama-node:hover {
+    transform: translateY(-3px) scale(1.02);
+    border-color: hsla(217, 91%, 60%, 0.4);
+    box-shadow: var(--shadow-md), 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Node Icons / Badges */
+.node-badge {
+    position: absolute;
+    top: -10px;
+    right: 12px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: var(--bg-app);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.border-blue-glow { border-color: var(--accent-blue); color: var(--accent-blue); box-shadow: 0 0 8px hsla(217, 91%, 60%, 0.4); }
+.border-cyan-glow { border-color: var(--accent-cyan); color: var(--accent-cyan); box-shadow: 0 0 8px hsla(190, 95%, 44%, 0.4); }
+.border-gold-glow { border-color: var(--accent-gold); color: var(--accent-gold); box-shadow: 0 0 8px hsla(38, 92%, 50%, 0.4); }
+
+/* Avatar Placeholder in Node */
+.node-avatar-placeholder {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.2);
+}
+
+.node-avatar-placeholder.sm {
+    width: 36px;
+    height: 36px;
+    font-size: 11px;
+}
+
+.bg-blue-grad {
+    background: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(200, 90%, 50%) 100%);
+}
+.bg-cyan-grad {
+    background: linear-gradient(135deg, hsl(190, 95%, 44%) 0%, hsl(175, 80%, 40%) 100%);
+}
+.bg-gold-grad {
+    background: linear-gradient(135deg, hsl(38, 92%, 50%) 0%, hsl(45, 95%, 45%) 100%);
+}
+
+/* Small Nodes (Level 3) */
+.organigrama-node.node-sm {
+    min-width: 220px;
+    padding: 10px 12px;
+    border-radius: 10px;
+}
+
+/* Info inside Node */
+.node-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.node-title {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.node-sm .node-title {
+    font-size: 12px;
+}
+
+.node-name {
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-top: 2px;
+}
+
+/* Active / Selected States */
+.organigrama-node.active-node {
+    border-color: var(--active-accent, var(--accent-blue)) !important;
+    box-shadow: 0 0 12px var(--active-glow, hsla(217, 91%, 60%, 0.35)) !important;
+    background-color: hsla(223, 47%, 18%, 0.8);
+}
+
+.organigrama-node.dimmed {
+    opacity: 0.2;
+}
+
+.organigrama-node.search-match {
+    animation: search-pulse 1.2s infinite alternate;
+    border-color: var(--accent-green) !important;
+    box-shadow: 0 0 15px hsla(142, 71%, 45%, 0.4) !important;
+    opacity: 1 !important;
+}
+
+@keyframes search-pulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.03); }
+}
+
+/* Details Panel Styles */
+.detail-avatar-container {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(135deg, var(--details-accent, var(--accent-blue)) 0%, rgba(255,255,255,0.1) 100%);
+    box-shadow: var(--shadow-sm);
+}
+
+.detail-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.25);
+}
+
+.detail-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+.details-functions-list {
+    list-style: none;
+    padding-left: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.details-functions-list li {
+    position: relative;
+    padding-left: 24px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    transition: color var(--transition-fast);
+}
+
+.details-functions-list li:hover {
+    color: var(--text-primary);
+}
+
+.details-functions-list li::before {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    font-size: 11px;
+    color: var(--details-accent, var(--accent-blue));
+}
+
+/* Responsive adjustments for Organigrama tree */
+@media (max-width: 1280px) {
+    .organigrama-tree-container {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 1024px) {
+    .organigrama-card-body {
+        align-items: flex-start;
+        overflow-x: auto;
+    }
+    
+    .organigrama-tree-container {
+        min-width: 100%;
+        align-items: flex-start;
+    }
+    
+    .tree-row {
+        justify-content: flex-start;
+        gap: 16px;
+        padding-left: 20px;
+    }
+    
+    .tree-connector-v {
+        left: 120px;
+        margin: 5px 0;
+    }
+    
+    .tree-row-columns-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+    .tree-column {
+        align-items: flex-start;
+        width: 100%;
+    }
+    
+    .tree-connector-sub-v, .tree-connector-adm-v {
+        display: none;
+    }
+    
+    .tree-sub-list {
+        max-width: 100%;
+        padding-left: 20px;
+        position: relative;
+        border-left: 1px dashed var(--border-color);
+        margin-left: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tree-sub-list {
+        margin-left: 30px;
+        padding-left: 15px;
+    }
+    .tree-connector-v {
+        left: 30px;
+    }
 }
 
 

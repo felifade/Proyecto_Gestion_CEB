@@ -44,6 +44,10 @@
                 <button class="nav-btn" id="nav-coordinacion" onclick="switchTab('coordinacion')">
                     <i class="fa-solid fa-wallet"></i> <span>Coord. Administrativa</span>
                 </button>
+                <div class="nav-separator">INSTITUCIÓN</div>
+                <button class="nav-btn" id="nav-organigrama" onclick="switchTab('organigrama')">
+                    <i class="fa-solid fa-sitemap"></i> <span>Organigrama y Funciones</span>
+                </button>
             </nav>
             
             <div class="sidebar-footer">
@@ -212,6 +216,21 @@
                                     <li><i class="fa-solid fa-check"></i> Control de Altas y Bajas</li>
                                 </ul>
                                 <span class="explore-btn">Entrar a Coord. Administrativa <i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+
+                        <div class="area-nav-card" onclick="switchTab('organigrama')">
+                            <div class="area-header organigrama-color">
+                                <i class="fa-solid fa-sitemap"></i>
+                                <h3>ORGANIGRAMA Y FUNCIONES</h3>
+                            </div>
+                            <div class="area-body">
+                                <ul>
+                                    <li><i class="fa-solid fa-check"></i> Jerarquía de Procesos</li>
+                                    <li><i class="fa-solid fa-check"></i> Funciones Oficiales DGB</li>
+                                    <li><i class="fa-solid fa-check"></i> Colaboradores del Plantel</li>
+                                </ul>
+                                <span class="explore-btn" style="color: var(--accent-green);">Entrar a Organigrama <i class="fa-solid fa-arrow-right"></i></span>
                             </div>
                         </div>
                     </div>
@@ -1070,6 +1089,163 @@
                                     </svg>
                                     <div class="flow-detail-box" id="detail-inventarios">
                                         <p class="select-info-text"><i class="fa-solid fa-circle-info"></i> Haz clic en los pasos del diagrama para ver los detalles del proceso administrativo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. ORGANIGRAMA Y FUNCIONES PAGE -->
+                <section class="page-section" id="page-organigrama">
+                    <div class="page-header-title">
+                        <h1>Organigrama y Funciones del Plantel</h1>
+                        <p>Estructura jerárquica de los procesos del CEB y definición oficial de responsabilidades por área (Normativa DGB).</p>
+                    </div>
+
+                    <div class="tab-content-layout">
+                        <!-- Left Panel: Interactive Tree Diagram -->
+                        <div class="content-left">
+                            <div class="premium-card">
+                                <div class="card-header border-blue">
+                                    <h3><i class="fa-solid fa-sitemap"></i> Organigrama Escolar</h3>
+                                </div>
+                                <div class="card-body organigrama-card-body">
+                                    <div class="organigrama-tree-container">
+                                        <!-- Level 1: Dirección -->
+                                        <div class="tree-row row-level-1">
+                                            <div class="organigrama-node active" id="node-direccion" onclick="selectOrganigramaNode('direccion')">
+                                                <div class="node-badge border-blue-glow"><i class="fa-solid fa-user-tie"></i></div>
+                                                <div class="node-avatar-placeholder bg-blue-grad">DIR</div>
+                                                <div class="node-meta">
+                                                    <h4 class="node-title">Dirección de Plantel</h4>
+                                                    <span class="node-name">Puesto por Asignar</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Connection Line 1 to 2 -->
+                                        <div class="tree-connector-v"></div>
+
+                                        <!-- Level 2: Subdirección y Coordinación -->
+                                        <div class="tree-row row-level-2">
+                                            <div class="organigrama-node" id="node-subdireccion" onclick="selectOrganigramaNode('subdireccion')">
+                                                <div class="node-badge border-cyan-glow"><i class="fa-solid fa-users-gear"></i></div>
+                                                <div class="node-avatar-placeholder bg-cyan-grad">SUB</div>
+                                                <div class="node-meta">
+                                                    <h4 class="node-title">Subdirección Académica</h4>
+                                                    <span class="node-name">Puesto por Asignar</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="organigrama-node" id="node-coordinacion" onclick="selectOrganigramaNode('coordinacion')">
+                                                <div class="node-badge border-gold-glow"><i class="fa-solid fa-wallet"></i></div>
+                                                <div class="node-avatar-placeholder bg-gold-grad">ADM</div>
+                                                <div class="node-meta">
+                                                    <h4 class="node-title">Coord. Administrativa</h4>
+                                                    <span class="node-name">Puesto por Asignar</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Level 3: Sub-departments -->
+                                        <div class="tree-row-columns-container">
+                                            <!-- Column Left: Under Subdirección -->
+                                            <div class="tree-column">
+                                                <div class="tree-connector-sub-v"></div>
+                                                <div class="tree-sub-list">
+                                                    <div class="organigrama-node node-sm" id="node-control_escolar" onclick="selectOrganigramaNode('control_escolar')">
+                                                        <div class="node-avatar-placeholder bg-cyan-grad sm">CE</div>
+                                                        <div class="node-meta">
+                                                            <h5 class="node-title">Control Escolar</h5>
+                                                            <span class="node-name">Puesto por Asignar</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="organigrama-node node-sm" id="node-orientacion" onclick="selectOrganigramaNode('orientacion')">
+                                                        <div class="node-avatar-placeholder bg-cyan-grad sm">OE</div>
+                                                        <div class="node-meta">
+                                                            <h5 class="node-title">Orientación y Tutorías</h5>
+                                                            <span class="node-name">Puesto por Asignar</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="organigrama-node node-sm" id="node-biblioteca" onclick="selectOrganigramaNode('biblioteca')">
+                                                        <div class="node-avatar-placeholder bg-cyan-grad sm">BIB</div>
+                                                        <div class="node-meta">
+                                                            <h5 class="node-title">Biblioteca Escolar</h5>
+                                                            <span class="node-name">Puesto por Asignar</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="organigrama-node node-sm" id="node-docentes" onclick="selectOrganigramaNode('docentes')">
+                                                        <div class="node-avatar-placeholder bg-cyan-grad sm">DOC</div>
+                                                        <div class="node-meta">
+                                                            <h5 class="node-title">Cuerpo Docente / Academias</h5>
+                                                            <span class="node-name">Personal CEB</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Column Right: Under Coordinación -->
+                                            <div class="tree-column">
+                                                <div class="tree-connector-adm-v"></div>
+                                                <div class="tree-sub-list">
+                                                    <div class="organigrama-node node-sm" id="node-recursos_humanos" onclick="selectOrganigramaNode('recursos_humanos')">
+                                                        <div class="node-avatar-placeholder bg-gold-grad sm">RH</div>
+                                                        <div class="node-meta">
+                                                            <h5 class="node-title">Recursos Humanos</h5>
+                                                            <span class="node-name">Puesto por Asignar</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="organigrama-node node-sm" id="node-recursos_materiales" onclick="selectOrganigramaNode('recursos_materiales')">
+                                                        <div class="node-avatar-placeholder bg-gold-grad sm">RM</div>
+                                                        <div class="node-meta">
+                                                            <h5 class="node-title">Recursos Mat. y Servicios</h5>
+                                                            <span class="node-name">Puesto por Asignar</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Role Functions & Details -->
+                        <div class="content-right">
+                            <div class="premium-card" id="organigrama-details-card" style="height:100%;">
+                                <div class="card-header" id="details-card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom:15px; display:flex; flex-direction:column; gap:12px; align-items:stretch;">
+                                    <div class="details-search-container" style="display:flex; width:100%; position:relative;">
+                                        <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:12px;"></i>
+                                        <input type="text" id="organigrama-search" placeholder="Buscar funciones, tareas o puestos..." oninput="handleOrganigramaSearch()" style="width:100%; padding: 8px 12px 8px 32px; border-radius: 8px; background: hsla(217, 30%, 15%, 0.4); border: 1px solid var(--border-color); color: #fff; font-size:12px; outline:none; transition: var(--transition-fast);">
+                                    </div>
+                                    <div style="display:flex; gap:16px; align-items:center; margin-top:5px;">
+                                        <div class="detail-avatar-container">
+                                            <div class="detail-avatar bg-blue-grad" id="details-avatar">DIR</div>
+                                        </div>
+                                        <div style="flex:1; min-width:0;">
+                                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                                <span class="badge-tag" id="details-department-badge" style="background: hsla(217, 91%, 60%, 0.1); color: var(--accent-blue); font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; padding:3px 8px; border-radius:4px;">Dirección</span>
+                                            </div>
+                                            <h3 id="details-role-title" style="font-family: var(--font-heading); font-size:18px; font-weight:700; color:var(--text-primary); margin-top:4px;">Dirección de Plantel</h3>
+                                            <p id="details-role-name" style="font-size:12px; color:var(--text-secondary); display:flex; align-items:center; gap:5px; margin-top:2px;">
+                                                <i class="fa-solid fa-circle-user"></i> <span id="details-role-name-text">Puesto por Asignar</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body" style="padding-top:20px;">
+                                    <div class="detail-section mb-20" style="margin-bottom:20px;">
+                                        <h4 class="detail-section-title" style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-bullseye" id="details-mission-icon" style="color:var(--accent-blue);"></i> Misión / Objetivo General</h4>
+                                        <p id="details-role-mission" style="font-size:13px; line-height:1.6; color:var(--text-secondary); background: hsla(217, 30%, 15%, 0.2); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent-blue); margin-bottom:0;">
+                                            Dirigir, coordinar y supervisar de manera integral la prestación del servicio educativo en el plantel, asegurando la aplicación de los planes y programas de estudio de la DGB y el cumplimiento de las metas del Programa de Mejora Continua.
+                                        </p>
+                                    </div>
+                                    <div class="detail-section">
+                                        <h4 class="detail-section-title" style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-list-check" id="details-functions-icon" style="color:var(--accent-blue);"></i> Funciones y Responsabilidades Oficiales</h4>
+                                        <ul id="details-role-functions" class="details-functions-list" style="font-size:13px; color:var(--text-secondary); padding-left:20px; line-height:1.6; margin-bottom:0;">
+                                            <!-- Populated dynamically -->
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
