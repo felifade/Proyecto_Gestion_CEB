@@ -3,9 +3,9 @@ import { UploadCard } from './components/UploadCard';
 import { StatsPanel } from './components/StatsPanel';
 import { PreviewTable } from './components/PreviewTable';
 import { AutomationPanel } from './components/AutomationPanel';
-import { parseSabanaPDF, GradeItem, SabanaMetadata } from './utils/pdfParser';
+import { parseSabanaPDF, type GradeItem, type SabanaMetadata } from './utils/pdfParser';
 import { exportToCSV, exportToExcel } from './utils/exportUtils';
-import { FileText, Database } from 'lucide-react';
+import { Database } from 'lucide-react';
 
 const App: React.FC = () => {
   const [fileName, setFileName] = useState('');

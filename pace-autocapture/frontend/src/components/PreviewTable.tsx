@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GradeItem } from '../utils/pdfParser';
+import type { GradeItem } from '../utils/pdfParser';
 import { Search, ArrowUpDown } from 'lucide-react';
 
 interface PreviewTableProps {

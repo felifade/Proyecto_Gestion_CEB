@@ -1,4 +1,4 @@
-import { GradeItem } from './pdfParser';
+import type { GradeItem } from './pdfParser';
 import * as XLSX from 'xlsx';
 
 export const exportToCSV = (grades: GradeItem[], fileName: string) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { GradeItem } from '../utils/pdfParser';
+import type { GradeItem } from '../utils/pdfParser';
 
 interface StatsPanelProps {
   grades: GradeItem[];
@@ -13,8 +13,6 @@ export const StatsPanel: React.FC<StatsPanelProps> = ({ grades }) => {
     .filter(val => !isNaN(val));
 
   const total = grades.length;
-  const approved = grades.filter(g => parseFloat(g.grade) >= 6.0).length; // Wait, DGB passing grade is usually 6.0! Let's check. Yes, in Mexico, educational passing grade in media superior is 6.0. But wait, the user's prompt says "Menor a 5... Mayor a 10". In DGB/PACE, a failed student is < 6.0. But let's check if the user said "menor a 6.0" or "menor a 5.0" in the requirements: "Validaciones: Menor a 5. Mayor a 10. Valores vacíos." Oh, wait! The user prompt says "Menor a 5" as a validation criteria, but wait, usually a failed grade is < 6.0. Let's make it reflect what the user asked: "Menor a 5" for the strict validation/alert range, but wait, let's keep approved >= 6.0 or let's just make it >= 6.0 and failed < 6.0, while highlighting grades < 5.0 as errors? Wait, let's check: in DGB, grades are from 5 to 10 (or 0 to 10). Let's use parseFloat(g.grade) >= 6.0 for approved and failed < 6.0, as it is standard in Mexican High Schools (CEB), but we will highlight any grade < 6.0 as failed. Wait, the user specifically says: "Validaciones: Menor a 5. Mayor a 10. Valores vacíos." Let's check: "Menor a 5" might be a warning range (e.g. invalid grades since PACE usually doesn't allow grades lower than 5 unless it's NP, or maybe 5.0 is the minimum grade possible to capture in PACE? Yes, in DGB PACE, the minimum numeric grade is 5.0. Grades lower than 5.0 cannot be entered numerically; they are either NP or 5.0. That's why "Menor a 5" is an invalid grade validation!).
-  // Let's implement exactly what they requested:
   // Approved: grade >= 6.0.
   // Failed: grade < 6.0.
   // Warnings/Errors: grade < 5.0 (invalid grade validation in PACE), grade > 10.0, empty, or non-numeric.
