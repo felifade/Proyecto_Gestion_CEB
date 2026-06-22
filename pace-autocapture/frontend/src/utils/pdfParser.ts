@@ -1,7 +1,7 @@
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Set worker path manually to CDN to avoid Vite asset worker bundler setup complexity
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Set worker path manually to the local public folder to avoid CORS and CDN loading issues
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 export interface GradeItem {
   id: number;
@@ -23,6 +23,37 @@ export interface ParseResult {
   grades: GradeItem[];
 }
 
+const getValueAfterLabel = (label: string, items: any[]): string => {
+  const labelItemIndex = items.findIndex(it => it.str.toUpperCase().includes(label));
+  if (labelItemIndex === -1) return '';
+  const labelItem = items[labelItemIndex];
+  const labelY = Math.round(labelItem.transform[5]);
+  const labelX = labelItem.transform[4];
+  
+  // Find other labels on the same horizontal line to act as a right boundary
+  const otherLabels = ['MATERIA', 'GRUPO', 'DOCENTE', 'TURNO', 'CICLO', 'GRADO'].filter(l => l !== label);
+  const boundaryItems = items.filter(it => 
+    Math.abs(Math.round(it.transform[5]) - labelY) <= 3 && 
+    it.transform[4] > labelX &&
+    otherLabels.some(ol => it.str.toUpperCase().includes(ol))
+  );
+  
+  const minBoundaryX = boundaryItems.length 
+    ? Math.min(...boundaryItems.map(it => it.transform[4])) 
+    : Infinity;
+
+  // Filter items to the right of the label, but to the left of the nearest boundary
+  const rowItems = items.filter(it => 
+    Math.abs(Math.round(it.transform[5]) - labelY) <= 3 && 
+    it.transform[4] > labelX && 
+    it.transform[4] < minBoundaryX &&
+    it.str.trim().length > 0
+  );
+  
+  rowItems.sort((a, b) => a.transform[4] - b.transform[4]);
+  return rowItems.map(it => it.str.trim()).join(' ');
+};
+
 export const parseSabanaPDF = async (fileArrayBuffer: ArrayBuffer): Promise<ParseResult> => {
   const loadingTask = pdfjsLib.getDocument({ data: fileArrayBuffer });
   const pdf = await loadingTask.promise;
@@ -34,25 +65,10 @@ export const parseSabanaPDF = async (fileArrayBuffer: ArrayBuffer): Promise<Pars
   const textContent = await page.getTextContent();
   fullTextItems = textContent.items;
 
-  // 1. Extract raw metadata
-  let subject = 'Desconocida';
-  let group = 'Desconocido';
-  let teacher = 'Desconocido';
-
-  for (let i = 0; i < fullTextItems.length; i++) {
-    const item = fullTextItems[i];
-    const text = item.str.toUpperCase();
-    
-    if (text.includes('MATERIA:') || text.includes('ASIGNATURA:')) {
-      subject = fullTextItems[i + 1]?.str || 'Detectando...';
-    }
-    if (text.includes('GRUPO:')) {
-      group = fullTextItems[i + 1]?.str || 'Detectando...';
-    }
-    if (text.includes('DOCENTE:') || text.includes('PROFESOR:')) {
-      teacher = fullTextItems[i + 1]?.str || 'Detectando...';
-    }
-  }
+  // 1. Extract raw metadata using coordinates mapping
+  const subject = getValueAfterLabel('MATERIA', fullTextItems) || 'Desconocida';
+  const group = getValueAfterLabel('GRUPO', fullTextItems) || 'Desconocido';
+  const teacher = getValueAfterLabel('DOCENTE', fullTextItems) || 'Desconocido';
 
   // 2. Identify header column X coordinates
   let nameColX = 0;
@@ -96,13 +112,18 @@ export const parseSabanaPDF = async (fileArrayBuffer: ArrayBuffer): Promise<Pars
     
     const lineText = items.map(it => it.str).join(' ').trim();
     
-    // Filter out headers, empty lines, and metadata
+    // Filter out headers, empty lines, signature fields, and metadata
     if (
-      lineText.includes('MATERIA') || 
-      lineText.includes('DOCENTE') || 
-      lineText.includes('GRUPO') || 
-      lineText.includes('ALUMNO') || 
-      lineText.includes('CALIF') || 
+      lineText.toUpperCase().includes('MATERIA') || 
+      lineText.toUpperCase().includes('DOCENTE') || 
+      lineText.toUpperCase().includes('GRUPO') || 
+      lineText.toUpperCase().includes('ALUMNO') || 
+      lineText.toUpperCase().includes('CALIF') || 
+      lineText.toUpperCase().includes('CICLO') || 
+      lineText.toUpperCase().includes('CLASES') || 
+      lineText.toUpperCase().includes('FIRMA') || 
+      lineText.toUpperCase().includes('EMITIDO') || 
+      lineText.includes('____') ||
       lineText.length < 5
     ) {
       continue;
