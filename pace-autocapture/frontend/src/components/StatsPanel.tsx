@@ -41,13 +41,13 @@ export const StatsPanel: React.FC<StatsPanelProps> = ({ grades }) => {
           <strong className="text-xl font-bold text-gray-900">{avg}</strong>
         </div>
         <div className="bg-gray-50 p-4 rounded-xl text-center">
-          <span className="text-xs text-gray-500 block mb-1">APROBADOS (>= 6.0)</span>
+          <span className="text-xs text-gray-500 block mb-1">{"APROBADOS (>= 6.0)"}</span>
           <strong className="text-xl font-bold text-green-600">
             {approved} <span className="text-sm font-normal text-gray-500">({total ? Math.round((approved / total) * 100) : 0}%)</span>
           </strong>
         </div>
         <div className="bg-gray-50 p-4 rounded-xl text-center">
-          <span className="text-xs text-gray-500 block mb-1">REPROBADOS (< 6.0)</span>
+          <span className="text-xs text-gray-500 block mb-1">{"REPROBADOS (< 6.0)"}</span>
           <strong className="text-xl font-bold text-red-500">
             {failed} <span className="text-sm font-normal text-gray-500">({total ? Math.round((failed / total) * 100) : 0}%)</span>
           </strong>
