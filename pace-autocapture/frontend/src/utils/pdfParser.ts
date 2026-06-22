@@ -108,14 +108,15 @@ export const parseSabanaPDF = async (fileArrayBuffer: ArrayBuffer): Promise<Pars
       continue;
     }
 
-    // Check if line contains student name pattern (text starting on left name column X)
-    const nameItem = items.find(it => Math.abs(it.transform[4] - nameColX) <= 60 && /[A-Z]/.test(it.str));
+    // Check if line contains student name pattern (first alphabetical item starting at X < 160)
+    const nameItem = items.find(it => it.transform[4] < 160 && /[a-zA-Z]/.test(it.str) && !/^\d+$/.test(it.str.trim()));
     if (!nameItem) continue;
 
     const name = nameItem.str.trim();
 
-    // Find final grade item aligning with finalGradeColX
-    const gradeItem = items.find(it => Math.abs(it.transform[4] - finalGradeColX) <= 50 && /^\d+(\.\d+)?$/.test(it.str.trim()));
+    // Find final grade item aligning with finalGradeColX, or fallback to the rightmost numeric item
+    const gradeItem = items.find(it => Math.abs(it.transform[4] - finalGradeColX) <= 50 && /^\d+(\.\d+)?$/.test(it.str.trim()))
+      || [...items].reverse().find(it => /^\d+(\.\d+)?$/.test(it.str.trim()) && it.transform[4] > 400);
     
     let rawGrade = gradeItem ? gradeItem.str.trim() : '';
     let status: 'approved' | 'failed' | 'warning' | 'empty' = 'approved';
