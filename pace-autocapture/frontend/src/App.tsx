@@ -19,9 +19,9 @@ const App: React.FC = () => {
       const result = await parseSabanaPDF(arrayBuffer);
       setMetadata(result.metadata);
       setGrades(result.grades);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error parsing PDF SABANA:', error);
-      alert('Ocurrió un error al procesar el archivo PDF. Intenta con otra sábana.');
+      alert('Error detallado: ' + error?.message + '\n' + (error?.stack || 'Sin stack trace'));
     }
   };
 
