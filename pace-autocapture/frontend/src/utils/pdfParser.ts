@@ -55,7 +55,7 @@ const getValueAfterLabel = (label: string, items: any[]): string => {
 };
 
 export const parseSabanaPDF = async (fileArrayBuffer: ArrayBuffer): Promise<ParseResult> => {
-  const loadingTask = pdfjsLib.getDocument({ data: fileArrayBuffer });
+  const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(fileArrayBuffer) });
   const pdf = await loadingTask.promise;
   
   let fullTextItems: any[] = [];
