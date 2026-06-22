@@ -16,10 +16,24 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Strategy Pattern Interface (represented as a class on JavaScript)
 class AppleScriptCaptureService {
+  constructor() {
+    this.aborted = false;
+  }
+
+  cancel() {
+    this.aborted = true;
+    console.log("Capture process cancelled by user.");
+  }
+
   async capture(grades, delayMs) {
+    this.aborted = false;
     console.log(`Starting capture process for ${grades.length} grades. Delay: ${delayMs}ms.`);
     
     for (let i = 0; i < grades.length; i++) {
+      if (this.aborted) {
+        console.log("Capture loop stopped due to cancellation.");
+        return { success: false, count: i, message: "Cancelled by user" };
+      }
       const { grade } = grades[i];
       
       // Command to keystroke the grade value followed by key code 48 (TAB)

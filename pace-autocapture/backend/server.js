@@ -34,6 +34,12 @@ app.post('/api/capture', async (req, res) => {
   }
 });
 
+// Cancel capture endpoint
+app.post('/api/cancel', (req, res) => {
+  captureService.cancel();
+  res.json({ success: true, message: 'Capture cancellation triggered' });
+});
+
 // Start listening
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
