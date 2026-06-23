@@ -71,8 +71,13 @@ A solicitud del usuario, se realizó una separación estricta del material de tr
 2.  **Examen / Derecho a Examen (Título / Regularización Directa)**:
     *   Ubicación: Carpeta `examen/` de cada asignatura.
     *   Contenido: La guía de estudio oficial (`Cuadernillo_Cultura_Digital_X.pdf`), el banco de preguntas CSV/JSON, el examen físico imprimible (.docx) y los scripts de Apps Script y API de Forms.
+3.  **Manual de Derecho a Examen para el Alumno (Carpeta `guia_derecho_examen/`)**:
+    *   **Cultura Digital II y III**: Se diseñaron y generaron de forma automatizada guías/manuales específicos de estudio para el alumno. Se colocaron en la carpeta `guia_derecho_examen/` de cada materia.
+    *   **Contenido**: Cada guía incluye:
+        1. *Síntesis Temática*: Resumen teórico detallado por unidad con todos los conceptos evaluados en el examen.
+        2. *Cuestionario Práctico*: Las 100 preguntas del banco con su respuesta correcta asignada y una **caja de justificación** para que el alumno complete a mano explicando la teoría de la respuesta.
+        3. *Actividades de Desarrollo*: Ejercicios específicos de la materia (tablas de roles, dibujos de topologías, guiones de podcast, análisis de seguridad).
+        4. *Lista de Cotejo*: Tabla de evaluación de 10 puntos para validar el entregable del alumno.
+    *   **Formatos**: Se generaron archivos editables en Word (`Guia_Derecho_Examen_Cultura_Digital_X.docx`) e imprimibles en PDF (`Guia_Derecho_Examen_Cultura_Digital_X.pdf`) con su HTML base.
 
-**Sincronización Cloud**: Se sincronizó el repositorio completo por `rsync` hacia Google Drive, reflejando de inmediato la eliminación de los archivos duplicados y la adición del nuevo manual de recuperación de Cultura Digital I.
-
-
-
+**Sincronización Cloud**: Se sincronizó el repositorio completo por `rsync` hacia Google Drive, reflejando de inmediato la eliminación de los archivos duplicados, la adición del manual de recuperación de Cultura Digital I y los nuevos manuales de derecho a examen de Cultura Digital II y III.
