@@ -79,5 +79,9 @@ A solicitud del usuario, se realizó una separación estricta del material de tr
         3. *Actividades de Desarrollo*: Ejercicios específicos de la materia (tablas de roles, dibujos de topologías, guiones de podcast, análisis de seguridad).
         4. *Lista de Cotejo*: Tabla de evaluación de 10 puntos para validar el entregable del alumno.
     *   **Formatos**: Se generaron archivos editables en Word (`Guia_Derecho_Examen_Cultura_Digital_X.docx`) e imprimibles en PDF (`Guia_Derecho_Examen_Cultura_Digital_X.pdf`) con su HTML base.
+    *   **Mejoras de Presentación (Layout)**:
+        *   *Logotipo*: Se corrigió el orden de copia del logotipo (`logo.png`) para asegurar su correcta visualización y renderizado en la portada y encabezado del PDF compilado mediante Headless Chrome.
+        *   *Saltos de Página*: Se aplicó la propiedad CSS `page-break-inside: avoid;` en las tarjetas de reactivos, síntesis y bloques de actividades del PDF para evitar cortes arbitrarios de contenido a mitad de hoja.
+        *   *Área de Trabajo*: En la versión Word (.docx), se sustituyó el espacio en blanco por una tabla estructurada de una celda con borde (caja de trabajo de 3.5 pulgadas de alto) para las actividades, previniendo desbordes accidentales de página y delimitando claramente la zona de escritura del alumno.
 
 **Sincronización Cloud**: Se sincronizó el repositorio completo por `rsync` hacia Google Drive, reflejando de inmediato la eliminación de los archivos duplicados, la adición del manual de recuperación de Cultura Digital I y los nuevos manuales de derecho a examen de Cultura Digital II y III.
