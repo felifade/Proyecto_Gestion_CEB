@@ -1,0 +1,203 @@
+:root {
+  --bg-primary: hsl(210, 20%, 98%);
+  --bg-card: hsl(0, 0%, 100%);
+  --text-main: hsl(210, 30%, 12%);
+  --text-muted: hsl(210, 15%, 45%);
+  --accent-matutino: hsl(220, 65%, 50%); /* Azul Paz */
+  --accent-vespertino: hsl(150, 60%, 45%); /* Verde Salud */
+  --accent-gold: hsl(35, 75%, 55%); /* Acento Dorado */
+  --border-color: hsl(210, 15%, 90%);
+  --transition-speed: 0.4s;
+  
+  --font-title: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 10;
+}
+
+.logo-text {
+  font-family: var(--font-title);
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Slides container */
+.slides-container {
+  flex: 1;
+  position: relative;
+  width: 100%;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(50px);
+  transition: opacity var(--transition-speed) ease, 
+              transform var(--transition-speed) ease,
+              visibility var(--transition-speed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.slide-content {
+  background: var(--bg-card);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  padding: 3rem;
+  width: 100%;
+  max-width: 1100px;
+  max-height: 85%;
+  overflow-y: auto;
+}
+
+/* Cover styling */
+.cover-slide {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge {
+  background: linear-gradient(135deg, var(--accent-matutino), var(--accent-vespertino));
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+h1 {
+  font-family: var(--font-title);
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  letter-spacing: -1px;
+}
+
+h2 {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-bottom: 2.5rem;
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.meta-item {
+  background: var(--bg-primary);
+  padding: 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* Buttons */
+.btn {
+  font-family: var(--font-title);
+  font-weight: 600;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--text-main);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Footer controls */
+.controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  z-index: 10;
+}
+
+.btn-control {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  font-size: 1.2rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.btn-control:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.progress-bar-container {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-primary);
+  border-radius: 3px;
+  margin-left: 2rem;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 10%;
+  background: linear-gradient(90deg, var(--accent-matutino), var(--accent-vespertino));
+  transition: width 0.3s ease;
+}
