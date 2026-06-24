@@ -154,8 +154,19 @@ def ensure_document_texts_cached(db: Session, expediente: Expediente, docs: list
     """
     config = db.query(Configuration).first()
     
+    # Extensions that are useful for text extraction
+    TEXT_EXTENSIONS = {'.pdf', '.docx', '.doc', '.xlsx', '.xls', '.txt', '.csv', '.xml', '.json'}
+    
     for doc in docs:
         if doc.texto_extraido is None:
+            # Skip downloading and parsing non-text/media files
+            _, ext = os.path.splitext(doc.nombre_archivo.lower())
+            if ext not in TEXT_EXTENSIONS:
+                doc.texto_extraido = ""
+                doc.paginas_totales = 0
+                db.commit()
+                continue
+                
             # 1. Try Google Drive API download if credentials and file ID are available
             if creds_dict and doc.google_drive_file_id:
                 try:

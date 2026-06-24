@@ -43,7 +43,9 @@ def extract_text_from_pdf(file_path: str, file_data: bytes = None) -> tuple[str,
             else:
                 doc = fitz.open(file_path)
                 
-            for page_num in range(len(doc)):
+            # Limit OCR to first 3 pages to optimize speed and prevent cloud timeouts
+            max_ocr_pages = min(len(doc), 3)
+            for page_num in range(max_ocr_pages):
                 page = doc.load_page(page_num)
                 pix = page.get_pixmap()
                 image_data = pix.tobytes("png")
