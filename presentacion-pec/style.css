@@ -493,3 +493,81 @@ h2 {
   font-weight: 700;
   color: var(--text-main);
 }
+
+.agenda-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.agenda-column {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.agenda-title {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.accent-blue {
+  color: var(--accent-matutino);
+  border-bottom: 2px solid var(--accent-matutino);
+}
+
+.accent-green {
+  color: var(--accent-vespertino);
+  border-bottom: 2px solid var(--accent-vespertino);
+}
+
+.timeline-v {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  position: relative;
+  padding-left: 1rem;
+}
+
+.timeline-v::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 5px;
+  bottom: 5px;
+  width: 2px;
+  background: var(--border-color);
+}
+
+.time-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.time-item::before {
+  content: '';
+  position: absolute;
+  left: -1.3rem;
+  top: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50px;
+  background: var(--text-muted);
+}
+
+.time-val {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 0.2rem;
+}
+
+.time-desc {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
