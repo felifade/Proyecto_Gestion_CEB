@@ -12,7 +12,7 @@ from datetime import datetime
 from .database import engine, Base, get_db, SessionLocal
 from .models import Configuration, Criteria, Expediente, Documento, ResultadoAuditoria
 from .services.parser import parse_document
-from .services.auditor import audit_expediente_against_criteria
+from .services.auditor import audit_expediente_against_criteria, audit_all_expedientes_task
 from .services.reports import generate_consolidated_excel, generate_executive_word, generate_executive_pdf
 
 # Initialize SQLite tables on startup
@@ -282,6 +282,26 @@ def run_audit(exp_id: int, background_tasks: BackgroundTasks, db: Session = Depe
         db.commit()
         # Add to background worker queue
         background_tasks.add_task(audit_expediente_against_criteria, db, exp_id)
+        
+    return RedirectResponse(url="/", status_code=303)
+
+@app.post("/audit-all")
+def run_audit_all(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    """
+    Triggers sequential background audits for all registered Folders/Expedientes.
+    """
+    expedientes = db.query(Expediente).all()
+    exp_ids = []
+    for exp in expedientes:
+        if exp.estado_analisis != "Analizando":
+            exp.estado_analisis = "Analizando"
+            exp_ids.append(exp.id)
+            
+    db.commit()
+    
+    if exp_ids:
+        # Add sequential bulk audit queue to background worker thread
+        background_tasks.add_task(audit_all_expedientes_task, exp_ids)
         
     return RedirectResponse(url="/", status_code=303)
 

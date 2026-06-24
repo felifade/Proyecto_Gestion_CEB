@@ -257,3 +257,18 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int):
         expediente.estado_analisis = "Error"
         expediente.error_mensaje = str(e)
         db.commit()
+
+def audit_all_expedientes_task(expediente_ids: list[int]):
+    """
+    Runs audit for multiple expedientes sequentially in a background thread
+    to prevent SQLite concurrency locks.
+    """
+    from ..database import SessionLocal
+    for exp_id in expediente_ids:
+        db = SessionLocal()
+        try:
+            audit_expediente_against_criteria(db, exp_id)
+        except Exception as e:
+            print(f"Error al auditar expediente {exp_id}: {str(e)}")
+        finally:
+            db.close()
