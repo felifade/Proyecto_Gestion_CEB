@@ -1,0 +1,22 @@
+# Entorno virtual
+.venv/
+venv/
+ENV/
+
+# Base de datos SQLite local
+auditor.db
+auditor.db-journal
+
+# Cachés de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos temporales o del sistema
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+*.tmp
+/tmp/

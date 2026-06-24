@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Configuración - Auditor de Expedientes{% endblock %}
+
+{% block content %}
+<h3 class="fw-bold mb-4"><i class="bi bi-gear-fill text-primary me-2"></i> Configuración de Rutas y Mapeo</h3>
+
+<div class="row g-4">
+  <!-- Formulario de Configuración Principal -->
+  <div class="col-md-7">
+    <div class="glass-panel">
+      <h5 class="fw-bold mb-3"><i class="bi bi-folder-symlink-fill text-primary"></i> Directorios y Llaves</h5>
+      <form action="/configuracion" method="post">
+        <!-- Ruta de Carpetas de Expediente -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">Ruta del Directorio de Expedientes</label>
+          <input type="text" class="form-control" name="ruta_expedientes" value="{{ config.ruta_expedientes if config else '' }}" placeholder="Ej. /Users/nombre/Downloads/Expedientes" required>
+          <small class="text-muted">Introduce la ruta absoluta de la carpeta local sincronizada que contiene las subcarpetas de expedientes.</small>
+        </div>
+        
+        <!-- Ruta de Lista de Cotejo Excel -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">Ruta del Archivo Excel de Lista de Cotejo</label>
+          <input type="text" class="form-control" name="ruta_lista_cotejo" value="{{ config.ruta_lista_cotejo if config else '' }}" placeholder="Ej. /Users/nombre/Downloads/Lista_Cotejo.xlsx" required>
+          <small class="text-muted">Ruta absoluta local del archivo Excel de Lista de Cotejo.</small>
+        </div>
+
+        <!-- Gemini API Key -->
+        <div class="mb-4">
+          <label class="form-label fw-bold">Clave de API de Google Gemini (API Key)</label>
+          <input type="password" class="form-control" name="gemini_api_key" value="{{ config.gemini_api_key if config else '' }}" placeholder="AIzaSy...">
+          <small class="text-muted">La clave se guarda localmente en SQLite para autenticar las llamadas a Gemini.</small>
+        </div>
+
+        <!-- Mapeo de Columnas de Excel -->
+        <h5 class="fw-bold mt-4 mb-3 border-top pt-3"><i class="bi bi-table text-primary"></i> Mapeo de Columnas de Excel</h5>
+        <p class="text-muted small">Selecciona cuál encabezado del Excel de Lista de Cotejo corresponde a cada uno de los campos de auditoría requeridos.</p>
+        
+        <div class="row g-3">
+          <!-- Columna Criterio -->
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Criterio / Regla</label>
+            <select class="form-select" name="col_criterio">
+              {% if headers %}
+                {% for h in headers %}
+                  <option value="{{ h }}" {% if mapeo.criterio == h %}selected{% endif %}>{{ h }}</option>
+                {% endfor %}
+              {% else %}
+                <option value="Criterio" {% if not mapeo or mapeo.criterio == 'Criterio' %}selected{% endif %}>Criterio</option>
+              {% endif %}
+            </select>
+          </div>
+          
+          <!-- Columna Tipo -->
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Tipo / Rubro</label>
+            <select class="form-select" name="col_tipo">
+              {% if headers %}
+                {% for h in headers %}
+                  <option value="{{ h }}" {% if mapeo.tipo == h %}selected{% endif %}>{{ h }}</option>
+                {% endfor %}
+              {% else %}
+                <option value="Tipo" {% if not mapeo or mapeo.tipo == 'Tipo' %}selected{% endif %}>Tipo</option>
+              {% endif %}
+            </select>
+          </div>
+          
+          <!-- Columna Peso -->
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Peso Ponderado</label>
+            <select class="form-select" name="col_peso">
+              {% if headers %}
+                {% for h in headers %}
+                  <option value="{{ h }}" {% if mapeo.peso == h %}selected{% endif %}>{{ h }}</option>
+                {% endfor %}
+              {% else %}
+                <option value="Peso" {% if not mapeo or mapeo.peso == 'Peso' %}selected{% endif %}>Peso</option>
+              {% endif %}
+            </select>
+          </div>
+          
+          <!-- Columna Documento Esperado -->
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Documento Esperado</label>
+            <select class="form-select" name="col_documento">
+              {% if headers %}
+                {% for h in headers %}
+                  <option value="{{ h }}" {% if mapeo.documento_esperado == h %}selected{% endif %}>{{ h }}</option>
+                {% endfor %}
+              {% else %}
+                <option value="Documento esperado" {% if not mapeo or mapeo.documento_esperado == 'Documento esperado' %}selected{% endif %}>Documento esperado</option>
+              {% endif %}
+            </select>
+          </div>
+        </div>
+
+        <button class="btn btn-primary w-100 mt-4 py-2 fw-bold" type="submit">
+          <i class="bi bi-save"></i> Guardar y Cargar Parámetros
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Ayuda e Instrucciones -->
+  <div class="col-md-5">
+    <div class="glass-panel h-100">
+      <h5 class="fw-bold mb-3"><i class="bi bi-info-circle-fill text-primary"></i> Estructura Requerida de Lista de Cotejo</h5>
+      <p class="small">El archivo de Excel cargado debe poseer una estructura tabular básica. Por ejemplo:</p>
+      
+      <div class="table-responsive small">
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <th>Criterio</th>
+              <th>Tipo</th>
+              <th>Peso</th>
+              <th>Documento esperado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Validar vigencia del contrato...</td>
+              <td>Contrato</td>
+              <td>1.5</td>
+              <td>contrato</td>
+            </tr>
+            <tr>
+              <td>Verificar monto coincidente...</td>
+              <td>Pago</td>
+              <td>1.0</td>
+              <td>requisición</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="alert alert-info border-0 mt-4 small" role="alert">
+        <h6 class="fw-bold alert-heading"><i class="bi bi-lightbulb-fill"></i> Consejos para Documento Esperado</h6>
+        <p class="m-0">
+          La columna <strong>Documento esperado</strong> sirve como filtro clave. Indica el patrón o nombre del documento (ej: "contrato", "garantías", "requisición"). 
+          El motor de auditoría buscará archivos dentro de las carpetas que contengan ese texto en su nombre para enviarlo a Gemini.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
