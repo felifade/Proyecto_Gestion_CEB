@@ -68,7 +68,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 3rem;
+  padding: 1.5rem 2rem;
 }
 
 .slide.active {
@@ -81,11 +81,24 @@ body {
   background: var(--bg-card);
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-  padding: 3rem;
+  padding: 2rem;
   width: 100%;
   max-width: 1100px;
-  max-height: 85%;
+  max-height: 90%;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.slide-content::-webkit-scrollbar {
+  width: 6px;
+}
+.slide-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.slide-content::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 3px;
 }
 
 /* Cover styling */
@@ -796,4 +809,151 @@ h2 {
   margin-top: auto;
   border-top: 1px solid var(--border-color);
   padding-top: 1rem;
+}
+
+/* Responsividad para pantallas con altura reducida */
+@media (max-height: 850px) {
+  .slide {
+    padding: 1rem;
+  }
+  .slide-content {
+    padding: 1.5rem;
+    max-height: 94%;
+  }
+  h1 {
+    font-size: 2.2rem;
+  }
+  h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem !important;
+  }
+  .slide-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.2rem;
+  }
+  .meta-grid {
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+  }
+  .meta-item {
+    padding: 0.8rem;
+  }
+  .concept-grid {
+    gap: 1.5rem;
+  }
+  .concept-card {
+    padding: 1.5rem;
+  }
+  .objectives-grid {
+    gap: 1rem;
+  }
+  .obj-card {
+    padding: 1.2rem;
+  }
+  .inter-grid {
+    gap: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+  .turno-box {
+    padding: 1.2rem;
+  }
+  .subjects-list {
+    gap: 0.5rem;
+  }
+  .subject-tag {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  .capacitaciones-section {
+    padding: 1rem;
+  }
+  .caps-flex {
+    gap: 0.5rem;
+  }
+  .cap-pill {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  .split-grid {
+    gap: 1.2rem;
+  }
+  .prod-body {
+    padding: 1.2rem;
+  }
+  .prod-body h3 {
+    font-size: 1.25rem;
+  }
+  .prod-type {
+    margin-bottom: 0.8rem;
+  }
+  .prod-details li {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .styled-table th, .styled-table td {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+  .agenda-container {
+    gap: 1.2rem;
+  }
+  .agenda-column {
+    padding: 1rem;
+  }
+  .agenda-title {
+    margin-bottom: 1rem;
+  }
+  .timeline-v {
+    gap: 0.8rem;
+  }
+  .gallery-grid {
+    gap: 0.8rem;
+  }
+  .gallery-item {
+    padding: 0.5rem;
+  }
+  .metrics-container {
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .metric-card {
+    padding: 1rem;
+  }
+  .m-val {
+    font-size: 2.2rem;
+  }
+  .m-label {
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+  .achievements-section {
+    padding: 1rem 1.5rem;
+  }
+  .cierre-grid {
+    gap: 1.5rem;
+  }
+  .cierre-quote {
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+  }
+  .postits-flex {
+    gap: 0.8rem;
+  }
+  .postit {
+    padding: 0.8rem;
+    font-size: 0.85rem;
+  }
+  .firma-block {
+    padding: 1.2rem;
+  }
+  .firma-block h4 {
+    margin-bottom: 1rem;
+  }
+  .firmantes p {
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+  }
+  .dgb-sig {
+    padding-top: 0.8rem;
+  }
 }
