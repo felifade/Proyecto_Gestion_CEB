@@ -39,7 +39,7 @@ En esta sesión se realizaron mejoras críticas de arquitectura, rendimiento, di
 1. **`auditor-expedientes/app/main.py`**: Rutas FastAPI, controlador de agrupamiento, carga automática de los 51 criterios con el re-seed condicional, y ruta para la descarga de Excel por expediente.
 2. **`auditor-expedientes/app/services/auditor.py`**: Eliminación de llamadas a la API de Gemini y migración a auditoría determinista veloz basada en existencia de palabras clave.
 3. **`auditor-expedientes/app/services/reports.py`**: Creación del reporte en Excel detallado por expediente y corrección del error `MergedCell` usando `get_column_letter` de `openpyxl.utils` para establecer anchos de columnas de manera segura.
-4. **`auditor-expedientes/app/templates/dashboard.html`**: Remoción de la opción del Excel detallado consolidado (ahora se maneja por expediente).
+4. **`auditor-expedientes/app/templates/dashboard.html`**: Remoción de la opción del Excel detallado consolidado, deshabilitación visual y lógica (hachado) de "Múltiples Expedientes", preselección por defecto de "Un Solo Expediente" y adición de la sección "Guía de Inicio Rápido" al inicio para mejorar la experiencia del usuario.
 5. **`auditor-expedientes/app/templates/detalle.html`**: Incorporación del botón de descarga de Excel por expediente, reestructuración en tarjetas visuales de categorías con barra de progreso, y remoción de la pestaña redundante de "Documentos Detectados".
 6. **`docs/superpowers/specs/2026-06-24-grouped-checklist-design.md`**: Especificación de diseño aprobada para el checklist visual.
 7. **`docs/superpowers/plans/2026-06-24-grouped-checklist.md`**: Plan de implementación técnica detallado de las tareas.

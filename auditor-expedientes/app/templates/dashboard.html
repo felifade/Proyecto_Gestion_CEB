@@ -32,12 +32,26 @@
 </div>
 
 <div class="glass-panel">
+  <!-- Guía de Inicio Rápido -->
+  <div class="alert alert-info border-0 shadow-sm mb-4 d-flex gap-3 align-items-start" style="background: rgba(13, 202, 240, 0.08); border-left: 4px solid #0dcaf0 !important;">
+    <span class="fs-4">💡</span>
+    <div>
+      <h6 class="fw-bold text-info-emphasis mb-1">Guía de Inicio Rápido: Análisis de Expedientes</h6>
+      <p class="small text-secondary mb-2">Para una experiencia óptima y garantizar un análisis estructurado:</p>
+      <ol class="small text-secondary mb-0 ps-3">
+        <li><strong>Selecciona una sola carpeta:</strong> Asegúrate de elegir únicamente la carpeta correspondiente a un contrato o expediente específico (ej. <em>"Contrato-01-2024"</em>).</li>
+        <li><strong>Escanear:</strong> Haz clic en el botón de Google Drive o local para registrar la carpeta en la plataforma.</li>
+        <li><strong>Realizar Auditoría:</strong> Entra a <strong>"Ver Detalle"</strong> en la carpeta cargada y haz clic en <strong>"Reanalizar"</strong> para ejecutar la auditoría de los 51 criterios normativos.</li>
+      </ol>
+    </div>
+  </div>
+
   <!-- Panel de Selección de Carpetas (prominente para nuevos usuarios) -->
   <div class="mb-4 pb-4 border-bottom">
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
       <div>
-        <h4 class="fw-bold m-0"><i class="bi bi-folder-plus text-primary me-2"></i> Seleccionar Carpeta de Expedientes</h4>
-        <p class="text-muted m-0 small mt-1">Elige la carpeta principal que contiene tus expedientes organizados por año para escanear y auditar.</p>
+        <h4 class="fw-bold m-0"><i class="bi bi-folder-plus text-primary me-2"></i> Seleccionar Carpeta de Expediente</h4>
+        <p class="text-muted m-0 small mt-1">Elige la carpeta correspondiente a tu expediente para escanear y auditar.</p>
       </div>
       
       {% if google_connected %}
@@ -51,18 +65,18 @@
     <div class="mt-4 mb-3 p-3 rounded-3" style="background: rgba(248, 249, 250, 0.8);">
       <label class="form-label fw-bold small text-uppercase text-muted mb-2"><i class="bi bi-sliders me-1"></i> Modo de Escaneo</label>
       <div class="d-flex flex-wrap gap-4">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="scan_mode_ui" id="mode_multiple" value="multiple" checked onchange="updateScanMode()">
+        <div class="form-check p-3 rounded border border-secondary-subtle" style="opacity: 0.6; cursor: not-allowed; background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(108,117,125,0.08) 10px, rgba(108,117,125,0.08) 20px); flex: 1; min-width: 250px;">
+          <input class="form-check-input" type="radio" name="scan_mode_ui" id="mode_multiple" value="multiple" disabled>
           <label class="form-check-label" for="mode_multiple">
-            <strong class="text-dark">Múltiples Expedientes</strong>
-            <small class="text-muted d-block">Seleccionaré una carpeta raíz (ej. 2024 o General) que contiene varios expedientes adentro.</small>
+            <strong class="text-muted">Múltiples Expedientes <span class="badge bg-secondary text-white ms-1 small">Próximamente</span></strong>
+            <small class="text-muted d-block mt-1">Seleccionaré una carpeta raíz (ej. 2024 o General) que contiene varios expedientes adentro.</small>
           </label>
         </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="scan_mode_ui" id="mode_single" value="single" onchange="updateScanMode()">
+        <div class="form-check p-3 rounded border border-primary-subtle" style="flex: 1; min-width: 250px; background: rgba(13,110,253,0.03);">
+          <input class="form-check-input" type="radio" name="scan_mode_ui" id="mode_single" value="single" checked onchange="updateScanMode()">
           <label class="form-check-label" for="mode_single">
-            <strong class="text-dark">Un Solo Expediente</strong>
-            <small class="text-muted d-block">Seleccionaré la carpeta directa de un solo contrato o expediente.</small>
+            <strong class="text-dark">Un Solo Expediente <span class="badge bg-primary text-white ms-1 small">Recomendado</span></strong>
+            <small class="text-muted d-block mt-1">Seleccionaré la carpeta directa de un solo contrato o expediente.</small>
           </label>
         </div>
       </div>
@@ -80,7 +94,7 @@
           <button class="btn btn-primary d-flex align-items-center gap-2 w-100 justify-content-center fw-bold py-2" type="button" onclick="openPicker()" id="btn-drive-picker">
             <i class="bi bi-cloud-arrow-down-fill"></i> Seleccionar Carpeta en Drive
           </button>
-          <small class="text-muted d-block mt-2"><i class="bi bi-info-circle"></i> Selecciona la carpeta raíz con subcarpetas por año.</small>
+          <small class="text-muted d-block mt-2"><i class="bi bi-info-circle"></i> Selecciona la carpeta directa del expediente a auditar.</small>
           {% else %}
           <a href="/login/google" class="btn btn-outline-primary d-flex align-items-center gap-2 w-100 justify-content-center fw-bold py-2">
             <i class="bi bi-box-arrow-in-right"></i> Conectar Google Drive
@@ -98,7 +112,7 @@
             <h6 class="fw-bold m-0">Carpeta Local</h6>
           </div>
           <form action="/scan" method="post" class="m-0">
-            <input type="hidden" name="is_single_exp" class="is-single-exp-input" value="false">
+            <input type="hidden" name="is_single_exp" class="is-single-exp-input" value="true">
             <button class="btn btn-outline-secondary d-flex align-items-center gap-2 w-100 justify-content-center fw-bold py-2">
               <i class="bi bi-folder2-open"></i> Escanear Carpeta Local
             </button>
@@ -112,7 +126,7 @@
     <form id="drive-scan-form" action="/scan" method="post" style="display: none;">
       <input type="hidden" name="folder_id" id="picker-folder-id">
       <input type="hidden" name="folder_name" id="picker-folder-name">
-      <input type="hidden" name="is_single_exp" class="is-single-exp-input" value="false">
+      <input type="hidden" name="is_single_exp" class="is-single-exp-input" value="true">
     </form>
   </div>
   
