@@ -675,3 +675,125 @@ h2 {
   margin-bottom: 0.8rem;
   color: var(--text-main);
 }
+
+.cierre-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 2.5rem;
+}
+
+.cierre-quote {
+  font-size: 1.35rem;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--accent-matutino);
+  border-left: 4px solid var(--accent-gold);
+  padding-left: 1.5rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.muro-interactivo-cierre h4 {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.postits-flex {
+  display: flex;
+  gap: 1rem;
+}
+
+.postit {
+  flex: 1;
+  aspect-ratio: 1;
+  padding: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 0.95rem;
+  position: relative;
+}
+
+.postit:hover {
+  transform: translateY(-5px) rotate(1deg);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.p-blue {
+  background-color: hsl(200, 85%, 90%);
+  color: hsl(200, 80%, 30%);
+}
+
+.p-green {
+  background-color: hsl(140, 80%, 90%);
+  color: hsl(140, 80%, 25%);
+}
+
+.p-yellow {
+  background-color: hsl(55, 95%, 88%);
+  color: hsl(55, 90%, 35%);
+}
+
+.postit .p-detail {
+  display: none;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.postit.revealed .p-preview {
+  display: none;
+}
+
+.postit.revealed .p-detail {
+  display: block;
+}
+
+.firma-block {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.firma-block h4 {
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.firmantes p {
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.muted-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.dgb-sig {
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}

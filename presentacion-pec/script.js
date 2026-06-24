@@ -46,3 +46,7 @@ document.addEventListener('keydown', (e) => {
     prevSlide();
   }
 });
+
+function revealPostit(element) {
+  element.classList.toggle('revealed');
+}
