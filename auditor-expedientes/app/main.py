@@ -138,7 +138,7 @@ def get_config(request: Request, db: Session = Depends(get_db)):
 @app.post("/configuracion")
 def save_config(
     ruta_expedientes: str = Form(...),
-    ruta_lista_cotejo: str = Form(...),
+    ruta_lista_cotejo: str = Form(None),
     gemini_api_key: str = Form(None),
     col_criterio: str = Form("Criterio"),
     col_tipo: str = Form("Tipo"),
@@ -158,17 +158,19 @@ def save_config(
     }
     mapeo_str = json.dumps(mapeo)
     
+    ruta_lista_cotejo_clean = ruta_lista_cotejo.strip() if (ruta_lista_cotejo and ruta_lista_cotejo.strip()) else None
+    
     if not config:
         config = Configuration(
             ruta_expedientes=ruta_expedientes.strip(),
-            ruta_lista_cotejo=ruta_lista_cotejo.strip(),
+            ruta_lista_cotejo=ruta_lista_cotejo_clean,
             mapeo_columnas=mapeo_str,
             gemini_api_key=gemini_api_key.strip() if gemini_api_key else None
         )
         db.add(config)
     else:
         config.ruta_expedientes = ruta_expedientes.strip()
-        config.ruta_lista_cotejo = ruta_lista_cotejo.strip()
+        config.ruta_lista_cotejo = ruta_lista_cotejo_clean
         config.mapeo_columnas = mapeo_str
         if gemini_api_key:
             config.gemini_api_key = gemini_api_key.strip()
@@ -176,7 +178,7 @@ def save_config(
     db.commit()
     
     # Reload Criteria table using the mapped columns from Excel
-    if os.path.exists(config.ruta_lista_cotejo):
+    if config.ruta_lista_cotejo and os.path.exists(config.ruta_lista_cotejo):
         try:
             df = pd.read_excel(config.ruta_lista_cotejo)
             

@@ -25,7 +25,7 @@
         <div class="mb-3">
           <label class="form-label fw-bold">Ruta del Archivo Excel de Lista de Cotejo</label>
           <div class="input-group">
-            <input type="text" class="form-control" name="ruta_lista_cotejo" id="ruta_lista_cotejo" value="{{ config.ruta_lista_cotejo if config else '' }}" placeholder="Ej. /Users/nombre/Downloads/Lista_Cotejo.xlsx" required>
+            <input type="text" class="form-control" name="ruta_lista_cotejo" id="ruta_lista_cotejo" value="{{ config.ruta_lista_cotejo if config else '' }}" placeholder="Ej. /Users/nombre/Downloads/Lista_Cotejo.xlsx">
             <button class="btn btn-outline-secondary" type="button" id="btn-pick-file" onclick="selectFile()"><i class="bi bi-file-earmark-excel"></i> Buscar</button>
           </div>
           <small class="text-muted">Ruta absoluta local del archivo Excel de Lista de Cotejo.</small>
