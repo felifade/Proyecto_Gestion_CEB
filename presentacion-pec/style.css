@@ -392,3 +392,104 @@ h2 {
   background: hsl(150, 60%, 90%);
   color: hsl(150, 70%, 25%);
 }
+
+.split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.prod-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+  border: 1px solid var(--border-color);
+}
+
+.border-matutino {
+  border-top: 6px solid var(--accent-matutino);
+}
+
+.border-vespertino {
+  border-top: 6px solid var(--accent-vespertino);
+}
+
+.prod-header {
+  padding: 1rem;
+  color: white;
+  font-weight: 700;
+  font-family: var(--font-title);
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.bg-matutino {
+  background: var(--accent-matutino);
+}
+
+.bg-vespertino {
+  background: var(--accent-vespertino);
+}
+
+.prod-body {
+  padding: 2rem;
+}
+
+.prod-body h3 {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prod-type {
+  font-size: 1rem;
+  color: var(--text-main);
+  margin-bottom: 1.5rem;
+}
+
+.prod-details {
+  list-style: none;
+}
+
+.prod-details li {
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* Styled Table */
+.table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  text-align: left;
+}
+
+.styled-table th {
+  background-color: var(--text-main);
+  color: white;
+  padding: 1.2rem;
+  font-family: var(--font-title);
+  font-weight: 600;
+}
+
+.styled-table td {
+  padding: 1.2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.styled-table tbody tr:last-of-type td {
+  border-bottom: none;
+}
+
+.bold-td {
+  font-weight: 700;
+  color: var(--text-main);
+}
