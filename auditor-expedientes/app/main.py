@@ -28,7 +28,10 @@ def seed_default_criteria():
     db = SessionLocal()
     try:
         count = db.query(Criteria).count()
-        if count == 0:
+        if count < 51:
+            if count > 0:
+                db.query(Criteria).delete()
+                db.commit()
             real_criteria = [
                 # 1-5: Requerimientos iniciales y autorizaciones
                 Criteria(criterio="1. Oficio de autorización de recursos y adecuación presupuestaria (incluyendo sus respectivos anexos).", tipo="Autorizaciones", peso=1.0, documento_esperado="autorización", activo=True),
@@ -95,7 +98,13 @@ def seed_default_criteria():
                 Criteria(criterio="19.6 Vale de almacén.", tipo="Entrega", peso=1.0, documento_esperado="vale", activo=True),
                 
                 # 20: Evidencia
-                Criteria(criterio="20. El Respaldo de evidencia (actas/cédulas de verificación por el OIC, resguardos, impresos, copias).", tipo="Evidencia", peso=1.0, documento_esperado="respaldo", activo=True)
+                Criteria(criterio="20. El Respaldo de evidencia (actas/cédulas de verificación por el OIC, resguardos, impresos, copias).", tipo="Evidencia", peso=1.0, documento_esperado="respaldo", activo=True),
+                
+                # 21: Eximición de garantía
+                Criteria(criterio="21. Oficio de proveedor solicitando eximición de garantía de cumplimiento y con fecha de contestación (en caso de aplicar).", tipo="Contrato", peso=1.0, documento_esperado="eximición", activo=True),
+                
+                # 22: Procedimiento desierto
+                Criteria(criterio="22. En caso de un procedimiento desierto anexar antecedente (en caso de aplicar).", tipo="Licitación", peso=1.0, documento_esperado="desierto", activo=True)
             ]
             db.bulk_save_objects(real_criteria)
             db.commit()
