@@ -6,7 +6,7 @@
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
   <div>
     <h3 class="fw-bold m-0"><i class="bi bi-folder-fill text-primary me-2"></i> {{ expediente.nombre_carpeta }}</h3>
-    <p class="text-muted m-0 small">Detalles del análisis, veredicto semántico y citas textuales localizadas como evidencia.</p>
+    <p class="text-muted m-0 small">Análisis semántico de criterios y listado completo de documentos localizados.</p>
   </div>
   <div class="d-flex gap-2">
     <!-- Volver al Dashboard -->
@@ -61,49 +61,122 @@
 </div>
 {% endif %}
 
-<!-- Resultados del Cotejo por Criterio -->
-<h5 class="fw-bold mb-3"><i class="bi bi-list-check text-primary me-2"></i> Criterios Evaluados</h5>
-<div class="row g-3">
-  {% if not resultados %}
-  <div class="col-12">
-    <div class="glass-panel text-center py-5">
-      <i class="bi bi-clipboard-x display-3 text-muted"></i>
-      <h5 class="fw-bold mt-3">Sin resultados de auditoría</h5>
-      <p class="text-muted">Aún no se ha realizado la auditoría semántica sobre este expediente.</p>
-    </div>
-  </div>
-  {% else %}
-    {% for r in resultados %}
-    <div class="col-12">
-      <div class="glass-panel-solid border-start border-4 {% if r.estado == 'Cumple' %}border-success{% elif r.estado == 'Cumple parcialmente' %}border-warning{% else %}border-danger{% endif %} shadow-sm">
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-          <div>
-            <span class="badge bg-secondary text-uppercase mb-1" style="font-size: 0.65rem;">{{ r.criterio.tipo }}</span>
-            <h6 class="fw-bold m-0 text-dark-emphasis">{{ r.criterio.criterio }}</h6>
-          </div>
-          <div>
-            {% if r.estado == 'Cumple' %}
-            <span class="badge badge-success"><i class="bi bi-check-circle-fill"></i> Cumple</span>
-            {% elif r.estado == 'Cumple parcialmente' %}
-            <span class="badge badge-warning"><i class="bi bi-exclamation-circle-fill"></i> Cumple parcialmente</span>
-            {% else %}
-            <span class="badge badge-danger"><i class="bi bi-x-circle-fill"></i> No cumple</span>
+<!-- Tabs para alternar entre Criterios y Documentos -->
+<ul class="nav nav-tabs mb-4" id="detailTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active fw-bold" id="audit-tab" data-bs-toggle="tab" data-bs-target="#audit-content" type="button" role="tab" aria-controls="audit-content" aria-selected="true">
+      <i class="bi bi-list-check me-1"></i> Auditoría Semántica
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link fw-bold" id="files-tab" data-bs-toggle="tab" data-bs-target="#files-content" type="button" role="tab" aria-controls="files-content" aria-selected="false">
+      <i class="bi bi-files me-1"></i> Documentos Detectados ({{ expediente.documentos|length }})
+    </button>
+  </li>
+</ul>
+
+<div class="tab-content" id="detailTabContent">
+  <!-- Pestaña 1: Criterios Evaluados -->
+  <div class="tab-pane fade show active" id="audit-content" role="tabpanel" aria-labelledby="audit-tab">
+    <div class="row g-3">
+      {% if not resultados %}
+      <div class="col-12">
+        <div class="glass-panel text-center py-5">
+          <i class="bi bi-clipboard-x display-3 text-muted"></i>
+          <h5 class="fw-bold mt-3">Sin resultados de auditoría</h5>
+          <p class="text-muted">Presiona el botón **Reanalizar** arriba a la derecha para iniciar la auditoría semántica sobre este expediente.</p>
+        </div>
+      </div>
+      {% else %}
+        {% for r in resultados %}
+        <div class="col-12">
+          <div class="glass-panel-solid border-start border-4 {% if r.estado == 'Cumple' %}border-success{% elif r.estado == 'Cumple parcialmente' %}border-warning{% else %}border-danger{% endif %} shadow-sm">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+              <div>
+                <span class="badge bg-secondary text-uppercase mb-1" style="font-size: 0.65rem;">{{ r.criterio.tipo }}</span>
+                <h6 class="fw-bold m-0 text-dark-emphasis">{{ r.criterio.criterio }}</h6>
+              </div>
+              <div>
+                {% if r.estado == 'Cumple' %}
+                <span class="badge badge-success"><i class="bi bi-check-circle-fill"></i> Cumple</span>
+                {% elif r.estado == 'Cumple parcialmente' %}
+                <span class="badge badge-warning"><i class="bi bi-exclamation-circle-fill"></i> Cumple parcialmente</span>
+                {% else %}
+                <span class="badge badge-danger"><i class="bi bi-x-circle-fill"></i> No cumple</span>
+                {% endif %}
+              </div>
+            </div>
+            <p class="text-secondary small mb-3">{{ r.observacion }}</p>
+            
+            {% if r.evidencia_texto %}
+            <div class="p-3 rounded bg-light border-start border-3 border-indigo-subtle">
+              <small class="text-muted d-block fw-bold mb-1">
+                <i class="bi bi-bookmark-fill text-indigo"></i> Evidencia en: <u>{{ r.evidencia_documento }}</u> (Pág. {{ r.evidencia_pagina }})
+              </small>
+              <span class="small text-dark-emphasis font-monospace">"{{ r.evidencia_texto }}"</span>
+            </div>
             {% endif %}
           </div>
         </div>
-        <p class="text-secondary small mb-3">{{ r.observacion }}</p>
-        
-        {% if r.evidencia_texto %}
-        <div class="p-3 rounded bg-light border-start border-3 border-indigo-subtle">
-          <small class="text-muted d-block fw-bold mb-1">
-            <i class="bi bi-bookmark-fill text-indigo"></i> Evidencia en: <u>{{ r.evidencia_documento }}</u> (Pág. {{ r.evidencia_pagina }})
-          </small>
-          <span class="small text-dark-emphasis font-monospace">"{{ r.evidencia_texto }}"</span>
-        </div>
-        {% endif %}
-      </div>
+        {% endfor %}
+      {% endif %}
     </div>
-    {% endfor %}
-  {% endif %}
+  </div>
+
+  <!-- Pestaña 2: Archivos y Subcarpetas Detectados -->
+  <div class="tab-pane fade" id="files-content" role="tabpanel" aria-labelledby="files-tab">
+    <div class="glass-panel-solid shadow-sm">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold m-0"><i class="bi bi-file-earmark-text text-primary"></i> Estructura Interna Encontrada</h5>
+        <span class="text-muted small">Navegación automática a través de subcarpetas</span>
+      </div>
+      
+      {% if expediente.documentos|length == 0 %}
+      <div class="text-center py-5">
+        <i class="bi bi-folder-x display-3 text-muted"></i>
+        <h6 class="fw-bold mt-3">No se encontraron archivos en este expediente</h6>
+        <p class="text-muted small">Ejecuta un escaneo de carpeta para sincronizar archivos nuevos.</p>
+      </div>
+      {% else %}
+      <div class="table-responsive">
+        <table class="table align-middle table-hover">
+          <thead>
+            <tr>
+              <th>Ruta Relativa / Archivo</th>
+              <th class="text-center">Tipo</th>
+              <th class="text-center">Páginas</th>
+              <th class="text-end">Tamaño</th>
+              <th class="text-end">Estado Caché</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for doc in expediente.documentos %}
+            <tr>
+              <td>
+                <span class="fw-bold text-dark-emphasis d-block">{{ doc.nombre_archivo }}</span>
+                <span class="text-muted small font-monospace"><i class="bi bi-folder"></i> {{ doc.ruta_relativa }}</span>
+              </td>
+              <td class="text-center">
+                <span class="badge bg-secondary-subtle text-dark-emphasis text-uppercase">{{ doc.tipo_archivo }}</span>
+              </td>
+              <td class="text-center">{{ doc.paginas_totales if doc.paginas_totales > 0 else '--' }}</td>
+              <td class="text-end text-muted small">
+                {{ "%.1f"|format(doc.tamano_bytes / 1024) }} KB
+              </td>
+              <td class="text-end">
+                {% if doc.texto_extraido and doc.texto_extraido|length > 0 %}
+                <span class="badge bg-success-subtle text-success-emphasis"><i class="bi bi-database-check"></i> Texto en Caché</span>
+                {% else %}
+                <span class="badge bg-warning-subtle text-warning-emphasis"><i class="bi bi-database-exclamation"></i> Sin texto</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </div>
+  </div>
 </div>
 {% endblock %}
