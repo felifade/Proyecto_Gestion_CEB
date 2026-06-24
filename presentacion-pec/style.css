@@ -201,3 +201,101 @@ h2 {
   background: linear-gradient(90deg, var(--accent-matutino), var(--accent-vespertino));
   transition: width 0.3s ease;
 }
+
+.slide-title {
+  font-family: var(--font-title);
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid var(--border-color);
+}
+
+/* Slide 2 Concept Grid */
+.concept-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.highlight-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--accent-matutino);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.concept-text p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text-main);
+  margin-bottom: 1rem;
+}
+
+.concept-card {
+  background: linear-gradient(135deg, hsl(220, 60%, 97%), hsl(150, 60%, 97%));
+  border-radius: 12px;
+  padding: 2.5rem;
+  border: 1px dashed var(--accent-matutino);
+}
+
+.concept-card h4 {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+}
+
+.concept-card ul {
+  list-style: none;
+}
+
+.concept-card li {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+/* Slide 3 Objectives Grid */
+.objectives-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.obj-card {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--border-color);
+}
+
+.obj-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.obj-num {
+  font-family: var(--font-title);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  opacity: 0.8;
+  margin-bottom: 1rem;
+}
+
+.obj-card h3 {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+}
+
+.obj-card p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
