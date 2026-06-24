@@ -422,6 +422,21 @@ def scan_files_for_expediente(db: Session, exp: Expediente, folder_path: str):
                 db.add(doc_entry)
     db.commit()
 
+@app.post("/reset-db")
+def reset_database(request: Request, db: Session = Depends(get_db)):
+    """
+    Clears all scan data: deletes all records in ResultadoAuditoria, Documento, and Expediente tables.
+    """
+    try:
+        db.query(ResultadoAuditoria).delete()
+        db.query(Documento).delete()
+        db.query(Expediente).delete()
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f"Error resetting database: {str(e)}")
+    return RedirectResponse(url="/", status_code=303)
+
 @app.post("/scan")
 def scan_folders(
     request: Request,

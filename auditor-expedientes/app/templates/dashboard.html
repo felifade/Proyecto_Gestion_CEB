@@ -138,10 +138,15 @@
     </div>
     <div class="d-flex gap-2">
       <!-- Auditar Todo -->
-      {% if total > 0 %}
+       {% if total > 0 %}
       <form action="/audit-all" method="post" class="m-0">
         <button class="btn btn-success d-flex align-items-center gap-2">
           <i class="bi bi-play-circle-fill"></i> Auditar Todo
+        </button>
+      </form>
+      <form action="/reset-db" method="post" class="m-0" onsubmit="return confirm('¿Estás seguro de que deseas eliminar todos los expedientes y resultados de auditoría de la base de datos? Esta acción no se puede deshacer.');">
+        <button class="btn btn-outline-danger d-flex align-items-center gap-2">
+          <i class="bi bi-trash3-fill"></i> Resetear Sistema
         </button>
       </form>
       {% endif %}
