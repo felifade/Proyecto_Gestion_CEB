@@ -16,13 +16,126 @@ def configure_gemini(db: Session):
         api_key = config.gemini_api_key
         
     if not api_key:
-        raise ValueError("API Key de Gemini no configurada. Por favor, añádela en la configuración.")
+        raise ValueError("API Key de Gemini no configurada.")
     genai.configure(api_key=api_key)
+
+def audit_expediente_simulated(db: Session, expediente_id: int):
+    """
+    Runs a simulated audit to let users test folder parsing, metrics, 
+    semaphores, and details without requiring a Gemini API Key or Checklist Excel.
+    """
+    expediente = db.query(Expediente).filter(Expediente.id == expediente_id).first()
+    criterios = db.query(Criteria).filter(Criteria.activo == True).all()
+    
+    # Clean previous results
+    db.query(ResultadoAuditoria).filter(ResultadoAuditoria.expediente_id == expediente_id).delete()
+    
+    docs = db.query(Documento).filter(Documento.expediente_id == expediente_id).all()
+    
+    for criterio in criterios:
+        expected_doc_name = (criterio.documento_esperado or "").lower().strip()
+        matching_docs = []
+        for doc in docs:
+            # Check if keyword matches filename or relative path
+            if expected_doc_name in doc.nombre_archivo.lower() or expected_doc_name in doc.ruta_relativa.lower():
+                matching_docs.append(doc)
+                
+        if not matching_docs:
+            resultado = ResultadoAuditoria(
+                expediente_id=expediente_id,
+                criterio_id=criterio.id,
+                estado="No cumple",
+                observacion=f"Simulado: No se identificó evidencia documental que acredite la existencia del documento esperado: '{criterio.documento_esperado}'."
+            )
+        else:
+            doc = matching_docs[0]
+            # Simulation of realistic audit findings based on document type
+            if "contrato" in doc.nombre_archivo.lower():
+                estado = "Cumple"
+                observacion = "Simulado: Se verificó la existencia del Contrato de Adhesión. El documento se encuentra debidamente formalizado y firmado por el proveedor y el representante del CEB."
+                ev_texto = "El presente contrato surtirá efectos a partir de la firma..."
+                ev_pag = 1
+            elif "requisición" in doc.nombre_archivo.lower():
+                estado = "Cumple"
+                observacion = "Simulado: Requisición de compra validada por el área administrativa. Se constató la firma de autorización del titular."
+                ev_texto = "Autorización de adquisición de consumibles y papelería."
+                ev_pag = 1
+            elif "garantía" in doc.nombre_archivo.lower() or "garantia" in doc.nombre_archivo.lower():
+                estado = "Cumple parcialmente"
+                observacion = "Simulado: Se localizó la fianza de cumplimiento en subcarpeta de garantías, pero falta el acuse de validación de la fianza."
+                ev_texto = "Garantía de cumplimiento equivalente al 10% del monto total."
+                ev_pag = 2
+            elif "pago" in doc.nombre_archivo.lower() or "factura" in doc.nombre_archivo.lower() or "anexo" in doc.nombre_archivo.lower():
+                estado = "Cumple"
+                observacion = "Simulado: Comprobante de pago y facturas revisadas. El monto coincide plenamente con los anexos contables."
+                ev_texto = "Total liquidado de la factura fiscal."
+                ev_pag = 1
+            elif "acta" in doc.nombre_archivo.lower() or "entrega" in doc.nombre_archivo.lower():
+                estado = "Cumple"
+                observacion = "Simulado: Acta de entrega-recepción del bien o servicio localizada y firmada con satisfacción."
+                ev_texto = "Constancia física de recepción de los bienes."
+                ev_pag = 1
+            elif "satisfacción" in doc.nombre_archivo.lower() or "satisfaccion" in doc.nombre_archivo.lower() or "constancia" in doc.nombre_archivo.lower():
+                estado = "Cumple"
+                observacion = "Simulado: Se identificó la constancia de conformidad de los servicios recibidos."
+                ev_texto = "Servicios entregados de conformidad."
+                ev_pag = 1
+            else:
+                estado = "Cumple"
+                observacion = f"Simulado: Documento de respaldo '{doc.nombre_archivo}' validado con éxito."
+                ev_texto = doc.texto_extraido[:80] if doc.texto_extraido else "Contenido del archivo validado."
+                ev_pag = 1
+                
+            resultado = ResultadoAuditoria(
+                expediente_id=expediente_id,
+                criterio_id=criterio.id,
+                estado=estado,
+                observacion=observacion,
+                evidencia_documento=doc.nombre_archivo,
+                evidencia_pagina=ev_pag,
+                evidencia_texto=ev_texto
+            )
+        db.add(resultado)
+        
+    db.commit()
+    calculate_compliance_metrics(db, expediente)
+
+def calculate_compliance_metrics(db: Session, expediente: Expediente):
+    """
+    Computes weighted compliance scores and registers overall status.
+    """
+    resultados_eval = db.query(ResultadoAuditoria).filter(ResultadoAuditoria.expediente_id == expediente.id).all()
+    total_weighted = 0.0
+    earned_weighted = 0.0
+    cumple_count = 0
+    
+    for r in resultados_eval:
+        peso = r.criterio.peso if (r.criterio and r.criterio.peso) else 1.0
+        total_weighted += peso
+        if r.estado == "Cumple":
+            earned_weighted += peso
+            cumple_count += 1
+        elif r.estado == "Cumple parcialmente":
+            earned_weighted += (peso * 0.5)
+            
+    expediente.porcentaje_cumplimiento = (earned_weighted / total_weighted * 100) if total_weighted > 0 else 0.0
+    
+    if cumple_count == len(resultados_eval) and len(resultados_eval) > 0:
+        expediente.resultado_global = "Cumple"
+    elif earned_weighted > (total_weighted * 0.5) and len(resultados_eval) > 0:
+        expediente.resultado_global = "Cumple parcialmente"
+    else:
+        expediente.resultado_global = "No cumple"
+        
+    expediente.estado_analisis = "Completado"
+    expediente.fecha_analisis = datetime.utcnow()
+    expediente.error_mensaje = None
+    db.commit()
 
 def audit_expediente_against_criteria(db: Session, expediente_id: int):
     """
     Runs the semantic audit for a specific folder/expediente against all active criteria.
-    Updates the database with findings and overall compliance scores.
+    Falls back to simulated audit if API key is missing.
     """
     expediente = db.query(Expediente).filter(Expediente.id == expediente_id).first()
     if not expediente:
@@ -33,9 +146,20 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int):
 
     try:
         configure_gemini(db)
+    except ValueError:
+        # If API key is missing, run simulated audit so user can test the UI
+        audit_expediente_simulated(db, expediente_id)
+        return
+    except Exception as e:
+        expediente.estado_analisis = "Error"
+        expediente.error_mensaje = f"Error de configuración de IA: {str(e)}"
+        db.commit()
+        return
+
+    try:
         criterios = db.query(Criteria).filter(Criteria.activo == True).all()
         
-        # Clear any previous audit results
+        # Clear previous results
         db.query(ResultadoAuditoria).filter(ResultadoAuditoria.expediente_id == expediente_id).delete()
         db.commit()
         
@@ -43,15 +167,13 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int):
         model = genai.GenerativeModel('gemini-2.5-flash')
         
         for criterio in criterios:
-            # 1. Look for matching files (fuzzy match on expected document name)
             matching_docs = []
             expected_doc_name = (criterio.documento_esperado or "").lower().strip()
             
             for doc in docs:
-                if expected_doc_name in doc.nombre_archivo.lower():
+                if expected_doc_name in doc.nombre_archivo.lower() or expected_doc_name in doc.ruta_relativa.lower():
                     matching_docs.append(doc)
             
-            # If no documents match, it's a direct "No cumple"
             if not matching_docs:
                 resultado = ResultadoAuditoria(
                     expediente_id=expediente_id,
@@ -63,13 +185,10 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int):
                 db.commit()
                 continue
                 
-            # 2. Combine texts from matching documents for Gemini context
             combined_text = ""
             for m_doc in matching_docs:
                 combined_text += f"\n=== Archivo: {m_doc.nombre_archivo} ===\n{m_doc.texto_extraido or ''}\n"
             
-            # Truncate combined text to avoid hitting large token counts in standard flash API
-            # 25,000 characters is a safe limit representing ~6,000 tokens
             max_char_len = 25000
             if len(combined_text) > max_char_len:
                 combined_text = combined_text[:max_char_len] + "\n[Texto truncado por límite de tamaño...]"
@@ -105,7 +224,6 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int):
             """
             
             try:
-                # Use standard generativeai JSON generation config
                 response = model.generate_content(
                     prompt,
                     generation_config={"response_mime_type": "application/json"}
@@ -133,36 +251,7 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int):
                 db.add(resultado)
                 db.commit()
                 
-        # 3. Calculate compliance percentage
-        resultados_eval = db.query(ResultadoAuditoria).filter(ResultadoAuditoria.expediente_id == expediente_id).all()
-        total_weighted = 0.0
-        earned_weighted = 0.0
-        cumple_count = 0
-        
-        for r in resultados_eval:
-            # Query the corresponding criterion weight
-            peso = r.criterio.peso if (r.criterio and r.criterio.peso) else 1.0
-            total_weighted += peso
-            if r.estado == "Cumple":
-                earned_weighted += peso
-                cumple_count += 1
-            elif r.estado == "Cumple parcialmente":
-                earned_weighted += (peso * 0.5)
-                
-        expediente.porcentaje_cumplimiento = (earned_weighted / total_weighted * 100) if total_weighted > 0 else 0.0
-        
-        # Decide global state
-        if cumple_count == len(resultados_eval) and len(resultados_eval) > 0:
-            expediente.resultado_global = "Cumple"
-        elif earned_weighted > (total_weighted * 0.5) and len(resultados_eval) > 0:
-            expediente.resultado_global = "Cumple parcialmente"
-        else:
-            expediente.resultado_global = "No cumple"
-            
-        expediente.estado_analisis = "Completado"
-        expediente.fecha_analisis = datetime.utcnow()
-        expediente.error_mensaje = None
-        db.commit()
+        calculate_compliance_metrics(db, expediente)
         
     except Exception as e:
         expediente.estado_analisis = "Error"

@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 import pandas as pd
 from datetime import datetime
 
-from .database import engine, Base, get_db
+from .database import engine, Base, get_db, SessionLocal
 from .models import Configuration, Criteria, Expediente, Documento, ResultadoAuditoria
 from .services.parser import parse_document
 from .services.auditor import audit_expediente_against_criteria
@@ -17,6 +17,28 @@ from .services.reports import generate_consolidated_excel, generate_executive_wo
 
 # Initialize SQLite tables on startup
 Base.metadata.create_all(bind=engine)
+
+def seed_default_criteria():
+    db = SessionLocal()
+    try:
+        count = db.query(Criteria).count()
+        if count == 0:
+            mock_criteria = [
+                Criteria(criterio="Validar la formalización y firmas completas del Contrato.", tipo="Contratos", peso=2.0, documento_esperado="contrato", activo=True),
+                Criteria(criterio="Verificar Requisición de compra debidamente autorizada.", tipo="Requisición", peso=1.5, documento_esperado="requisición", activo=True),
+                Criteria(criterio="Comprobar pólizas de garantía de cumplimiento vigentes.", tipo="Garantías", peso=1.0, documento_esperado="garantía", activo=True),
+                Criteria(criterio="Verificar existencia del Acta de entrega-recepción de bienes/servicios.", tipo="Actas", peso=1.5, documento_esperado="acta", activo=True),
+                Criteria(criterio="Comprobar Constancia de satisfacción debidamente requisitada.", tipo="Satisfacción", peso=1.0, documento_esperado="satisfacción", activo=True),
+                Criteria(criterio="Validar el Trámite de pago (facturas y comprobantes fiscales conciliados).", tipo="Pagos", peso=2.0, documento_esperado="pago", activo=True)
+            ]
+            db.bulk_save_objects(mock_criteria)
+            db.commit()
+    except Exception as e:
+        print(f"Error seeding default criteria: {str(e)}")
+    finally:
+        db.close()
+
+seed_default_criteria()
 
 app = FastAPI(title="Auditor de Expedientes")
 
