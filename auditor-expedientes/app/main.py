@@ -29,15 +29,29 @@ def seed_default_criteria():
     try:
         count = db.query(Criteria).count()
         if count == 0:
-            mock_criteria = [
-                Criteria(criterio="Validar la formalización y firmas completas del Contrato.", tipo="Contratos", peso=2.0, documento_esperado="contrato", activo=True),
-                Criteria(criterio="Verificar Requisición de compra debidamente autorizada.", tipo="Requisición", peso=1.5, documento_esperado="requisición", activo=True),
-                Criteria(criterio="Comprobar pólizas de garantía de cumplimiento vigentes.", tipo="Garantías", peso=1.0, documento_esperado="garantía", activo=True),
-                Criteria(criterio="Verificar existencia del Acta de entrega-recepción de bienes/servicios.", tipo="Actas", peso=1.5, documento_esperado="acta", activo=True),
-                Criteria(criterio="Comprobar Constancia de satisfacción debidamente requisitada.", tipo="Satisfacción", peso=1.0, documento_esperado="satisfacción", activo=True),
-                Criteria(criterio="Validar el Trámite de pago (facturas y comprobantes fiscales conciliados).", tipo="Pagos", peso=2.0, documento_esperado="pago", activo=True)
+            real_criteria = [
+                # Identificación y datos generales
+                Criteria(criterio="Identificación oficial de quienes firman el contrato.", tipo="Identificación", peso=1.0, documento_esperado="identificación", activo=True),
+                Criteria(criterio="Comprobante de domicilio.", tipo="Domicilio", peso=1.0, documento_esperado="domicilio", activo=True),
+                Criteria(criterio="Carátula bancaria o de datos Bancarios en hoja membretada y firmada, así como el estado de cuenta bancario.", tipo="Datos Bancarios", peso=1.0, documento_esperado="carátula bancaria", activo=True),
+                
+                # Trámite de Pago
+                Criteria(criterio="Solicitud programática del gasto.", tipo="Trámite de Pago", peso=1.0, documento_esperado="solicitud", activo=True),
+                Criteria(criterio="Contra-recibos emitidos por la Secretaría de Hacienda del Estado.", tipo="Trámite de Pago", peso=1.5, documento_esperado="contra-recibo", activo=True),
+                Criteria(criterio="Póliza de egresos (comprometido, devengado, ejercido y pagado).", tipo="Trámite de Pago", peso=1.5, documento_esperado="póliza", activo=True),
+                Criteria(criterio="Transferencias bancarias por concepto de pago a proveedor.", tipo="Trámite de Pago", peso=2.0, documento_esperado="transferencia", activo=True),
+                Criteria(criterio="Comprobantes fiscales digitales por internet (CFDI), con sello de responsabilidad y firma.", tipo="Trámite de Pago", peso=2.0, documento_esperado="cfdi", activo=True),
+                
+                # Entrega de bien o servicio
+                Criteria(criterio="Documento que ampare la entrega oficial del bien o servicio adquirido (acta entrega-recepción).", tipo="Entrega", peso=2.0, documento_esperado="acta", activo=True),
+                Criteria(criterio="Constancia de entera satisfacción.", tipo="Entrega", peso=1.0, documento_esperado="entera satisfacción", activo=True),
+                Criteria(criterio="Constancia de entera satisfacción del área requirente.", tipo="Entrega", peso=1.0, documento_esperado="área requirente", activo=True),
+                Criteria(criterio="Documentación que justifique la aplicación de los recursos (entregables conforme al contrato).", tipo="Entrega", peso=1.5, documento_esperado="entregable", activo=True),
+                Criteria(criterio="Memoria fotográfica que indique tiempo, lugar, circunstancias y encontrarse debidamente firmada.", tipo="Entrega", peso=1.0, documento_esperado="fotográfica", activo=True),
+                Criteria(criterio="Nota de remisión.", tipo="Entrega", peso=1.0, documento_esperado="remisión", activo=True),
+                Criteria(criterio="Vale de almacén.", tipo="Entrega", peso=1.0, documento_esperado="vale", activo=True)
             ]
-            db.bulk_save_objects(mock_criteria)
+            db.bulk_save_objects(real_criteria)
             db.commit()
     except Exception as e:
         print(f"Error seeding default criteria: {str(e)}")

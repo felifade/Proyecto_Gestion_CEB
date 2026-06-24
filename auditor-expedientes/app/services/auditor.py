@@ -1,15 +1,15 @@
 import os
 import json
 from datetime import datetime
-import google.generativeai as genai
 from sqlalchemy.orm import Session
 from ..models import Criteria, Expediente, Documento, ResultadoAuditoria, Configuration
 from .parser import parse_document
 
-def configure_gemini(db: Session):
+def get_gemini_client(db: Session):
     """
-    Configures the Google Gemini API using either the database config key
-    or the environment variable.
+    Returns an initialized Google GenAI client using either the database config key
+    or the environment variable. Pops GOOGLE_API_KEY from environment temporarily
+    to prevent client override issues.
     """
     config = db.query(Configuration).first()
     api_key = os.environ.get("GEMINI_API_KEY")
@@ -18,7 +18,17 @@ def configure_gemini(db: Session):
         
     if not api_key:
         raise ValueError("API Key de Gemini no configurada.")
-    genai.configure(api_key=api_key)
+        
+    orig_google_key = os.environ.pop("GOOGLE_API_KEY", None)
+    try:
+        from google import genai
+        client = genai.Client(api_key=api_key)
+    finally:
+        if orig_google_key is not None:
+            os.environ["GOOGLE_API_KEY"] = orig_google_key
+            
+    return client
+
 
 def ensure_document_texts_cached(db: Session, expediente: Expediente, docs: list[Documento], creds_dict: dict = None):
     """
@@ -192,7 +202,7 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int, creds_dic
     db.commit()
 
     try:
-        configure_gemini(db)
+        client = get_gemini_client(db)
     except ValueError:
         # If API key is missing, run simulated audit so user can test the UI
         audit_expediente_simulated(db, expediente_id, creds_dict)
@@ -212,7 +222,6 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int, creds_dic
         
         docs = db.query(Documento).filter(Documento.expediente_id == expediente_id).all()
         ensure_document_texts_cached(db, expediente, docs, creds_dict)
-        model = genai.GenerativeModel('gemini-2.5-flash')
         
         for criterio in criterios:
             matching_docs = []
@@ -272,9 +281,13 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int, creds_dic
             """
             
             try:
-                response = model.generate_content(
-                    prompt,
-                    generation_config={"response_mime_type": "application/json"}
+                from google.genai import types
+                response = client.models.generate_content(
+                    model='gemini-2.5-flash',
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        response_mime_type="application/json"
+                    )
                 )
                 data = json.loads(response.text)
                 
