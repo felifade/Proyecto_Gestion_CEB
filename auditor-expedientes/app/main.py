@@ -1,5 +1,6 @@
 import os
 import json
+import subprocess
 from fastapi import FastAPI, Depends, Request, Form, BackgroundTasks
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -56,6 +57,34 @@ def read_dashboard(request: Request, db: Session = Depends(get_db)):
             "pendientes": pendientes
         }
     )
+
+@app.post("/api/pick-folder")
+def api_pick_folder():
+    """
+    Triggers a native macOS folder selector dialog via AppleScript.
+    Returns the POSIX path or null if canceled.
+    """
+    try:
+        script = 'POSIX path of (choose folder with prompt "Seleccione la carpeta de expedientes:")'
+        output = subprocess.check_output(['osascript', '-e', script], stderr=subprocess.DEVNULL)
+        path = output.decode('utf-8').strip()
+        return {"path": path}
+    except subprocess.CalledProcessError:
+        return {"path": None}
+
+@app.post("/api/pick-file")
+def api_pick_file():
+    """
+    Triggers a native macOS file selector dialog via AppleScript.
+    Returns the POSIX path or null if canceled.
+    """
+    try:
+        script = 'POSIX path of (choose file of type {"xlsx", "xls"} with prompt "Seleccione el archivo Excel de la Lista de Cotejo:")'
+        output = subprocess.check_output(['osascript', '-e', script], stderr=subprocess.DEVNULL)
+        path = output.decode('utf-8').strip()
+        return {"path": path}
+    except subprocess.CalledProcessError:
+        return {"path": None}
 
 @app.get("/configuracion")
 def get_config(request: Request, db: Session = Depends(get_db)):

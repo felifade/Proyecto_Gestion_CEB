@@ -14,14 +14,20 @@
         <!-- Ruta de Carpetas de Expediente -->
         <div class="mb-3">
           <label class="form-label fw-bold">Ruta del Directorio de Expedientes</label>
-          <input type="text" class="form-control" name="ruta_expedientes" value="{{ config.ruta_expedientes if config else '' }}" placeholder="Ej. /Users/nombre/Downloads/Expedientes" required>
+          <div class="input-group">
+            <input type="text" class="form-control" name="ruta_expedientes" id="ruta_expedientes" value="{{ config.ruta_expedientes if config else '' }}" placeholder="Ej. /Users/nombre/Downloads/Expedientes" required>
+            <button class="btn btn-outline-secondary" type="button" id="btn-pick-folder" onclick="selectFolder()"><i class="bi bi-folder2-open"></i> Buscar</button>
+          </div>
           <small class="text-muted">Introduce la ruta absoluta de la carpeta local sincronizada que contiene las subcarpetas de expedientes.</small>
         </div>
         
         <!-- Ruta de Lista de Cotejo Excel -->
         <div class="mb-3">
           <label class="form-label fw-bold">Ruta del Archivo Excel de Lista de Cotejo</label>
-          <input type="text" class="form-control" name="ruta_lista_cotejo" value="{{ config.ruta_lista_cotejo if config else '' }}" placeholder="Ej. /Users/nombre/Downloads/Lista_Cotejo.xlsx" required>
+          <div class="input-group">
+            <input type="text" class="form-control" name="ruta_lista_cotejo" id="ruta_lista_cotejo" value="{{ config.ruta_lista_cotejo if config else '' }}" placeholder="Ej. /Users/nombre/Downloads/Lista_Cotejo.xlsx" required>
+            <button class="btn btn-outline-secondary" type="button" id="btn-pick-file" onclick="selectFile()"><i class="bi bi-file-earmark-excel"></i> Buscar</button>
+          </div>
           <small class="text-muted">Ruta absoluta local del archivo Excel de Lista de Cotejo.</small>
         </div>
 
@@ -144,4 +150,48 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function selectFolder() {
+    const btn = document.getElementById("btn-pick-folder");
+    const input = document.getElementById("ruta_expedientes");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+    
+    try {
+        const response = await fetch("/api/pick-folder", { method: "POST" });
+        const data = await response.json();
+        if (data.path) {
+            input.value = data.path;
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-folder2-open"></i> Buscar';
+    }
+}
+
+async function selectFile() {
+    const btn = document.getElementById("btn-pick-file");
+    const input = document.getElementById("ruta_lista_cotejo");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+    
+    try {
+        const response = await fetch("/api/pick-file", { method: "POST" });
+        const data = await response.json();
+        if (data.path) {
+            input.value = data.path;
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-file-earmark-excel"></i> Buscar';
+    }
+}
+</script>
 {% endblock %}
