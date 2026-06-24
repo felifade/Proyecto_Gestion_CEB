@@ -30,26 +30,72 @@ def seed_default_criteria():
         count = db.query(Criteria).count()
         if count == 0:
             real_criteria = [
-                # Identificación y datos generales
-                Criteria(criterio="Identificación oficial de quienes firman el contrato.", tipo="Identificación", peso=1.0, documento_esperado="identificación", activo=True),
-                Criteria(criterio="Comprobante de domicilio.", tipo="Domicilio", peso=1.0, documento_esperado="domicilio", activo=True),
-                Criteria(criterio="Carátula bancaria o de datos Bancarios en hoja membretada y firmada, así como el estado de cuenta bancario.", tipo="Datos Bancarios", peso=1.0, documento_esperado="carátula bancaria", activo=True),
+                # 1-5: Requerimientos iniciales y autorizaciones
+                Criteria(criterio="1. Oficio de autorización de recursos y adecuación presupuestaria (incluyendo sus respectivos anexos).", tipo="Autorizaciones", peso=1.0, documento_esperado="autorización", activo=True),
+                Criteria(criterio="2. Oficio de solicitud del área requirente para la adquisición de bienes o servicios.", tipo="Autorizaciones", peso=1.0, documento_esperado="solicitud", activo=True),
+                Criteria(criterio="3. Formato de requisición.", tipo="Autorizaciones", peso=1.0, documento_esperado="requisición", activo=True),
+                Criteria(criterio="4. Oficio para ejercer recursos autorizados emitido por oficialía mayor.", tipo="Autorizaciones", peso=1.0, documento_esperado="ejercer", activo=True),
+                Criteria(criterio="5. Oficio de validación del objeto del gasto.", tipo="Autorizaciones", peso=1.0, documento_esperado="validación", activo=True),
                 
-                # Trámite de Pago
-                Criteria(criterio="Solicitud programática del gasto.", tipo="Trámite de Pago", peso=1.0, documento_esperado="solicitud", activo=True),
-                Criteria(criterio="Contra-recibos emitidos por la Secretaría de Hacienda del Estado.", tipo="Trámite de Pago", peso=1.5, documento_esperado="contra-recibo", activo=True),
-                Criteria(criterio="Póliza de egresos (comprometido, devengado, ejercido y pagado).", tipo="Trámite de Pago", peso=1.5, documento_esperado="póliza", activo=True),
-                Criteria(criterio="Transferencias bancarias por concepto de pago a proveedor.", tipo="Trámite de Pago", peso=2.0, documento_esperado="transferencia", activo=True),
-                Criteria(criterio="Comprobantes fiscales digitales por internet (CFDI), con sello de responsabilidad y firma.", tipo="Trámite de Pago", peso=2.0, documento_esperado="cfdi", activo=True),
+                # 6: Proceso de adjudicación e investigación de mercado
+                Criteria(criterio="6.1 Investigación de mercado de acuerdo con la normativa jurídica aplicable con soporte documental. / Oficio de solicitud de cotización (si fue por internet, imprimir el soporte del correo electrónico).", tipo="Adjudicación", peso=1.5, documento_esperado="investigación de mercado", activo=True),
+                Criteria(criterio="6.2 Cotizaciones en original o auténticas (RFC, domicilio, teléfono, sello en caso de aplicar y firmada).", tipo="Adjudicación", peso=1.5, documento_esperado="cotización", activo=True),
+                Criteria(criterio="6.3 Cuadro comparativo (resultado del análisis).", tipo="Adjudicación", peso=1.5, documento_esperado="cuadro comparativo", activo=True),
                 
-                # Entrega de bien o servicio
-                Criteria(criterio="Documento que ampare la entrega oficial del bien o servicio adquirido (acta entrega-recepción).", tipo="Entrega", peso=2.0, documento_esperado="acta", activo=True),
-                Criteria(criterio="Constancia de entera satisfacción.", tipo="Entrega", peso=1.0, documento_esperado="entera satisfacción", activo=True),
-                Criteria(criterio="Constancia de entera satisfacción del área requirente.", tipo="Entrega", peso=1.0, documento_esperado="área requirente", activo=True),
-                Criteria(criterio="Documentación que justifique la aplicación de los recursos (entregables conforme al contrato).", tipo="Entrega", peso=1.5, documento_esperado="entregable", activo=True),
-                Criteria(criterio="Memoria fotográfica que indique tiempo, lugar, circunstancias y encontrarse debidamente firmada.", tipo="Entrega", peso=1.0, documento_esperado="fotográfica", activo=True),
-                Criteria(criterio="Nota de remisión.", tipo="Entrega", peso=1.0, documento_esperado="remisión", activo=True),
-                Criteria(criterio="Vale de almacén.", tipo="Entrega", peso=1.0, documento_esperado="vale", activo=True)
+                # 7-9: Reducción de plazos y bases
+                Criteria(criterio="7. Oficio de reducción de plazos con justificación fundado y motivado (en caso de aplicar).", tipo="Licitación", peso=1.0, documento_esperado="reducción de plazos", activo=True),
+                Criteria(criterio="8. Acta de aprobación del comité de adquisiciones de la reducción de plazos (en caso de aplicar).", tipo="Licitación", peso=1.0, documento_esperado="aprobación del comité", activo=True),
+                Criteria(criterio="9. Acta de revisión de la documentación (comité de adquisiciones, arrendamientos y servicios del Estado de Hidalgo) y registro de invitados.", tipo="Licitación", peso=1.0, documento_esperado="revisión de la documentación", activo=True),
+                Criteria(criterio="9.1 Acta de revisión y aprobación de la convocatoria que contenga las bases de licitación.", tipo="Licitación", peso=1.0, documento_esperado="revisión y aprobación", activo=True),
+                Criteria(criterio="9.2 Convocatoria a la licitación pública, con oficio enviado al periódico oficial.", tipo="Licitación", peso=1.0, documento_esperado="convocatoria", activo=True),
+                Criteria(criterio="9.3 Bases de la licitación pública con requisitos de participación.", tipo="Licitación", peso=1.0, documento_esperado="bases", activo=True),
+                Criteria(criterio="9.4 Oficio de designación del personal por parte del ente ejecutor.", tipo="Licitación", peso=1.0, documento_esperado="designación", activo=True),
+                
+                # 10-13: Actas y propuestas
+                Criteria(criterio="10. Junta de aclaraciones y registro de invitados.", tipo="Propuestas", peso=1.0, documento_esperado="junta de aclaraciones", activo=True),
+                Criteria(criterio="11. Presentación y apertura de proposiciones, con registro de invitados.", tipo="Propuestas", peso=1.0, documento_esperado="presentación y apertura", activo=True),
+                Criteria(criterio="11.1 Propuesta completa conforme a los documentos y anexos que establecen las bases de la licitación pública, correspondiente al licitante ganador.", tipo="Propuestas", peso=1.5, documento_esperado="propuesta completa", activo=True),
+                Criteria(criterio="11.2 Propuesta completa conforme a los documentos y anexos que establecen las bases de la licitación pública, de los licitantes no ganadores.", tipo="Propuestas", peso=1.0, documento_esperado="propuesta no ganadores", activo=True),
+                Criteria(criterio="11.3 Garantía de seriedad.", tipo="Propuestas", peso=1.0, documento_esperado="garantía de seriedad", activo=True),
+                Criteria(criterio="12. Evaluación de proposiciones y dictamen técnico.", tipo="Fallo", peso=1.5, documento_esperado="evaluación", activo=True),
+                Criteria(criterio="13. Acta de fallo.", tipo="Fallo", peso=1.5, documento_esperado="fallo", activo=True),
+                Criteria(criterio="13.1 Informe enviado al órgano interno de control (en caso de aplicar).", tipo="Fallo", peso=1.0, documento_esperado="informe", activo=True),
+                
+                # 14-16: Contrato y Garantías
+                Criteria(criterio="14. Documentación que ampare la notificación del contrato al proveedor o prestador de servicios.", tipo="Contrato", peso=1.0, documento_esperado="notificación", activo=True),
+                Criteria(criterio="15. Contrato celebrado con sus respectivos anexos y modificaciones, así como la documentación que lo ampara.", tipo="Contrato", peso=2.0, documento_esperado="contrato", activo=True),
+                Criteria(criterio="16. Garantías de anticipo, cumplimiento y/o calidad, en su caso.", tipo="Contrato", peso=1.5, documento_esperado="garantía", activo=True),
+                
+                # 17: Información del Proveedor
+                Criteria(criterio="17.1 a) Acta constitutiva o acta de nacimiento.", tipo="Proveedor", peso=1.0, documento_esperado="acta constitutiva", activo=True),
+                Criteria(criterio="17.2 b) Documento legal (notariado o protocolizado) donde se le otorga las facultades al representante legal para presentar propuesta, en su caso, y firma del contrato.", tipo="Proveedor", peso=1.0, documento_esperado="poder", activo=True),
+                Criteria(criterio="17.3 c) Identificación oficial con fotografía.", tipo="Proveedor", peso=1.0, documento_esperado="identificación oficial", activo=True),
+                Criteria(criterio="17.4 d) Registro federal de contribuyentes (RFC).", tipo="Proveedor", peso=1.0, documento_esperado="rfc", activo=True),
+                Criteria(criterio="17.5 e) Registro vigente del padrón de proveedores que emite el Gobierno del Estado de Hidalgo.", tipo="Proveedor", peso=1.0, documento_esperado="padrón", activo=True),
+                Criteria(criterio="17.6 f) Opinión de cumplimiento en sentido positivo emitida por el SAT.", tipo="Proveedor", peso=1.0, documento_esperado="sat", activo=True),
+                Criteria(criterio="17.7 g) Opinión de cumplimiento en sentido positivo emitida por Gobierno del Estado de Hidalgo.", tipo="Proveedor", peso=1.0, documento_esperado="opinión del estado", activo=True),
+                Criteria(criterio="17.8 h) Comprobante de domicilio.", tipo="Proveedor", peso=1.0, documento_esperado="domicilio", activo=True),
+                Criteria(criterio="17.9 i) Carátula bancaria o de datos Bancarios en hoja membretada y firmada, así como el estado de cuenta bancario.", tipo="Proveedor", peso=1.0, documento_esperado="caratula", activo=True),
+                Criteria(criterio="17.10 Identificación oficial de quienes firman el contrato.", tipo="Proveedor", peso=1.0, documento_esperado="identificación oficial", activo=True),
+                
+                # 18: Trámite de Pago
+                Criteria(criterio="18.1 Solicitud programática del gasto.", tipo="Trámite de Pago", peso=1.0, documento_esperado="solicitud programática", activo=True),
+                Criteria(criterio="18.2 Contra-recibos emitidos por la secretaría de Hacienda del Poder Ejecutivo del Estado de Hidalgo.", tipo="Trámite de Pago", peso=1.5, documento_esperado="contra-recibo", activo=True),
+                Criteria(criterio="18.3 Póliza de egresos [comprometido, devengado, ejercido y pagado].", tipo="Trámite de Pago", peso=1.5, documento_esperado="póliza", activo=True),
+                Criteria(criterio="18.4 Transferencias bancarias por concepto de pago a proveedor.", tipo="Trámite de Pago", peso=2.0, documento_esperado="transferencia", activo=True),
+                Criteria(criterio="18.5 Comprobantes fiscales digitales por internet (CFDI), con sello de responsabilidad y firma.", tipo="Trámite de Pago", peso=2.0, documento_esperado="cfdi", activo=True),
+                
+                # 19: Entrega
+                Criteria(criterio="19. Documento que ampare la entrega oficial del bien o servicio adquirido (acta entrega-recepción).", tipo="Entrega", peso=2.0, documento_esperado="entrega-recepción", activo=True),
+                Criteria(criterio="19.1 Constancia de entera satisfacción.", tipo="Entrega", peso=1.0, documento_esperado="entera satisfacción", activo=True),
+                Criteria(criterio="19.2 Constancia de entera satisfacción del área requirente.", tipo="Entrega", peso=1.0, documento_esperado="área requirente", activo=True),
+                Criteria(criterio="19.3 Documentación que justifique la aplicación de los recursos (entregables conforme al contrato).", tipo="Entrega", peso=1.5, documento_esperado="entregable", activo=True),
+                Criteria(criterio="19.4 Memoria fotográfica que indique tiempo, lugar, circunstancias y encontrarse debidamente firmadas por el responsable de generar la información.", tipo="Entrega", peso=1.0, documento_esperado="fotográfica", activo=True),
+                Criteria(criterio="19.5 Nota de remisión.", tipo="Entrega", peso=1.0, documento_esperado="remisión", activo=True),
+                Criteria(criterio="19.6 Vale de almacén.", tipo="Entrega", peso=1.0, documento_esperado="vale", activo=True),
+                
+                # 20: Evidencia
+                Criteria(criterio="20. El Respaldo de evidencia (actas/cédulas de verificación por el OIC, resguardos, impresos, copias).", tipo="Evidencia", peso=1.0, documento_esperado="respaldo", activo=True)
             ]
             db.bulk_save_objects(real_criteria)
             db.commit()
