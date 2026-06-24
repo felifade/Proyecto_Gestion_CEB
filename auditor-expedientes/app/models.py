@@ -30,7 +30,7 @@ class Expediente(Base):
     nombre_carpeta = Column(String, index=True)
     ruta_relativa = Column(String, unique=True, index=True)
     anio = Column(String, index=True, default="General")
-    google_drive_folder_id = Column(String, unique=True, index=True, nullable=True)
+    google_drive_folder_id = Column(String, index=True, nullable=True)
     fecha_deteccion = Column(DateTime, default=datetime.utcnow)
     fecha_analisis = Column(DateTime, nullable=True)
     estado_analisis = Column(String, default="Pendiente") # Pendiente, Analizando, Completado, Error
@@ -52,7 +52,7 @@ class Documento(Base):
     tamano_bytes = Column(Integer)
     texto_extraido = Column(Text, nullable=True) # Cache text for Gemini
     paginas_totales = Column(Integer, default=0)
-    google_drive_file_id = Column(String, unique=True, index=True, nullable=True)
+    google_drive_file_id = Column(String, index=True, nullable=True)
 
     expediente = relationship("Expediente", back_populates="documentos")
 
