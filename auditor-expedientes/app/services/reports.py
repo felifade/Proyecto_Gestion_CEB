@@ -24,7 +24,7 @@ def generate_consolidated_excel(db: Session, output_path: str):
     ws.title = "Consolidado Auditoría"
     
     # 1. Header Row
-    headers = ["Carpeta Expediente", "Estado Global", "% Cumplimiento"] + [c.criterio for c in criterios]
+    headers = ["Carpeta Expediente", "Año", "Estado Global", "% Cumplimiento"] + [c.criterio for c in criterios]
     ws.append(headers)
     
     # Header styles
@@ -59,7 +59,7 @@ def generate_consolidated_excel(db: Session, output_path: str):
     
     # 2. Append Data Rows
     for r_idx, exp in enumerate(expedientes, start=2):
-        row = [exp.nombre_carpeta, exp.resultado_global, f"{exp.porcentaje_cumplimiento:.1f}%"]
+        row = [exp.nombre_carpeta, exp.anio or "General", exp.resultado_global, f"{exp.porcentaje_cumplimiento:.1f}%"]
         
         for crit in criterios:
             res = db.query(ResultadoAuditoria).filter(
@@ -76,8 +76,13 @@ def generate_consolidated_excel(db: Session, output_path: str):
         ws.cell(row=r_idx, column=1).alignment = align_left
         ws.cell(row=r_idx, column=1).border = border_thin
         
+        # Año
+        ws.cell(row=r_idx, column=2).font = font_normal
+        ws.cell(row=r_idx, column=2).alignment = align_center
+        ws.cell(row=r_idx, column=2).border = border_thin
+        
         # Global Result styling
-        cell_res = ws.cell(row=r_idx, column=2)
+        cell_res = ws.cell(row=r_idx, column=3)
         cell_res.font = font_bold
         cell_res.alignment = align_center
         cell_res.border = border_thin
@@ -91,13 +96,13 @@ def generate_consolidated_excel(db: Session, output_path: str):
             cell_res.fill = fill_gray
             
         # Percentage styling
-        cell_pct = ws.cell(row=r_idx, column=3)
+        cell_pct = ws.cell(row=r_idx, column=4)
         cell_pct.font = font_bold
         cell_pct.alignment = align_center
         cell_pct.border = border_thin
         
         # Criteria columns styling
-        for c_idx, crit in enumerate(criterios, start=4):
+        for c_idx, crit in enumerate(criterios, start=5):
             cell_crit = ws.cell(row=r_idx, column=c_idx)
             cell_crit.font = font_normal
             cell_crit.alignment = align_center
@@ -170,7 +175,8 @@ def generate_executive_word(db: Session, output_path: str):
     doc.add_heading("2. Desglose Detallado por Expediente", level=1)
     
     for exp in expedientes:
-        doc.add_heading(f"Carpeta: {exp.nombre_carpeta}", level=2)
+        year_str = f" ({exp.anio})" if exp.anio else ""
+        doc.add_heading(f"Carpeta: {exp.nombre_carpeta}{year_str}", level=2)
         doc.add_paragraph(f"Porcentaje de Cumplimiento Ponderado: {exp.porcentaje_cumplimiento:.1f}% ({exp.resultado_global})")
         
         resultados = db.query(ResultadoAuditoria).filter(ResultadoAuditoria.expediente_id == exp.id).all()
@@ -269,7 +275,8 @@ def generate_executive_pdf(db: Session, output_path: str):
     expedientes = db.query(Expediente).all()
     
     for exp in expedientes:
-        story.append(Paragraph(f"<b>Expediente:</b> {exp.nombre_carpeta}", style_heading))
+        year_str = f" ({exp.anio})" if exp.anio else ""
+        story.append(Paragraph(f"<b>Expediente:</b> {exp.nombre_carpeta}{year_str}", style_heading))
         story.append(Paragraph(f"Cumplimiento: <b>{exp.porcentaje_cumplimiento:.1f}%</b> | Resultado: <b>{exp.resultado_global}</b>", style_text))
         
         resultados = db.query(ResultadoAuditoria).filter(ResultadoAuditoria.expediente_id == exp.id).all()

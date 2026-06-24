@@ -8,8 +8,73 @@
 <div class="row g-4">
   <!-- Formulario de Configuración Principal -->
   <div class="col-md-7">
+    
+    <!-- Integración Google Drive (Nube) -->
+    <div class="glass-panel mb-4">
+      <h5 class="fw-bold mb-3"><i class="bi bi-google text-primary"></i> Conectividad Google Drive (Nube)</h5>
+      
+      {% if request.query_params.get('error') == 'no_oauth_creds' %}
+      <div class="alert alert-danger border-0 small mb-3">
+        <i class="bi bi-exclamation-octagon-fill"></i>
+        <strong>Error:</strong> Las credenciales de Google OAuth no están configuradas en las variables de entorno del servidor.
+      </div>
+      {% endif %}
+      
+      {% if google_connected %}
+      <div class="alert alert-success border-0 d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-check-circle-fill fs-4"></i>
+          <div>
+            <strong>Google Drive Conectado</strong>
+            <div class="small text-secondary">Acceso autorizado a tus documentos en la nube.</div>
+          </div>
+        </div>
+        <a href="/logout/google" class="btn btn-sm btn-outline-danger">Desconectar</a>
+      </div>
+      
+      <div class="mb-2">
+        <label class="form-label fw-bold">Escanear desde Google Drive</label>
+        <button class="btn btn-success d-flex align-items-center gap-2 py-2 w-100 justify-content-center fw-bold" type="button" onclick="openPicker()">
+          <i class="bi bi-cloud-arrow-down-fill"></i> Seleccionar Carpeta en Google Drive
+        </button>
+        <small class="text-muted d-block mt-2">
+          Selecciona la carpeta que contiene las subcarpetas organizadas por años para sincronizar con la base de datos cloud.
+        </small>
+      </div>
+      
+      <form id="drive-scan-form" action="/scan" method="post" style="display: none;">
+        <input type="hidden" name="folder_id" id="picker-folder-id">
+        <input type="hidden" name="folder_name" id="picker-folder-name">
+      </form>
+      
+      {% else %}
+      <div class="alert alert-warning border-0 mb-3 small">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+          <div>
+            <strong>Google Drive Desconectado</strong>
+            <div class="small">Conecta tu cuenta para realizar el escaneo y análisis en la nube sin descargar archivos.</div>
+          </div>
+        </div>
+      </div>
+      
+      {% if google_client_id %}
+      <a href="/login/google" class="btn btn-primary w-100 py-2 fw-bold d-flex align-items-center justify-content-center gap-2">
+        <i class="bi bi-google"></i> Conectar con Google Drive
+      </a>
+      {% else %}
+      <div class="p-3 bg-secondary-subtle rounded text-center small text-muted">
+        <i class="bi bi-shield-slash"></i> Credenciales OAuth no configuradas en el servidor.
+        Establece <code>GOOGLE_CLIENT_ID</code> y <code>GOOGLE_CLIENT_SECRET</code> en el entorno.
+      </div>
+      {% endif %}
+      
+      {% endif %}
+    </div>
+
+    <!-- Formulario de Configuración Local (Soporte Local-First) -->
     <div class="glass-panel">
-      <h5 class="fw-bold mb-3"><i class="bi bi-folder-symlink-fill text-primary"></i> Directorios y Llaves</h5>
+      <h5 class="fw-bold mb-3"><i class="bi bi-folder-symlink-fill text-primary"></i> Directorios y Llaves (Local)</h5>
       <form action="/configuracion" method="post">
         <!-- Ruta de Carpetas de Expediente -->
         <div class="mb-3">
@@ -154,6 +219,71 @@
 
 {% block scripts %}
 <script>
+// Google Picker Configuration
+var developerKey = '{{ google_api_key }}';
+var clientId = '{{ google_client_id }}';
+var accessToken = '{{ google_access_token }}';
+var pickerApiLoaded = false;
+
+// Load the Google API loader script
+function onApiLoad() {
+    gapi.load('picker', {callback: function() {
+        pickerApiLoaded = true;
+    }});
+}
+
+// Call onApiLoad once page script is loaded
+window.addEventListener('load', function() {
+    if (typeof gapi !== 'undefined') {
+        onApiLoad();
+    }
+});
+
+function openPicker() {
+    if (!pickerApiLoaded) {
+        alert('La API de Google Picker todavía se está cargando. Por favor espera.');
+        return;
+    }
+    if (!accessToken) {
+        alert('No se detectó un Token de Acceso válido. Por favor vuelve a conectar tu cuenta.');
+        return;
+    }
+    
+    // Create view to display only folders
+    var view = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
+        .setSelectFolderEnabled(true)
+        .setMimeTypes('application/vnd.google-apps.folder');
+        
+    var picker = new google.picker.PickerBuilder()
+        .addView(view)
+        .setOAuthToken(accessToken)
+        .setDeveloperKey(developerKey)
+        .setCallback(pickerCallback)
+        .setTitle('Seleccione la carpeta de expedientes')
+        .build();
+        
+    picker.setVisible(true);
+}
+
+function pickerCallback(data) {
+    if (data.action == google.picker.Action.PICKED) {
+        var doc = data.docs[0];
+        var folderId = doc.id;
+        var folderName = doc.name;
+        
+        // Show loading spinner
+        const btn = document.querySelector('button[onclick="openPicker()"]');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Escaneando carpetas de Drive...';
+        }
+        
+        document.getElementById('picker-folder-id').value = folderId;
+        document.getElementById('picker-folder-name').value = folderName;
+        document.getElementById('drive-scan-form').submit();
+    }
+}
+
 async function selectFolder() {
     const btn = document.getElementById("btn-pick-folder");
     const input = document.getElementById("ruta_expedientes");

@@ -7,32 +7,42 @@ from PIL import Image
 import io
 import os
 
-def extract_text_from_pdf(file_path: str) -> tuple[str, int]:
+def extract_text_from_pdf(file_path: str, file_data: bytes = None) -> tuple[str, int]:
     """
     Extracts text from a PDF file using PyMuPDF (fitz), with a fallback to pdfplumber.
     If no text is extracted (scanned document), it uses pytesseract OCR on each page.
+    Supports in-memory bytes or path-based reading.
     """
     text = ""
     total_pages = 0
     try:
         # 1. Try PyMuPDF (fastest)
-        doc = fitz.open(file_path)
+        if file_data is not None:
+            doc = fitz.open(stream=file_data, filetype="pdf")
+        else:
+            doc = fitz.open(file_path)
+            
         total_pages = len(doc)
         for page in doc:
             text += page.get_text()
         doc.close()
         
-        # 2. Fallback to pdfplumber if text is minimal (sometimes fitz misses scanned layer or table structures)
+        # 2. Fallback to pdfplumber if text is minimal
         if len(text.strip()) < 50:
             text = ""
-            with pdfplumber.open(file_path) as pdf:
+            pdf_src = io.BytesIO(file_data) if file_data is not None else file_path
+            with pdfplumber.open(pdf_src) as pdf:
                 for page in pdf.pages:
                     text += page.extract_text() or ""
                     
         # 3. Fallback to pytesseract OCR if still empty (image-only PDF)
         if len(text.strip()) < 50:
             text = ""
-            doc = fitz.open(file_path)
+            if file_data is not None:
+                doc = fitz.open(stream=file_data, filetype="pdf")
+            else:
+                doc = fitz.open(file_path)
+                
             for page_num in range(len(doc)):
                 page = doc.load_page(page_num)
                 pix = page.get_pixmap()
@@ -47,12 +57,13 @@ def extract_text_from_pdf(file_path: str) -> tuple[str, int]:
         text = f"Error al extraer texto del PDF: {str(e)}"
     return text, total_pages
 
-def extract_text_from_excel(file_path: str) -> str:
+def extract_text_from_excel(file_path: str, file_data: bytes = None) -> str:
     """
     Extracts content from all sheets in an Excel file using pandas.
     """
     try:
-        xls = pd.ExcelFile(file_path)
+        excel_src = io.BytesIO(file_data) if file_data is not None else file_path
+        xls = pd.ExcelFile(excel_src)
         sheet_texts = []
         for sheet_name in xls.sheet_names:
             df = pd.read_excel(xls, sheet_name=sheet_name)
@@ -61,12 +72,13 @@ def extract_text_from_excel(file_path: str) -> str:
     except Exception as e:
         return f"Error al extraer texto de Excel: {str(e)}"
 
-def extract_text_from_docx(file_path: str) -> str:
+def extract_text_from_docx(file_path: str, file_data: bytes = None) -> str:
     """
     Extracts text from paragraphs and tables in a Word document.
     """
     try:
-        doc = docx.Document(file_path)
+        docx_src = io.BytesIO(file_data) if file_data is not None else file_path
+        doc = docx.Document(docx_src)
         full_text = []
         # Extract paragraph text
         for para in doc.paragraphs:
@@ -82,22 +94,26 @@ def extract_text_from_docx(file_path: str) -> str:
     except Exception as e:
         return f"Error al extraer texto de Word: {str(e)}"
 
-def parse_document(file_path: str) -> tuple[str, int]:
+def parse_document(file_path: str, file_data: bytes = None) -> tuple[str, int]:
     """
     Determines document type and extracts text. Returns (text, page_count).
+    Supports in-memory bytes parsing if file_data is supplied.
     """
     ext = file_path.split(".")[-1].lower() if "." in file_path else ""
     if ext == "pdf":
-        return extract_text_from_pdf(file_path)
+        return extract_text_from_pdf(file_path, file_data)
     elif ext in ["xlsx", "xls"]:
-        return extract_text_from_excel(file_path), 1
+        return extract_text_from_excel(file_path, file_data), 1
     elif ext in ["docx", "doc"]:
-        return extract_text_from_docx(file_path), 1
+        return extract_text_from_docx(file_path, file_data), 1
     else:
-        # Fallback: simple text reading or empty for unsupported
         try:
-            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-                content = f.read(10000) # Read first 10k chars
+            if file_data is not None:
+                content = file_data.decode("utf-8", errors="ignore")[:10000]
                 return content, 1
+            else:
+                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                    content = f.read(10000) # Read first 10k chars
+                    return content, 1
         except Exception:
             return "", 0

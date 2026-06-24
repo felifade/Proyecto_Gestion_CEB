@@ -1,4 +1,8 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
+# Allow HTTP for local Google OAuth testing
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 import json
 import subprocess
 from fastapi import FastAPI, Depends, Request, Form, BackgroundTasks
@@ -8,6 +12,8 @@ from fastapi.responses import FileResponse, RedirectResponse
 from sqlalchemy.orm import Session
 import pandas as pd
 from datetime import datetime
+from starlette.middleware.sessions import SessionMiddleware
+from google_auth_oauthlib.flow import Flow
 
 from .database import engine, Base, get_db, SessionLocal
 from .models import Configuration, Criteria, Expediente, Documento, ResultadoAuditoria
@@ -42,6 +48,12 @@ seed_default_criteria()
 
 app = FastAPI(title="Auditor de Expedientes")
 
+# Add SessionMiddleware to support encrypted session cookies (for OAuth state & tokens)
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.environ.get("SESSION_SECRET", "super-secret-key-change-it-in-prod-12345")
+)
+
 # Mount static files folder
 os.makedirs("static/css", exist_ok=True)
 os.makedirs("static/js", exist_ok=True)
@@ -50,6 +62,93 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Initialize Jinja2 Templates
 os.makedirs("app/templates", exist_ok=True)
 templates = Jinja2Templates(directory="app/templates")
+
+@app.get("/login/google")
+def login_google(request: Request):
+    client_id = os.environ.get("GOOGLE_CLIENT_ID")
+    client_secret = os.environ.get("GOOGLE_CLIENT_SECRET")
+    if not client_id or not client_secret:
+        return RedirectResponse(url="/configuracion?error=no_oauth_creds")
+        
+    flow = Flow.from_client_config(
+        client_config={
+            "web": {
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+            }
+        },
+        scopes=["https://www.googleapis.com/auth/drive.readonly"]
+    )
+    
+    redirect_uri = os.environ.get("GOOGLE_REDIRECT_URI")
+    if not redirect_uri:
+        redirect_uri = f"{request.url.scheme}://{request.url.netloc}/auth/callback"
+        
+    flow.redirect_uri = redirect_uri
+    
+    authorization_url, state = flow.authorization_url(
+        access_type="offline",
+        include_granted_scopes="true",
+        prompt="consent"
+    )
+    request.session["state"] = state
+    if hasattr(flow, "code_verifier"):
+        request.session["code_verifier"] = flow.code_verifier
+    return RedirectResponse(authorization_url)
+
+@app.get("/auth/callback")
+def auth_callback(request: Request):
+    client_id = os.environ.get("GOOGLE_CLIENT_ID")
+    client_secret = os.environ.get("GOOGLE_CLIENT_SECRET")
+    if not client_id or not client_secret:
+        return RedirectResponse(url="/configuracion?error=no_oauth_creds")
+    
+    flow = Flow.from_client_config(
+        client_config={
+            "web": {
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+            }
+        },
+        scopes=["https://www.googleapis.com/auth/drive.readonly"],
+        state=request.session.get("state")
+    )
+    
+    # Restore code_verifier to fix 'Missing code verifier' error
+    if "code_verifier" in request.session:
+        flow.code_verifier = request.session.pop("code_verifier")
+        
+    redirect_uri = os.environ.get("GOOGLE_REDIRECT_URI")
+    if not redirect_uri:
+        redirect_uri = f"{request.url.scheme}://{request.url.netloc}/auth/callback"
+        
+    flow.redirect_uri = redirect_uri
+    
+    authorization_response = str(request.url)
+    if "http://" in authorization_response and os.environ.get("GOOGLE_REDIRECT_URI", "").startswith("https"):
+        authorization_response = authorization_response.replace("http://", "https://")
+        
+    flow.fetch_token(authorization_response=authorization_response)
+    
+    credentials = flow.credentials
+    request.session["google_creds"] = {
+        "token": credentials.token,
+        "refresh_token": credentials.refresh_token,
+        "token_uri": credentials.token_uri,
+        "client_id": credentials.client_id,
+        "client_secret": credentials.client_secret,
+        "scopes": credentials.scopes
+    }
+    return RedirectResponse(url="/configuracion")
+
+@app.get("/logout/google")
+def logout_google(request: Request):
+    request.session.pop("google_creds", None)
+    return RedirectResponse(url="/configuracion")
 
 @app.get("/")
 def read_dashboard(request: Request, db: Session = Depends(get_db)):
@@ -65,12 +164,16 @@ def read_dashboard(request: Request, db: Session = Depends(get_db)):
     
     cumplimiento_promedio = sum(e.porcentaje_cumplimiento for e in expedientes) / total if total > 0 else 0.0
     
+    # Extraer lista única de años ordenada de manera descendente
+    years = sorted(list(set(e.anio for e in expedientes if e.anio)), reverse=True)
+    
     # Render main dashboard template
     return templates.TemplateResponse(
         request=request,
         name="dashboard.html",
         context={
             "expedientes": expedientes,
+            "years": years,
             "total": total,
             "cumplimiento_promedio": cumplimiento_promedio,
             "completados": completados,
@@ -131,7 +234,11 @@ def get_config(request: Request, db: Session = Depends(get_db)):
         context={
             "config": config,
             "headers": headers,
-            "mapeo": mapeo
+            "mapeo": mapeo,
+            "google_connected": "google_creds" in request.session,
+            "google_access_token": request.session.get("google_creds", {}).get("token", ""),
+            "google_client_id": os.environ.get("GOOGLE_CLIENT_ID", ""),
+            "google_api_key": os.environ.get("GOOGLE_API_KEY", "")
         }
     )
 
@@ -205,74 +312,137 @@ def save_config(
             
     return RedirectResponse(url="/configuracion", status_code=303)
 
+def scan_files_for_expediente(db: Session, exp: Expediente, folder_path: str):
+    """
+    Helper to walk through files of a single expediente folder and cache entries.
+    """
+    for sub_root, dirs, files in os.walk(folder_path):
+        for file_name in files:
+            if file_name.startswith(".") or file_name == "Thumbs.db":
+                continue
+            
+            full_file_path = os.path.join(sub_root, file_name)
+            rel_path = os.path.relpath(full_file_path, folder_path)
+            
+            # Check if file is already cached in db
+            doc_entry = db.query(Documento).filter(
+                Documento.expediente_id == exp.id,
+                Documento.nombre_archivo == file_name,
+                Documento.ruta_relativa == rel_path
+            ).first()
+            
+            # Omit large files from processing (> 20 MB)
+            if os.path.getsize(full_file_path) > 20 * 1024 * 1024:
+                continue
+                
+            if not doc_entry:
+                # Register document; text extraction is deferred to background audit task
+                doc_entry = Documento(
+                    expediente_id=exp.id,
+                    nombre_archivo=file_name,
+                    ruta_relativa=rel_path,
+                    tipo_archivo=file_name.split(".")[-1] if "." in file_name else "otro",
+                    tamano_bytes=os.path.getsize(full_file_path),
+                    texto_extraido=None,
+                    paginas_totales=0
+                )
+                db.add(doc_entry)
+    db.commit()
+
 @app.post("/scan")
-def scan_folders(db: Session = Depends(get_db)):
+def scan_folders(
+    request: Request,
+    folder_id: str = Form(None),
+    folder_name: str = Form(None),
+    db: Session = Depends(get_db)
+):
     """
-    Scans the local directory on demand, detecting subfolders as "expedientes" 
-    and extracting texts to database cache.
+    Scans folders. Supports both Google Drive API (if folder_id is supplied)
+    and local filesystem directory scanning (fallback).
     """
+    # 1. Google Drive Cloud Scan
+    if folder_id:
+        creds_dict = request.session.get("google_creds")
+        if not creds_dict:
+            return RedirectResponse(url="/login/google", status_code=303)
+            
+        try:
+            from .services.drive import get_drive_service, scan_drive_folder_recursive
+            service = get_drive_service(creds_dict)
+            scan_drive_folder_recursive(db, service, folder_id)
+        except Exception as e:
+            print(f"Error scanning Google Drive: {str(e)}")
+            
+        return RedirectResponse(url="/", status_code=303)
+        
+    # 2. Local Filesystem Scan Fallback
     config = db.query(Configuration).first()
     if not config or not config.ruta_expedientes or not os.path.exists(config.ruta_expedientes):
         return RedirectResponse(url="/configuracion", status_code=303)
         
     root_path = config.ruta_expedientes
     
-    # Iterate and detect top-level subfolders as expedientes
-    for folder_name in os.listdir(root_path):
-        full_folder_path = os.path.join(root_path, folder_name)
-        if os.path.isdir(full_folder_path) and not folder_name.startswith("."):
-            # Check if this folder is already tracked
-            exp = db.query(Expediente).filter(Expediente.nombre_carpeta == folder_name).first()
+    # Iterate and detect subfolders
+    for folder_name_local in os.listdir(root_path):
+        full_folder_path = os.path.join(root_path, folder_name_local)
+        if not os.path.isdir(full_folder_path) or folder_name_local.startswith("."):
+            continue
+            
+        # Check if the folder name is a 4-digit year (e.g. 2020 to 2030)
+        is_year_folder = folder_name_local.isdigit() and len(folder_name_local) == 4 and (2020 <= int(folder_name_local) <= 2030)
+        
+        if is_year_folder:
+            # Iterate through the subfolders of this year folder
+            for sub_name in os.listdir(full_folder_path):
+                full_sub_path = os.path.join(full_folder_path, sub_name)
+                if os.path.isdir(full_sub_path) and not sub_name.startswith("."):
+                    rel_path = f"{folder_name_local}/{sub_name}"
+                    exp = db.query(Expediente).filter(Expediente.ruta_relativa == rel_path).first()
+                    if not exp:
+                        exp = Expediente(
+                            nombre_carpeta=sub_name,
+                            ruta_relativa=rel_path,
+                            anio=folder_name_local,
+                            estado_analisis="Pendiente"
+                        )
+                        db.add(exp)
+                        db.commit()
+                        db.refresh(exp)
+                        
+                    scan_files_for_expediente(db, exp, full_sub_path)
+        else:
+            # Treat as a top-level expediente
+            rel_path = folder_name_local
+            exp = db.query(Expediente).filter(Expediente.ruta_relativa == rel_path).first()
             if not exp:
+                guessed_year = "General"
+                for word in folder_name_local.replace("-", " ").replace("_", " ").split():
+                    if word.isdigit() and len(word) == 4 and (2020 <= int(word) <= 2030):
+                        guessed_year = word
+                        break
                 exp = Expediente(
-                    nombre_carpeta=folder_name,
-                    ruta_relativa=folder_name,
+                    nombre_carpeta=folder_name_local,
+                    ruta_relativa=rel_path,
+                    anio=guessed_year,
                     estado_analisis="Pendiente"
                 )
                 db.add(exp)
                 db.commit()
                 db.refresh(exp)
                 
-            # Scan files inside this folder
-            for sub_root, dirs, files in os.walk(full_folder_path):
-                for file_name in files:
-                    if file_name.startswith(".") or file_name == "Thumbs.db":
-                        continue
-                    
-                    full_file_path = os.path.join(sub_root, file_name)
-                    rel_path = os.path.relpath(full_file_path, full_folder_path)
-                    
-                    # Check if file is already cached in db
-                    doc_entry = db.query(Documento).filter(
-                        Documento.expediente_id == exp.id,
-                        Documento.nombre_archivo == file_name,
-                        Documento.ruta_relativa == rel_path
-                    ).first()
-                    
-                    # Omit large files from processing (> 20 MB)
-                    if os.path.getsize(full_file_path) > 20 * 1024 * 1024:
-                        continue
-                        
-                    if not doc_entry:
-                        # Extract content (fitz/pdfplumber/OCR/docx/excel)
-                        text_extracted, total_pages = parse_document(full_file_path)
-                        
-                        doc_entry = Documento(
-                            expediente_id=exp.id,
-                            nombre_archivo=file_name,
-                            ruta_relativa=rel_path,
-                            tipo_archivo=file_name.split(".")[-1] if "." in file_name else "otro",
-                            tamano_bytes=os.path.getsize(full_file_path),
-                            texto_extraido=text_extracted,
-                            paginas_totales=total_pages
-                        )
-                        db.add(doc_entry)
-            db.commit()
+            scan_files_for_expediente(db, exp, full_folder_path)
             
     return RedirectResponse(url="/", status_code=303)
 
+@app.get("/scan")
+def scan_folders_fallback():
+    """
+    Defensive redirection for GET requests to /scan.
+    """
+    return RedirectResponse(url="/", status_code=303)
+
 @app.post("/audit/{exp_id}")
-def run_audit(exp_id: int, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+def run_audit(exp_id: int, request: Request, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     """
     Triggers the audit task in the background using FastAPI workers.
     """
@@ -280,13 +450,24 @@ def run_audit(exp_id: int, background_tasks: BackgroundTasks, db: Session = Depe
     if exp:
         exp.estado_analisis = "Analizando"
         db.commit()
+        
+        # Get credentials if Google Drive is authorized
+        creds_dict = request.session.get("google_creds")
+        
         # Add to background worker queue
-        background_tasks.add_task(audit_expediente_against_criteria, db, exp_id)
+        background_tasks.add_task(audit_expediente_against_criteria, db, exp_id, creds_dict)
         
     return RedirectResponse(url="/", status_code=303)
 
+@app.get("/audit/{exp_id}")
+def run_audit_fallback(exp_id: int):
+    """
+    Defensive redirection for GET requests to /audit/{exp_id}.
+    """
+    return RedirectResponse(url="/", status_code=303)
+
 @app.post("/audit-all")
-def run_audit_all(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+def run_audit_all(request: Request, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     """
     Triggers sequential background audits for all registered Folders/Expedientes.
     """
@@ -300,9 +481,19 @@ def run_audit_all(background_tasks: BackgroundTasks, db: Session = Depends(get_d
     db.commit()
     
     if exp_ids:
-        # Add sequential bulk audit queue to background worker thread
-        background_tasks.add_task(audit_all_expedientes_task, exp_ids)
+        # Get credentials if Google Drive is authorized
+        creds_dict = request.session.get("google_creds")
         
+        # Add sequential bulk audit queue to background worker thread
+        background_tasks.add_task(audit_all_expedientes_task, exp_ids, creds_dict)
+        
+    return RedirectResponse(url="/", status_code=303)
+
+@app.get("/audit-all")
+def run_audit_all_fallback():
+    """
+    Defensive redirection for GET requests to /audit-all.
+    """
     return RedirectResponse(url="/", status_code=303)
 
 @app.get("/expediente/{exp_id}")

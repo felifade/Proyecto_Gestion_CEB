@@ -2,6 +2,8 @@
 .venv/
 venv/
 ENV/
+.env
+
 
 # Base de datos SQLite local
 auditor.db

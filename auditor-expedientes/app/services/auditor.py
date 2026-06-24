@@ -4,6 +4,7 @@ from datetime import datetime
 import google.generativeai as genai
 from sqlalchemy.orm import Session
 from ..models import Criteria, Expediente, Documento, ResultadoAuditoria, Configuration
+from .parser import parse_document
 
 def configure_gemini(db: Session):
     """
@@ -19,7 +20,52 @@ def configure_gemini(db: Session):
         raise ValueError("API Key de Gemini no configurada.")
     genai.configure(api_key=api_key)
 
-def audit_expediente_simulated(db: Session, expediente_id: int):
+def ensure_document_texts_cached(db: Session, expediente: Expediente, docs: list[Documento], creds_dict: dict = None):
+    """
+    Checks if any document has unextracted text, and extracts it in the background thread.
+    This defers the heavy PDF/OCR processing from the synchronous folder scan.
+    Supports local file systems or in-memory downloads from Google Drive.
+    """
+    config = db.query(Configuration).first()
+    
+    for doc in docs:
+        if doc.texto_extraido is None:
+            # 1. Try Google Drive API download if credentials and file ID are available
+            if creds_dict and doc.google_drive_file_id:
+                try:
+                    import io
+                    from googleapiclient.http import MediaIoBaseDownload
+                    from .drive import get_drive_service
+                    
+                    drive_service = get_drive_service(creds_dict)
+                    request = drive_service.files().get_media(fileId=doc.google_drive_file_id)
+                    fh = io.BytesIO()
+                    downloader = MediaIoBaseDownload(fh, request)
+                    done = False
+                    while done is False:
+                        status, done = downloader.next_chunk()
+                    file_data = fh.getvalue()
+                    
+                    text, pages = parse_document(doc.nombre_archivo, file_data=file_data)
+                    doc.texto_extraido = text
+                    doc.paginas_totales = pages
+                    db.commit()
+                except Exception as e:
+                    print(f"Error extracting text from Google Drive file {doc.nombre_archivo} in background: {str(e)}")
+            else:
+                # 2. Fallback to local files if path configuration is present
+                if config and config.ruta_expedientes:
+                    full_file_path = os.path.join(config.ruta_expedientes, expediente.ruta_relativa, doc.ruta_relativa)
+                    if os.path.exists(full_file_path):
+                        try:
+                            text, pages = parse_document(full_file_path)
+                            doc.texto_extraido = text
+                            doc.paginas_totales = pages
+                            db.commit()
+                        except Exception as e:
+                            print(f"Error extracting text from local file {doc.nombre_archivo} in background: {str(e)}")
+
+def audit_expediente_simulated(db: Session, expediente_id: int, creds_dict: dict = None):
     """
     Runs a simulated audit to let users test folder parsing, metrics, 
     semaphores, and details without requiring a Gemini API Key or Checklist Excel.
@@ -31,6 +77,7 @@ def audit_expediente_simulated(db: Session, expediente_id: int):
     db.query(ResultadoAuditoria).filter(ResultadoAuditoria.expediente_id == expediente_id).delete()
     
     docs = db.query(Documento).filter(Documento.expediente_id == expediente_id).all()
+    ensure_document_texts_cached(db, expediente, docs, creds_dict)
     
     for criterio in criterios:
         expected_doc_name = (criterio.documento_esperado or "").lower().strip()
@@ -132,7 +179,7 @@ def calculate_compliance_metrics(db: Session, expediente: Expediente):
     expediente.error_mensaje = None
     db.commit()
 
-def audit_expediente_against_criteria(db: Session, expediente_id: int):
+def audit_expediente_against_criteria(db: Session, expediente_id: int, creds_dict: dict = None):
     """
     Runs the semantic audit for a specific folder/expediente against all active criteria.
     Falls back to simulated audit if API key is missing.
@@ -148,7 +195,7 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int):
         configure_gemini(db)
     except ValueError:
         # If API key is missing, run simulated audit so user can test the UI
-        audit_expediente_simulated(db, expediente_id)
+        audit_expediente_simulated(db, expediente_id, creds_dict)
         return
     except Exception as e:
         expediente.estado_analisis = "Error"
@@ -164,6 +211,7 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int):
         db.commit()
         
         docs = db.query(Documento).filter(Documento.expediente_id == expediente_id).all()
+        ensure_document_texts_cached(db, expediente, docs, creds_dict)
         model = genai.GenerativeModel('gemini-2.5-flash')
         
         for criterio in criterios:
@@ -258,7 +306,7 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int):
         expediente.error_mensaje = str(e)
         db.commit()
 
-def audit_all_expedientes_task(expediente_ids: list[int]):
+def audit_all_expedientes_task(expediente_ids: list[int], creds_dict: dict = None):
     """
     Runs audit for multiple expedientes sequentially in a background thread
     to prevent SQLite concurrency locks.
@@ -267,7 +315,7 @@ def audit_all_expedientes_task(expediente_ids: list[int]):
     for exp_id in expediente_ids:
         db = SessionLocal()
         try:
-            audit_expediente_against_criteria(db, exp_id)
+            audit_expediente_against_criteria(db, exp_id, creds_dict)
         except Exception as e:
             print(f"Error al auditar expediente {exp_id}: {str(e)}")
         finally:
