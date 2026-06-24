@@ -1,6 +1,7 @@
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
 from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -124,6 +125,177 @@ def generate_consolidated_excel(db: Session, output_path: str):
         col_letter = col[0].column_letter
         ws.column_dimensions[col_letter].width = max(max_len + 3, 12)
         
+    wb.save(output_path)
+
+def generate_detailed_excel(db: Session, output_path: str):
+    """
+    Generates a detailed spreadsheet with one sheet per expediente,
+    including file existence, content verification, and full observations.
+    """
+    from ..models import Documento
+    expedientes = db.query(Expediente).all()
+    criterios = db.query(Criteria).all()
+    
+    wb = Workbook()
+    # Remove default sheet
+    wb.remove(wb.active)
+    
+    # Styles
+    fill_header = PatternFill(start_color="1E293B", end_color="1E293B", fill_type="solid")
+    font_header = Font(name="Calibri", size=10, bold=True, color="FFFFFF")
+    font_bold = Font(name="Calibri", size=10, bold=True)
+    font_normal = Font(name="Calibri", size=10)
+    align_center = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    align_left = Alignment(horizontal="left", vertical="top", wrap_text=True)
+    
+    fill_green = PatternFill(start_color="D1FAE5", end_color="D1FAE5", fill_type="solid")
+    fill_yellow = PatternFill(start_color="FEF3C7", end_color="FEF3C7", fill_type="solid")
+    fill_red = PatternFill(start_color="FEE2E2", end_color="FEE2E2", fill_type="solid")
+    fill_gray = PatternFill(start_color="F3F4F6", end_color="F3F4F6", fill_type="solid")
+    fill_blue = PatternFill(start_color="DBEAFE", end_color="DBEAFE", fill_type="solid")
+    
+    border_thin = Border(
+        left=Side(style='thin', color='E2E8F0'),
+        right=Side(style='thin', color='E2E8F0'),
+        top=Side(style='thin', color='E2E8F0'),
+        bottom=Side(style='thin', color='E2E8F0')
+    )
+    
+    # --- Sheet 1: Resumen General ---
+    ws_summary = wb.create_sheet("Resumen General")
+    summary_headers = ["Expediente", "Año", "Estado Global", "% Cumplimiento", "Archivos Detectados", "Criterios Cumplidos", "Verificados", "Parciales", "No Verificados"]
+    ws_summary.append(summary_headers)
+    
+    for col in range(1, len(summary_headers) + 1):
+        cell = ws_summary.cell(row=1, column=col)
+        cell.fill = fill_header
+        cell.font = font_header
+        cell.alignment = align_center
+    
+    for r_idx, exp in enumerate(expedientes, start=2):
+        resultados = db.query(ResultadoAuditoria).filter(ResultadoAuditoria.expediente_id == exp.id).all()
+        n_docs = db.query(Documento).filter(Documento.expediente_id == exp.id).count()
+        cumple = sum(1 for r in resultados if r.estado == "Cumple")
+        verificados = sum(1 for r in resultados if r.contenido_verificado == "Verificado")
+        parciales = sum(1 for r in resultados if r.contenido_verificado == "Parcial")
+        no_verif = sum(1 for r in resultados if r.contenido_verificado == "No verificado")
+        
+        row = [exp.nombre_carpeta, exp.anio or "General", exp.resultado_global,
+               f"{exp.porcentaje_cumplimiento:.1f}%", n_docs, cumple, verificados, parciales, no_verif]
+        ws_summary.append(row)
+        
+        # Style the row
+        for c in range(1, len(row) + 1):
+            cell = ws_summary.cell(row=r_idx, column=c)
+            cell.font = font_normal
+            cell.alignment = align_center
+            cell.border = border_thin
+        ws_summary.cell(row=r_idx, column=1).font = font_bold
+        ws_summary.cell(row=r_idx, column=1).alignment = align_left
+        
+        # Color the estado global
+        cell_estado = ws_summary.cell(row=r_idx, column=3)
+        if exp.resultado_global == "Cumple":
+            cell_estado.fill = fill_green
+        elif exp.resultado_global == "Cumple parcialmente":
+            cell_estado.fill = fill_yellow
+        else:
+            cell_estado.fill = fill_red
+    
+    # Auto-width for summary
+    for col in ws_summary.columns:
+        max_len = max(len(str(cell.value or '')) for cell in col)
+        ws_summary.column_dimensions[col[0].column_letter].width = max(max_len + 3, 14)
+    
+    # --- Sheet per expediente ---
+    for exp in expedientes:
+        # Sanitize sheet name (max 31 chars, no invalid chars)
+        sheet_name = exp.nombre_carpeta[:28].replace("/", "-").replace("\\", "-").replace("*", "").replace("?", "").replace("[", "").replace("]", "")
+        if sheet_name in [ws.title for ws in wb.worksheets]:
+            sheet_name = f"{sheet_name[:25]}_{exp.id}"
+        
+        ws = wb.create_sheet(sheet_name)
+        
+        # Expediente info header
+        ws.append([f"Expediente: {exp.nombre_carpeta}"])
+        ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=8)
+        ws.cell(row=1, column=1).font = Font(name="Calibri", size=13, bold=True, color="1E293B")
+        ws.append([f"Año: {exp.anio or 'General'} | Cumplimiento: {exp.porcentaje_cumplimiento:.1f}% | Estado: {exp.resultado_global}"])
+        ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=8)
+        ws.cell(row=2, column=1).font = Font(name="Calibri", size=10, italic=True)
+        ws.append([])  # Spacer row
+        
+        # Table headers
+        detail_headers = [
+            "No.", "Categoría", "Criterio", "Palabra Clave",
+            "Archivo Encontrado", "Estatus Archivo",
+            "Verificación Contenido", "Detalle de Verificación"
+        ]
+        ws.append(detail_headers)
+        header_row = 4
+        for col in range(1, len(detail_headers) + 1):
+            cell = ws.cell(row=header_row, column=col)
+            cell.fill = fill_header
+            cell.font = font_header
+            cell.alignment = align_center
+        
+        resultados = db.query(ResultadoAuditoria).filter(
+            ResultadoAuditoria.expediente_id == exp.id
+        ).all()
+        
+        for r_idx, r in enumerate(resultados, start=header_row + 1):
+            criterio_text = r.criterio.criterio if r.criterio else ""
+            categoria = r.criterio.tipo if r.criterio else "General"
+            keyword = r.criterio.documento_esperado if r.criterio else ""
+            
+            row_data = [
+                r_idx - header_row,
+                categoria,
+                criterio_text,
+                keyword,
+                r.evidencia_documento or "—",
+                r.estado,
+                r.contenido_verificado or "N/A",
+                r.detalle_contenido or "—"
+            ]
+            ws.append(row_data)
+            
+            # Style each cell
+            for c in range(1, len(row_data) + 1):
+                cell = ws.cell(row=r_idx, column=c)
+                cell.font = font_normal
+                cell.alignment = align_left if c in [3, 5, 8] else align_center
+                cell.border = border_thin
+            
+            # Color estatus archivo
+            cell_status = ws.cell(row=r_idx, column=6)
+            cell_status.font = font_bold
+            if r.estado == "Cumple":
+                cell_status.fill = fill_green
+            elif r.estado == "Cumple parcialmente":
+                cell_status.fill = fill_yellow
+            elif r.estado == "No cumple":
+                cell_status.fill = fill_red
+            
+            # Color verificación contenido
+            cell_verif = ws.cell(row=r_idx, column=7)
+            cell_verif.font = font_bold
+            if r.contenido_verificado == "Verificado":
+                cell_verif.fill = fill_green
+            elif r.contenido_verificado == "Parcial":
+                cell_verif.fill = fill_yellow
+            elif r.contenido_verificado == "No verificado":
+                cell_verif.fill = fill_red
+            elif r.contenido_verificado == "Sin texto":
+                cell_verif.fill = fill_blue
+            else:
+                cell_verif.fill = fill_gray
+        
+        # Set column widths
+        col_widths = [5, 16, 55, 18, 30, 16, 20, 55]
+        for i, w in enumerate(col_widths, start=1):
+            ws.column_dimensions[get_column_letter(i)].width = w
+    
     wb.save(output_path)
 
 def generate_executive_word(db: Session, output_path: str):
@@ -320,3 +492,112 @@ def generate_executive_pdf(db: Session, output_path: str):
         story.append(Spacer(1, 15))
         
     doc.build(story)
+
+def generate_detailed_excel_for_expediente(db: Session, expediente_id: int, output_path: str):
+    """
+    Generates a detailed spreadsheet for a single expediente.
+    """
+    from ..models import Documento
+    exp = db.query(Expediente).filter(Expediente.id == expediente_id).first()
+    if not exp:
+        return
+        
+    wb = Workbook()
+    wb.remove(wb.active)
+    
+    fill_header = PatternFill(start_color="1E293B", end_color="1E293B", fill_type="solid")
+    font_header = Font(name="Calibri", size=10, bold=True, color="FFFFFF")
+    font_bold = Font(name="Calibri", size=10, bold=True)
+    font_normal = Font(name="Calibri", size=10)
+    align_center = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    align_left = Alignment(horizontal="left", vertical="top", wrap_text=True)
+    
+    fill_green = PatternFill(start_color="D1FAE5", end_color="D1FAE5", fill_type="solid")
+    fill_yellow = PatternFill(start_color="FEF3C7", end_color="FEF3C7", fill_type="solid")
+    fill_red = PatternFill(start_color="FEE2E2", end_color="FEE2E2", fill_type="solid")
+    fill_gray = PatternFill(start_color="F3F4F6", end_color="F3F4F6", fill_type="solid")
+    fill_blue = PatternFill(start_color="DBEAFE", end_color="DBEAFE", fill_type="solid")
+    
+    border_thin = Border(
+        left=Side(style='thin', color='E2E8F0'),
+        right=Side(style='thin', color='E2E8F0'),
+        top=Side(style='thin', color='E2E8F0'),
+        bottom=Side(style='thin', color='E2E8F0')
+    )
+    
+    sheet_name = "Detalle de Auditoria"
+    ws = wb.create_sheet(sheet_name)
+    
+    ws.append([f"Expediente: {exp.nombre_carpeta}"])
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=8)
+    ws.cell(row=1, column=1).font = Font(name="Calibri", size=13, bold=True, color="1E293B")
+    ws.append([f"Año: {exp.anio or 'General'} | Cumplimiento: {exp.porcentaje_cumplimiento:.1f}% | Estado: {exp.resultado_global}"])
+    ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=8)
+    ws.cell(row=2, column=1).font = Font(name="Calibri", size=10, italic=True)
+    ws.append([])
+    
+    detail_headers = [
+        "No.", "Categoría", "Criterio", "Palabra Clave",
+        "Archivo Encontrado", "Estatus Archivo",
+        "Verificación Contenido", "Detalle de Verificación"
+    ]
+    ws.append(detail_headers)
+    header_row = 4
+    for col in range(1, len(detail_headers) + 1):
+        cell = ws.cell(row=header_row, column=col)
+        cell.fill = fill_header
+        cell.font = font_header
+        cell.alignment = align_center
+    
+    resultados = db.query(ResultadoAuditoria).filter(ResultadoAuditoria.expediente_id == exp.id).all()
+    
+    for r_idx, r in enumerate(resultados, start=header_row + 1):
+        criterio_text = r.criterio.criterio if r.criterio else ""
+        categoria = r.criterio.tipo if r.criterio else "General"
+        keyword = r.criterio.documento_esperado if r.criterio else ""
+        
+        row_data = [
+            r_idx - header_row,
+            categoria,
+            criterio_text,
+            keyword,
+            r.evidencia_documento or "—",
+            r.estado,
+            r.contenido_verificado or "N/A",
+            r.detalle_contenido or "—"
+        ]
+        ws.append(row_data)
+        
+        for c in range(1, len(row_data) + 1):
+            cell = ws.cell(row=r_idx, column=c)
+            cell.font = font_normal
+            cell.alignment = align_left if c in [3, 5, 8] else align_center
+            cell.border = border_thin
+        
+        cell_status = ws.cell(row=r_idx, column=6)
+        cell_status.font = font_bold
+        if r.estado == "Cumple":
+            cell_status.fill = fill_green
+        elif r.estado == "Cumple parcialmente":
+            cell_status.fill = fill_yellow
+        elif r.estado == "No cumple":
+            cell_status.fill = fill_red
+        
+        cell_verif = ws.cell(row=r_idx, column=7)
+        cell_verif.font = font_bold
+        if r.contenido_verificado == "Verificado":
+            cell_verif.fill = fill_green
+        elif r.contenido_verificado == "Parcial":
+            cell_verif.fill = fill_yellow
+        elif r.contenido_verificado == "No verificado":
+            cell_verif.fill = fill_red
+        elif r.contenido_verificado == "Sin texto":
+            cell_verif.fill = fill_blue
+        else:
+            cell_verif.fill = fill_gray
+            
+    col_widths = [5, 16, 55, 18, 30, 16, 20, 55]
+    for i, w in enumerate(col_widths, start=1):
+        ws.column_dimensions[get_column_letter(i)].width = w
+
+    wb.save(output_path)

@@ -32,18 +32,97 @@
 </div>
 
 <div class="glass-panel">
+  <!-- Panel de Selección de Carpetas (prominente para nuevos usuarios) -->
+  <div class="mb-4 pb-4 border-bottom">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+      <div>
+        <h4 class="fw-bold m-0"><i class="bi bi-folder-plus text-primary me-2"></i> Seleccionar Carpeta de Expedientes</h4>
+        <p class="text-muted m-0 small mt-1">Elige la carpeta principal que contiene tus expedientes organizados por año para escanear y auditar.</p>
+      </div>
+      
+      {% if google_connected %}
+      <span class="badge bg-success-subtle text-success-emphasis d-flex align-items-center gap-1 py-2 px-3">
+        <i class="bi bi-cloud-check-fill"></i> Drive Conectado
+      </span>
+      {% endif %}
+    </div>
+    
+    <!-- Modo de Escaneo Toggle -->
+    <div class="mt-4 mb-3 p-3 rounded-3" style="background: rgba(248, 249, 250, 0.8);">
+      <label class="form-label fw-bold small text-uppercase text-muted mb-2"><i class="bi bi-sliders me-1"></i> Modo de Escaneo</label>
+      <div class="d-flex flex-wrap gap-4">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="scan_mode_ui" id="mode_multiple" value="multiple" checked onchange="updateScanMode()">
+          <label class="form-check-label" for="mode_multiple">
+            <strong class="text-dark">Múltiples Expedientes</strong>
+            <small class="text-muted d-block">Seleccionaré una carpeta raíz (ej. 2024 o General) que contiene varios expedientes adentro.</small>
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="scan_mode_ui" id="mode_single" value="single" onchange="updateScanMode()">
+          <label class="form-check-label" for="mode_single">
+            <strong class="text-dark">Un Solo Expediente</strong>
+            <small class="text-muted d-block">Seleccionaré la carpeta directa de un solo contrato o expediente.</small>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row g-3 mt-1">
+      <!-- Google Drive Picker -->
+      <div class="col-md-6">
+        <div class="p-3 rounded-3 h-100" style="background: linear-gradient(135deg, rgba(66,133,244,0.08), rgba(52,168,83,0.08)); border: 1px dashed rgba(66,133,244,0.3);">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="bi bi-google fs-5 text-primary"></i>
+            <h6 class="fw-bold m-0">Google Drive (Nube)</h6>
+          </div>
+          {% if google_connected %}
+          <button class="btn btn-primary d-flex align-items-center gap-2 w-100 justify-content-center fw-bold py-2" type="button" onclick="openPicker()" id="btn-drive-picker">
+            <i class="bi bi-cloud-arrow-down-fill"></i> Seleccionar Carpeta en Drive
+          </button>
+          <small class="text-muted d-block mt-2"><i class="bi bi-info-circle"></i> Selecciona la carpeta raíz con subcarpetas por año.</small>
+          {% else %}
+          <a href="/login/google" class="btn btn-outline-primary d-flex align-items-center gap-2 w-100 justify-content-center fw-bold py-2">
+            <i class="bi bi-box-arrow-in-right"></i> Conectar Google Drive
+          </a>
+          <small class="text-muted d-block mt-2"><i class="bi bi-lock"></i> Conecta tu cuenta para escanear archivos en la nube.</small>
+          {% endif %}
+        </div>
+      </div>
+      
+      <!-- Escaneo Local -->
+      <div class="col-md-6">
+        <div class="p-3 rounded-3 h-100" style="background: linear-gradient(135deg, rgba(108,117,125,0.06), rgba(108,117,125,0.02)); border: 1px dashed rgba(108,117,125,0.3);">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="bi bi-pc-display fs-5 text-secondary"></i>
+            <h6 class="fw-bold m-0">Carpeta Local</h6>
+          </div>
+          <form action="/scan" method="post" class="m-0">
+            <input type="hidden" name="is_single_exp" class="is-single-exp-input" value="false">
+            <button class="btn btn-outline-secondary d-flex align-items-center gap-2 w-100 justify-content-center fw-bold py-2">
+              <i class="bi bi-folder2-open"></i> Escanear Carpeta Local
+            </button>
+          </form>
+          <small class="text-muted d-block mt-2"><i class="bi bi-info-circle"></i> Usa la ruta configurada en <a href="/configuracion" class="text-decoration-none">Configuración</a>.</small>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Hidden form for Drive picker submission -->
+    <form id="drive-scan-form" action="/scan" method="post" style="display: none;">
+      <input type="hidden" name="folder_id" id="picker-folder-id">
+      <input type="hidden" name="folder_name" id="picker-folder-name">
+      <input type="hidden" name="is_single_exp" class="is-single-exp-input" value="false">
+    </form>
+  </div>
+  
+  <!-- Encabezado de tabla de expedientes -->
   <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
     <div>
       <h4 class="fw-bold m-0"><i class="bi bi-folder2-open text-primary me-2"></i> Carpetas de Expediente</h4>
-      <p class="text-muted m-0 small">Escanea la ruta local para buscar expedientes e iniciar la auditoría semántica con Gemini.</p>
+      <p class="text-muted m-0 small">Expedientes detectados y su estado de auditoría. Haz clic en "Ver Detalle" para revisar criterio por criterio.</p>
     </div>
     <div class="d-flex gap-2">
-      <!-- Escanear Carpetas -->
-      <form action="/scan" method="post" class="m-0">
-        <button class="btn btn-primary d-flex align-items-center gap-2">
-          <i class="bi bi-arrow-repeat"></i> Escanear Carpeta
-        </button>
-      </form>
       <!-- Auditar Todo -->
       {% if total > 0 %}
       <form action="/audit-all" method="post" class="m-0">
@@ -194,4 +273,78 @@
   </div>
   {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Google Picker Configuration (for dashboard Drive folder selection)
+var developerKey = '{{ google_api_key }}';
+var clientId = '{{ google_client_id }}';
+var accessToken = '{{ google_access_token }}';
+var pickerApiLoaded = false;
+
+// Load the Google Picker API
+function onApiLoad() {
+    gapi.load('picker', {callback: function() {
+        pickerApiLoaded = true;
+    }});
+}
+
+function updateScanMode() {
+    const isSingle = document.getElementById('mode_single').checked;
+    document.querySelectorAll('.is-single-exp-input').forEach(el => {
+        el.value = isSingle ? "true" : "false";
+    });
+}
+
+window.addEventListener('load', function() {
+    if (typeof gapi !== 'undefined') {
+        onApiLoad();
+    }
+});
+
+function openPicker() {
+    if (!pickerApiLoaded) {
+        alert('La API de Google Picker todavía se está cargando. Por favor espera un momento.');
+        return;
+    }
+    if (!accessToken) {
+        alert('No se detectó un Token de Acceso válido. Por favor reconecta tu cuenta en Configuración.');
+        return;
+    }
+    
+    var view = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
+        .setSelectFolderEnabled(true)
+        .setMimeTypes('application/vnd.google-apps.folder');
+        
+    var picker = new google.picker.PickerBuilder()
+        .addView(view)
+        .setOAuthToken(accessToken)
+        .setDeveloperKey(developerKey)
+        .setCallback(pickerCallback)
+        .setTitle('Seleccione la carpeta raíz de expedientes')
+        .build();
+        
+    picker.setVisible(true);
+}
+
+function pickerCallback(data) {
+    if (data.action == google.picker.Action.PICKED) {
+        var doc = data.docs[0];
+        var folderId = doc.id;
+        var folderName = doc.name;
+        
+        // Show loading state on the button
+        const btn = document.getElementById('btn-drive-picker');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Escaneando "' + folderName + '"...';
+        }
+        
+        document.getElementById('picker-folder-id').value = folderId;
+        document.getElementById('picker-folder-name').value = folderName;
+        document.getElementById('drive-scan-form').submit();
+    }
+}
+</script>
 {% endblock %}

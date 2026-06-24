@@ -67,6 +67,8 @@ class ResultadoAuditoria(Base):
     evidencia_documento = Column(String, nullable=True)
     evidencia_pagina = Column(Integer, nullable=True)
     evidencia_texto = Column(Text, nullable=True)
+    contenido_verificado = Column(String, nullable=True, default="N/A")
+    detalle_contenido = Column(Text, nullable=True)
     fecha_auditoria = Column(DateTime, default=datetime.utcnow)
 
     expediente = relationship("Expediente", back_populates="resultados")

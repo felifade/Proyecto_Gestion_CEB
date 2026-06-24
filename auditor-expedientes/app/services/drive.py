@@ -13,19 +13,32 @@ def get_drive_service(creds_dict: dict):
 def list_files_in_folder(service, folder_id: str):
     """
     Lists all files and subfolders directly inside a Google Drive folder.
+    Handles pagination to ensure folders with >1000 items are fully listed.
     """
     query = f"'{folder_id}' in parents and trashed = false"
-    results = service.files().list(
-        q=query,
-        fields="nextPageToken, files(id, name, mimeType, size)",
-        pageSize=1000
-    ).execute()
-    return results.get('files', [])
+    all_files = []
+    page_token = None
+    
+    while True:
+        results = service.files().list(
+            q=query,
+            fields="nextPageToken, files(id, name, mimeType, size)",
+            pageSize=1000,
+            pageToken=page_token
+        ).execute()
+        
+        all_files.extend(results.get('files', []))
+        page_token = results.get('nextPageToken')
+        if not page_token:
+            break
+    
+    return all_files
 
-def scan_drive_folder_recursive(db: Session, service, root_folder_id: str):
+def scan_drive_folder_recursive(db: Session, service, root_folder_id: str, folder_name: str = None, is_single_exp: bool = False):
     """
-    Scans the Google Drive root folder recursively, detecting year-based structures
-    and registering folders and files in the database.
+    Scans the Google Drive root folder. If is_single_exp is True, treats the 
+    root folder as the one and only expediente. Otherwise, recursively detects
+    year-based structures and registers folders and files in the database.
     """
     top_items = list_files_in_folder(service, root_folder_id)
     
@@ -72,6 +85,31 @@ def scan_drive_folder_recursive(db: Session, service, root_folder_id: str):
                     )
                     db.add(doc)
         db.commit()
+
+    if is_single_exp:
+        # User selected a specific expediente folder
+        name = folder_name or "Expediente_Directo"
+        exp = db.query(Expediente).filter(Expediente.google_drive_folder_id == root_folder_id).first()
+        if not exp:
+            exp = db.query(Expediente).filter(Expediente.ruta_relativa == name).first()
+            
+        if not exp:
+            exp = Expediente(
+                nombre_carpeta=name,
+                ruta_relativa=name,
+                anio="General",
+                google_drive_folder_id=root_folder_id,
+                estado_analisis="Pendiente"
+            )
+            db.add(exp)
+            db.commit()
+            db.refresh(exp)
+        else:
+            exp.google_drive_folder_id = root_folder_id
+            db.commit()
+            
+        scan_files_for_exp_drive(exp, root_folder_id)
+        return
 
     # Iterate over top items in the root folder
     for item in top_items:

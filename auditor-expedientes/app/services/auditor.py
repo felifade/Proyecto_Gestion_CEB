@@ -1,9 +1,125 @@
 import os
 import json
+import unicodedata
 from datetime import datetime
 from sqlalchemy.orm import Session
 from ..models import Criteria, Expediente, Documento, ResultadoAuditoria, Configuration
 from .parser import parse_document
+
+
+def normalize_text(text: str) -> str:
+    """
+    Removes diacritical marks (accents) and converts to lowercase for
+    accent-insensitive comparison. e.g., 'Requisición' -> 'requisicion'
+    """
+    if not text:
+        return ""
+    nfkd = unicodedata.normalize('NFKD', text)
+    return ''.join(c for c in nfkd if not unicodedata.combining(c)).lower().strip()
+
+# Mapping of documento_esperado keywords -> terms to verify in document content
+# Each key maps to a list of terms; at least some should appear in the document text
+CONTENT_VERIFICATION_TERMS = {
+    "autorización": ["autorización", "autoriza", "recursos", "presupuest", "firma"],
+    "solicitud": ["solicitud", "adquisición", "bienes", "servicios", "requiere"],
+    "requisición": ["requisición", "cantidad", "descripción", "autoriza", "unidad"],
+    "ejercer": ["ejercer", "recursos", "oficialía", "mayor", "autoriza"],
+    "validación": ["validación", "objeto", "gasto", "partida", "presupuestal"],
+    "investigación de mercado": ["mercado", "investigación", "proveedor", "precio", "cotiza"],
+    "cotización": ["cotización", "precio", "monto", "proveedor", "rfc", "vigencia"],
+    "cuadro comparativo": ["comparativo", "proveedor", "precio", "resultado", "análisis"],
+    "reducción de plazos": ["reducción", "plazos", "justificación", "fundado"],
+    "aprobación del comité": ["comité", "aprobación", "adquisiciones", "acta"],
+    "revisión de la documentación": ["revisión", "documentación", "comité", "registro"],
+    "revisión y aprobación": ["revisión", "aprobación", "convocatoria", "bases"],
+    "convocatoria": ["convocatoria", "licitación", "periódico", "oficial"],
+    "bases": ["bases", "licitación", "requisitos", "participación"],
+    "designación": ["designación", "personal", "ente", "ejecutor"],
+    "junta de aclaraciones": ["junta", "aclaraciones", "invitados", "asistencia"],
+    "presentación y apertura": ["presentación", "apertura", "proposiciones", "registro"],
+    "propuesta completa": ["propuesta", "documentos", "anexos", "ganador", "licitante"],
+    "propuesta no ganadores": ["propuesta", "no ganador", "licitante", "descalificado"],
+    "garantía de seriedad": ["garantía", "seriedad", "fianza", "monto"],
+    "evaluación": ["evaluación", "proposiciones", "dictamen", "técnic"],
+    "fallo": ["fallo", "adjudicación", "resultado", "ganador"],
+    "informe": ["informe", "órgano", "control", "interno"],
+    "notificación": ["notificación", "contrato", "proveedor", "adjudicación"],
+    "contrato": ["contrato", "firma", "cláusula", "vigencia", "monto", "objeto"],
+    "garantía": ["garantía", "cumplimiento", "fianza", "póliza", "aseguradora"],
+    "acta constitutiva": ["acta", "constitutiva", "sociedad", "notari"],
+    "poder": ["poder", "representante", "legal", "facultades", "notari"],
+    "identificación oficial": ["identificación", "oficial", "ine", "pasaporte", "fotografía"],
+    "rfc": ["rfc", "contribuyente", "registro", "federal", "fiscal"],
+    "padrón": ["padrón", "proveedor", "gobierno", "hidalgo", "registro"],
+    "sat": ["sat", "opinión", "cumplimiento", "positiv"],
+    "opinión del estado": ["opinión", "estado", "cumplimiento", "hidalgo"],
+    "domicilio": ["domicilio", "comprobante", "dirección", "calle"],
+    "caratula": ["bancar", "cuenta", "clabe", "caratula", "estado de cuenta"],
+    "solicitud programática": ["solicitud", "programática", "gasto", "partida"],
+    "contra-recibo": ["contra-recibo", "contrarecibo", "hacienda", "secretaría"],
+    "póliza": ["póliza", "egreso", "comprometido", "devengado", "ejercido"],
+    "transferencia": ["transferencia", "pago", "bancar", "depósito", "spei"],
+    "cfdi": ["cfdi", "rfc", "total", "folio", "fiscal", "factura"],
+    "entrega-recepción": ["entrega", "recepción", "acta", "firma", "bien"],
+    "entera satisfacción": ["satisfacción", "conformidad", "entera", "servicio"],
+    "área requirente": ["área", "requirente", "satisfacción", "conformidad"],
+    "entregable": ["entregable", "justificación", "recurso", "aplicación", "conforme"],
+    "fotográfica": ["foto", "memoria", "firmada", "lugar", "tiempo"],
+    "remisión": ["remisión", "nota", "entrega", "cantidad"],
+    "vale": ["vale", "almacén", "entrada", "salida", "resguardo"],
+    "respaldo": ["respaldo", "evidencia", "verificación", "cédula", "copia"],
+    "eximición": ["eximición", "garantía", "cumplimiento", "solicitud"],
+    "desierto": ["desierto", "procedimiento", "antecedente", "declarar"],
+}
+
+
+def verify_document_content(doc, keyword: str) -> tuple:
+    """
+    Verifies if a matched document's extracted text contains the expected
+    content terms for the given criterion keyword.
+    
+    Returns (status, detail) where:
+    - status: 'Verificado', 'Parcial', 'No verificado', 'Sin texto'
+    - detail: human-readable explanation of what was found/missing
+    """
+    if not doc.texto_extraido or len(doc.texto_extraido.strip()) == 0:
+        return "Sin texto", "No se pudo extraer texto del documento para verificar su contenido."
+    
+    normalized_keyword = normalize_text(keyword)
+    terms = CONTENT_VERIFICATION_TERMS.get(normalized_keyword, [])
+    
+    if not terms:
+        # No verification terms defined for this keyword, check basic presence
+        if normalized_keyword in normalize_text(doc.texto_extraido):
+            return "Verificado", f"El término '{keyword}' fue encontrado en el contenido del documento."
+        else:
+            return "No verificado", f"El término '{keyword}' no fue encontrado en el contenido del documento."
+    
+    # Check which terms are present in the document text
+    doc_text_normalized = normalize_text(doc.texto_extraido)
+    found_terms = []
+    missing_terms = []
+    
+    for term in terms:
+        if normalize_text(term) in doc_text_normalized:
+            found_terms.append(term)
+        else:
+            missing_terms.append(term)
+    
+    ratio = len(found_terms) / len(terms) if terms else 0
+    
+    if ratio >= 0.5:
+        status = "Verificado"
+        detail = f"Contenido validado ({len(found_terms)}/{len(terms)} términos). Encontrados: {', '.join(found_terms)}."
+    elif ratio > 0:
+        status = "Parcial"
+        detail = f"Contenido parcial ({len(found_terms)}/{len(terms)} términos). Encontrados: {', '.join(found_terms)}. Faltantes: {', '.join(missing_terms)}."
+    else:
+        status = "No verificado"
+        detail = f"No se encontraron los términos esperados en el documento. Faltantes: {', '.join(missing_terms)}."
+    
+    return status, detail
+
 
 def get_gemini_client(db: Session):
     """
@@ -90,11 +206,11 @@ def audit_expediente_simulated(db: Session, expediente_id: int, creds_dict: dict
     ensure_document_texts_cached(db, expediente, docs, creds_dict)
     
     for criterio in criterios:
-        expected_doc_name = (criterio.documento_esperado or "").lower().strip()
+        expected_doc_name = normalize_text(criterio.documento_esperado or "")
         matching_docs = []
         for doc in docs:
-            # Check if keyword matches filename or relative path
-            if expected_doc_name in doc.nombre_archivo.lower() or expected_doc_name in doc.ruta_relativa.lower():
+            # Check if normalized keyword matches filename or relative path (accent-insensitive)
+            if expected_doc_name in normalize_text(doc.nombre_archivo) or expected_doc_name in normalize_text(doc.ruta_relativa):
                 matching_docs.append(doc)
                 
         if not matching_docs:
@@ -213,32 +329,63 @@ def audit_expediente_against_criteria(db: Session, expediente_id: int, creds_dic
         ensure_document_texts_cached(db, expediente, docs, creds_dict)
         
         for criterio in criterios:
-            expected_keyword = (criterio.documento_esperado or "").lower().strip()
+            expected_keyword = normalize_text(criterio.documento_esperado or "")
             matching_docs = []
+            matched_by_text = False
             
             if expected_keyword:
+                # Phase 1: Match by filename or path (accent-insensitive)
                 for doc in docs:
-                    if expected_keyword in doc.nombre_archivo.lower() or expected_keyword in doc.ruta_relativa.lower():
+                    if expected_keyword in normalize_text(doc.nombre_archivo) or expected_keyword in normalize_text(doc.ruta_relativa):
                         matching_docs.append(doc)
+                
+                # Phase 2: Fallback — search inside extracted text content
+                if not matching_docs:
+                    for doc in docs:
+                        if doc.texto_extraido and expected_keyword in normalize_text(doc.texto_extraido):
+                            matching_docs.append(doc)
+                            matched_by_text = True
             
             if not matching_docs:
                 resultado = ResultadoAuditoria(
                     expediente_id=expediente_id,
                     criterio_id=criterio.id,
                     estado="No cumple",
-                    observacion=f"Documento no localizado. No se encontró ningún archivo con el término esperado: '{criterio.documento_esperado}'."
+                    observacion=f"Documento no localizado. No se encontró ningún archivo con el término esperado: '{criterio.documento_esperado}'.",
+                    contenido_verificado="N/A",
+                    detalle_contenido="No aplica — archivo no encontrado."
                 )
             else:
                 doc = matching_docs[0]
-                resultado = ResultadoAuditoria(
-                    expediente_id=expediente_id,
-                    criterio_id=criterio.id,
-                    estado="Cumple",
-                    observacion=f"Documento localizado. Se verificó la existencia del archivo '{doc.nombre_archivo}' en la carpeta del expediente.",
-                    evidencia_documento=doc.nombre_archivo,
-                    evidencia_pagina=1,
-                    evidencia_texto=f"Archivo detectado en la ruta: {doc.ruta_relativa}"
+                # Verify document content
+                content_status, content_detail = verify_document_content(
+                    doc, criterio.documento_esperado or ""
                 )
+                
+                if matched_by_text:
+                    resultado = ResultadoAuditoria(
+                        expediente_id=expediente_id,
+                        criterio_id=criterio.id,
+                        estado="Cumple",
+                        observacion=f"Documento localizado por contenido. El término '{criterio.documento_esperado}' fue encontrado dentro del texto del archivo '{doc.nombre_archivo}'.",
+                        evidencia_documento=doc.nombre_archivo,
+                        evidencia_pagina=1,
+                        evidencia_texto=f"Término detectado en contenido del archivo: {doc.ruta_relativa}",
+                        contenido_verificado=content_status,
+                        detalle_contenido=content_detail
+                    )
+                else:
+                    resultado = ResultadoAuditoria(
+                        expediente_id=expediente_id,
+                        criterio_id=criterio.id,
+                        estado="Cumple",
+                        observacion=f"Documento localizado. Se verificó la existencia del archivo '{doc.nombre_archivo}' en la carpeta del expediente.",
+                        evidencia_documento=doc.nombre_archivo,
+                        evidencia_pagina=1,
+                        evidencia_texto=f"Archivo detectado en la ruta: {doc.ruta_relativa}",
+                        contenido_verificado=content_status,
+                        detalle_contenido=content_detail
+                    )
             db.add(resultado)
             
         db.commit()

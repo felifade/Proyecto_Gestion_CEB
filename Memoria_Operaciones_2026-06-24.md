@@ -36,17 +36,19 @@ En esta sesión se realizaron mejoras críticas de arquitectura, rendimiento, di
 ---
 
 ## 3. Archivos Modificados e Impacto
-1. **`auditor-expedientes/app/main.py`**: Rutas FastAPI, controlador de agrupamiento y carga automática de los 51 criterios con el re-seed condicional de la base de datos.
+1. **`auditor-expedientes/app/main.py`**: Rutas FastAPI, controlador de agrupamiento, carga automática de los 51 criterios con el re-seed condicional, y ruta para la descarga de Excel por expediente.
 2. **`auditor-expedientes/app/services/auditor.py`**: Eliminación de llamadas a la API de Gemini y migración a auditoría determinista veloz basada en existencia de palabras clave.
-3. **`auditor-expedientes/app/templates/detalle.html`**: Estructuración del checklist en tarjetas visuales de categorías con barra de progreso y diseño de tabla limpia.
-4. **`docs/superpowers/specs/2026-06-24-grouped-checklist-design.md`**: Especificación de diseño aprobada para el checklist visual.
-5. **`docs/superpowers/plans/2026-06-24-grouped-checklist.md`**: Plan de implementación técnica detallado de las tareas.
+3. **`auditor-expedientes/app/services/reports.py`**: Creación del reporte en Excel detallado por expediente y corrección del error `MergedCell` usando `get_column_letter` de `openpyxl.utils` para establecer anchos de columnas de manera segura.
+4. **`auditor-expedientes/app/templates/dashboard.html`**: Remoción de la opción del Excel detallado consolidado (ahora se maneja por expediente).
+5. **`auditor-expedientes/app/templates/detalle.html`**: Incorporación del botón de descarga de Excel por expediente, reestructuración en tarjetas visuales de categorías con barra de progreso, y remoción de la pestaña redundante de "Documentos Detectados".
+6. **`docs/superpowers/specs/2026-06-24-grouped-checklist-design.md`**: Especificación de diseño aprobada para el checklist visual.
+7. **`docs/superpowers/plans/2026-06-24-grouped-checklist.md`**: Plan de implementación técnica detallado de las tareas.
 
 ---
 
 ## 4. Estado de Sincronización y Despliegue
-* **Git Local:** Todos los cambios están confirmados (commited) en la rama `main`.
-* **GitHub y Producción:** Los cambios fueron empujados (`git push`) a GitHub, iniciando el despliegue automático del servicio en la nube (Render).
+* **Git Local:** Todos los cambios confirmados y listos para ser empujados.
+* **GitHub y Producción (Render):** Empujado a la rama `main` de GitHub. Render compilará y desplegará la última versión con la corrección del reporte Excel y el inicio de sesión OAuth actualizado.
 * **Servidor Local:** Corriendo estable en `http://localhost:8000`.
 
 ---

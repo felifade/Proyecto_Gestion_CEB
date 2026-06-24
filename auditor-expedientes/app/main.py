@@ -19,7 +19,7 @@ from .database import engine, Base, get_db, SessionLocal
 from .models import Configuration, Criteria, Expediente, Documento, ResultadoAuditoria
 from .services.parser import parse_document
 from .services.auditor import audit_expediente_against_criteria, audit_all_expedientes_task
-from .services.reports import generate_consolidated_excel, generate_executive_word, generate_executive_pdf
+from .services.reports import generate_consolidated_excel, generate_executive_word, generate_executive_pdf, generate_detailed_excel_for_expediente
 
 # Initialize SQLite tables on startup
 Base.metadata.create_all(bind=engine)
@@ -248,7 +248,11 @@ def read_dashboard(request: Request, db: Session = Depends(get_db)):
             "completados": completados,
             "parciales": parciales,
             "no_cumple": no_cumple,
-            "pendientes": pendientes
+            "pendientes": pendientes,
+            "google_connected": "google_creds" in request.session,
+            "google_access_token": request.session.get("google_creds", {}).get("token", ""),
+            "google_client_id": os.environ.get("GOOGLE_CLIENT_ID", ""),
+            "google_api_key": os.environ.get("GOOGLE_API_KEY", "")
         }
     )
 
@@ -423,12 +427,15 @@ def scan_folders(
     request: Request,
     folder_id: str = Form(None),
     folder_name: str = Form(None),
+    is_single_exp: str = Form("false"),
     db: Session = Depends(get_db)
 ):
     """
     Scans folders. Supports both Google Drive API (if folder_id is supplied)
     and local filesystem directory scanning (fallback).
     """
+    is_single = is_single_exp.lower() == "true"
+    
     # 1. Google Drive Cloud Scan
     if folder_id:
         creds_dict = request.session.get("google_creds")
@@ -438,7 +445,7 @@ def scan_folders(
         try:
             from .services.drive import get_drive_service, scan_drive_folder_recursive
             service = get_drive_service(creds_dict)
-            scan_drive_folder_recursive(db, service, folder_id)
+            scan_drive_folder_recursive(db, service, folder_id, folder_name, is_single)
         except Exception as e:
             print(f"Error scanning Google Drive: {str(e)}")
             
@@ -450,6 +457,24 @@ def scan_folders(
         return RedirectResponse(url="/configuracion", status_code=303)
         
     root_path = config.ruta_expedientes
+    
+    if is_single:
+        # Treats the entire local root_path as a single expediente
+        folder_name_local = os.path.basename(os.path.normpath(root_path)) or "Expediente_Local"
+        exp = db.query(Expediente).filter(Expediente.ruta_relativa == folder_name_local).first()
+        if not exp:
+            exp = Expediente(
+                nombre_carpeta=folder_name_local,
+                ruta_relativa=folder_name_local,
+                anio="General",
+                estado_analisis="Pendiente"
+            )
+            db.add(exp)
+            db.commit()
+            db.refresh(exp)
+            
+        scan_files_for_expediente(db, exp, root_path)
+        return RedirectResponse(url="/", status_code=303)
     
     # Iterate and detect subfolders
     for folder_name_local in os.listdir(root_path):
@@ -514,6 +539,8 @@ def scan_folders_fallback():
 def run_audit(exp_id: int, request: Request, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     """
     Triggers the audit task in the background using FastAPI workers.
+    Uses audit_all_expedientes_task (which creates its own DB session)
+    to avoid reusing the request-scoped session after it's closed.
     """
     exp = db.query(Expediente).filter(Expediente.id == exp_id).first()
     if exp:
@@ -523,8 +550,8 @@ def run_audit(exp_id: int, request: Request, background_tasks: BackgroundTasks, 
         # Get credentials if Google Drive is authorized
         creds_dict = request.session.get("google_creds")
         
-        # Add to background worker queue
-        background_tasks.add_task(audit_expediente_against_criteria, db, exp_id, creds_dict)
+        # Use audit_all_expedientes_task with single-item list for safe session handling
+        background_tasks.add_task(audit_all_expedientes_task, [exp_id], creds_dict)
         
     return RedirectResponse(url="/", status_code=303)
 
@@ -618,6 +645,15 @@ def download_excel(db: Session = Depends(get_db)):
     output_path = "/tmp/Consolidado_Auditoria.xlsx"
     generate_consolidated_excel(db, output_path)
     return FileResponse(output_path, filename="Consolidado_Auditoria.xlsx", media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+@app.get("/export/detalle-excel/{exp_id}")
+def download_detailed_excel_expediente(exp_id: int, db: Session = Depends(get_db)):
+    """
+    Generates a detailed spreadsheet with content verification for a single expediente.
+    """
+    output_path = f"/tmp/Detalle_Auditoria_Expediente_{exp_id}.xlsx"
+    generate_detailed_excel_for_expediente(db, exp_id, output_path)
+    return FileResponse(output_path, filename=f"Detalle_Expediente_{exp_id}.xlsx", media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
 @app.get("/export/word")
 def download_word(db: Session = Depends(get_db)):
