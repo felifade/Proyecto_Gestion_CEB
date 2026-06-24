@@ -84,4 +84,19 @@ A solicitud del usuario, se realizó una separación estricta del material de tr
         *   *Saltos de Página*: Se aplicó la propiedad CSS `page-break-inside: avoid;` en las tarjetas de reactivos, síntesis y bloques de actividades del PDF para evitar cortes arbitrarios de contenido a mitad de hoja.
         *   *Área de Trabajo*: En la versión Word (.docx), se sustituyó el espacio en blanco por una tabla estructurada de una celda con borde (caja de trabajo de 3.5 pulgadas de alto) para las actividades, previniendo desbordes accidentales de página y delimitando claramente la zona de escritura del alumno.
 
-**Sincronización Cloud**: Se sincronizó el repositorio completo por `rsync` hacia Google Drive, reflejando de inmediato la eliminación de los archivos duplicados, la adición del manual de recuperación de Cultura Digital I y los nuevos manuales de derecho a examen de Cultura Digital II y III.
+## 8. Optimización del Control de Horarios y Docentes (Archivo Excel)
+Se realizaron mejoras de presentación y de inteligencia de datos en el libro central de horarios: **`INTERSEMESTRAL SEMESTRE _B_ 2025-2026.xlsx`**.
+1. **Reordenación y Enfoque**: Se reordenaron las hojas del libro para que la hoja **`Intersemestrales`** (el calendario base) ocupe la posición número 1 (index 0) al abrir el archivo, en lugar de hojas obsoletas anteriores.
+2. **Presentación Profesional de la Primera Hoja (`Intersemestrales`)**:
+   - **Corrección de Título**: Se actualizó el encabezado de la celda B3 de `2023-2024` a `SEMESTRE "B" 2025-2026` para reflejar el ciclo escolar activo.
+   - **Estilo de Encabezados**: Se aplicó una fila de títulos con fuente Arial de 10pt en negrita, color blanco y fondo azul marino institucional, con una altura de fila de 28.
+   - **Formato de Datos**: Se aplicó formato de fuente Arial de 9pt, alineación centrada para datos clave (semestre, horarios, salón y turno) y alineación izquierda para asignaturas y nombres de docentes.
+   - **Diseño Cebra y Rejilla**: Se implementó zebra striping (filas pares en gris claro y nones en blanco) para facilitar el seguimiento visual, bordes delgados grises y se forzó la visualización de líneas de división (`showGridLines`).
+   - **Autoajuste**: Se redimensionaron automáticamente las columnas al ancho del texto más largo para evitar datos cortados.
+3. **Filtro Dinámico Interactivo (Dashboard de Consulta)**:
+   - Se creó una nueva hoja llamada **`Filtro Intersemestral`** (ubicada en la posición 2 del libro).
+   - **Controles Desplegables**: Se configuraron tres menús de selección (Data Validation) en celdas unificadas: *Docente* (ligado a una lista única y ordenada alfabéticamente en la hoja oculta `Listas_Aux`), *Horario* (lista única de rangos horarios) y *Turno* (Matutino/vespertino).
+   - **Fórmula Inteligente de Extracción**: Se programó la fórmula matricial `=FILTRAR(...)` (con los parámetros en inglés `_xlfn.FILTER` y `IF` para compatibilidad nativa en XML) que extrae en tiempo real los registros coincidentes cuando el usuario interactúa con los filtros, mostrando "Sin coincidencias" si la combinación no existe.
+
+**Sincronización Cloud**: Se guardaron los cambios directamente en Google Drive y se copió la versión final del libro de Excel optimizado en la ruta de iCloud Drive para que coincida perfectamente con la nube del plantel.
+
