@@ -43,12 +43,13 @@ En esta sesión se realizaron mejoras críticas de arquitectura, rendimiento, di
 5. **`auditor-expedientes/app/templates/detalle.html`**: Incorporación del botón de descarga de Excel por expediente, reestructuración en tarjetas visuales de categorías con barra de progreso, y remoción de la pestaña redundante de "Documentos Detectados".
 6. **`docs/superpowers/specs/2026-06-24-grouped-checklist-design.md`**: Especificación de diseño aprobada para el checklist visual.
 7. **`docs/superpowers/plans/2026-06-24-grouped-checklist.md`**: Plan de implementación técnica detallado de las tareas.
+8. **`Dockerfile` (Raíz)**: Creado en la raíz del repositorio para posibilitar el despliegue automático en la nube de Render leyendo el proyecto desde la subcarpeta `auditor-expedientes`.
 
 ---
 
 ## 4. Estado de Sincronización y Despliegue
-* **Git Local:** Todos los cambios confirmados y listos para ser empujados.
-* **GitHub y Producción (Render):** Empujado a la rama `main` de GitHub. Render compilará y desplegará la última versión con la corrección del reporte Excel y el inicio de sesión OAuth actualizado.
+* **Git Local:** Todos los cambios confirmados y empujados.
+* **GitHub y Producción (Render):** Empujado a la rama `main` de GitHub (Commit `8f0ef3a`). Render está actualmente construyendo el contenedor Docker usando el archivo raíz.
 * **Servidor Local:** Corriendo estable en `http://localhost:8000`.
 
 ---
