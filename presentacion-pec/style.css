@@ -571,3 +571,42 @@ h2 {
   font-size: 0.95rem;
   font-weight: 500;
 }
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+
+.gallery-item {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.8rem;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.gallery-item:hover {
+  transform: scale(1.03);
+}
+
+.svg-placeholder {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.8rem;
+}
+
+.svg-placeholder svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.img-caption {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  line-height: 1.4;
+}
