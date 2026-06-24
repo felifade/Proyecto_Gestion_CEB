@@ -563,12 +563,41 @@ def get_expediente_detail(exp_id: int, request: Request, db: Session = Depends(g
     """
     exp = db.query(Expediente).filter(Expediente.id == exp_id).first()
     resultados = db.query(ResultadoAuditoria).filter(ResultadoAuditoria.expediente_id == exp_id).all()
+    
+    # Group results by criteria type/category in the specific hidalgo order
+    categories_order = [
+        "Autorizaciones",
+        "Adjudicación",
+        "Licitación",
+        "Propuestas",
+        "Fallo",
+        "Contrato",
+        "Proveedor",
+        "Trámite de Pago",
+        "Entrega",
+        "Evidencia"
+    ]
+    
+    grouped_results = {}
+    for cat in categories_order:
+        grouped_results[cat] = []
+        
+    for r in resultados:
+        cat = r.criterio.tipo or "General"
+        if cat not in grouped_results:
+            grouped_results[cat] = []
+        grouped_results[cat].append(r)
+        
+    # Remove empty categories to keep the UI clean
+    grouped_results = {k: v for k, v in grouped_results.items() if len(v) > 0}
+    
     return templates.TemplateResponse(
         request=request,
         name="detalle.html",
         context={
             "expediente": exp,
-            "resultados": resultados
+            "resultados": resultados,
+            "grouped_results": grouped_results
         }
     )
 
