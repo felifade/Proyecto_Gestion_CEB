@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentación PEC 2025-2026 - CEB 5/4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Panel de navegación superior (Indicador de Progreso) -->
+  <header class="navbar">
+    <div class="logo-area">
+      <span class="logo-text">CEB 5/4 "Profr. Rafael Ramírez"</span>
+    </div>
+    <div class="slide-indicator">
+      Diapositiva <span id="current-slide-num">1</span> de 10
+    </div>
+  </header>
+
+  <!-- Contenedor Principal de Slides -->
+  <main class="slides-container">
+    <!-- Slide 1: Portada -->
+    <section class="slide active" id="slide-1">
+      <div class="slide-content cover-slide">
+        <div class="badge">Ciclo Escolar 2025-2026</div>
+        <h1>PROYECTO ESCOLAR COMUNITARIO (PEC)</h1>
+        <h2>Construyendo comunidad a través del aprendizaje colaborativo</h2>
+        <div class="meta-grid">
+          <div class="meta-item"><strong>Institución:</strong> Centro de Estudios de Bachillerato 5/4</div>
+          <div class="meta-item"><strong>Semestre:</strong> Cuarto Semestre (Grupos M401-M406 y V401-V404)</div>
+          <div class="meta-item"><strong>Periodo:</strong> Segundo y Tercer Parcial</div>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn-primary" onclick="nextSlide()">Comenzar Presentación</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Controles flotantes inferiores -->
+  <footer class="controls-bar">
+    <div class="nav-controls">
+      <button class="btn-control" id="prev-btn" onclick="prevSlide()" disabled>⬅️</button>
+      <button class="btn-control" id="next-btn" onclick="nextSlide()">➡️</button>
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progress-indicator"></div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
