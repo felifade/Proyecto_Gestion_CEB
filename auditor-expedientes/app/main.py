@@ -43,16 +43,19 @@ def read_dashboard(request: Request, db: Session = Depends(get_db)):
     cumplimiento_promedio = sum(e.porcentaje_cumplimiento for e in expedientes) / total if total > 0 else 0.0
     
     # Render main dashboard template
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request,
-        "expedientes": expedientes,
-        "total": total,
-        "cumplimiento_promedio": cumplimiento_promedio,
-        "completados": completados,
-        "parciales": parciales,
-        "no_cumple": no_cumple,
-        "pendientes": pendientes
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="dashboard.html",
+        context={
+            "expedientes": expedientes,
+            "total": total,
+            "cumplimiento_promedio": cumplimiento_promedio,
+            "completados": completados,
+            "parciales": parciales,
+            "no_cumple": no_cumple,
+            "pendientes": pendientes
+        }
+    )
 
 @app.get("/configuracion")
 def get_config(request: Request, db: Session = Depends(get_db)):
@@ -71,12 +74,15 @@ def get_config(request: Request, db: Session = Depends(get_db)):
             
     mapeo = json.loads(config.mapeo_columnas) if (config and config.mapeo_columnas) else {}
     
-    return templates.TemplateResponse("configuracion.html", {
-        "request": request,
-        "config": config,
-        "headers": headers,
-        "mapeo": mapeo
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="configuracion.html",
+        context={
+            "config": config,
+            "headers": headers,
+            "mapeo": mapeo
+        }
+    )
 
 @app.post("/configuracion")
 def save_config(
@@ -233,11 +239,14 @@ def get_expediente_detail(exp_id: int, request: Request, db: Session = Depends(g
     """
     exp = db.query(Expediente).filter(Expediente.id == exp_id).first()
     resultados = db.query(ResultadoAuditoria).filter(ResultadoAuditoria.expediente_id == exp_id).all()
-    return templates.TemplateResponse("detalle.html", {
-        "request": request,
-        "expediente": exp,
-        "resultados": resultados
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="detalle.html",
+        context={
+            "expediente": exp,
+            "resultados": resultados
+        }
+    )
 
 @app.get("/export/excel")
 def download_excel(db: Session = Depends(get_db)):
